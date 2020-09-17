@@ -52,7 +52,7 @@
     <Compile Include="LoggerContainers\ILoggerContainer.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ILogger.cs" />
-    <Compile Include="LoggerContainers\FileLogger.cs" />
+    <Compile Include="LoggerContainers\FileLoggerContainer.cs" />
     <Compile Include="MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

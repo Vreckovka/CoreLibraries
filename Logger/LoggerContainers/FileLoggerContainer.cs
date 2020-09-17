@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 
 namespace Logger
 {
-  public class FileLogger : ILoggerContainer
+  public class FileLoggerContainer : ILoggerContainer
   {
     private readonly string logFilePath;
 
-    public FileLogger(string logFilePath)
+    public FileLoggerContainer(string logFilePath)
     {
-      this.logFilePath = logFilePath ?? throw new ArgumentNullException(nameof(logFilePath));
+      this.logFilePath = string.IsNullOrEmpty(logFilePath) ? throw new ArgumentNullException(nameof(logFilePath)) : logFilePath;
     }
 
     public Task Log(MessageType messageType, string message)
@@ -25,8 +25,8 @@ namespace Logger
           {
             w.Write("\r\nLog Entry : ");
             w.WriteLine($"{DateTime.Now}");
-            w.WriteLine($"{messageType}  :");
-            w.WriteLine($"  :{message}");
+            w.WriteLine($"{messageType}:");
+            w.WriteLine($"\t{message}");
             w.WriteLine("-------------------------------");
           }
         }

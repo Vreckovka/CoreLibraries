@@ -11,10 +11,11 @@ namespace Logger
     {
       void Log(
         MessageType type,
-        object message,
+        string message,
+        bool logToFile = false,
         [CallerFilePath] string callerFilePath = null,
         [CallerMemberName] string methodName = "");
 
-      void Log(Exception ex);
+      void Log(Exception ex, bool logToFile = false);
     }
 }
