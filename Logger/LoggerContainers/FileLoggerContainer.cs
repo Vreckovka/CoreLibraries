@@ -33,7 +33,7 @@ namespace Logger
       });
     }
 
-    private void EnsureDirectoryExists(string filePath)
+    public void EnsureDirectoryExists(string filePath)
     {
       FileInfo fi = new FileInfo(filePath);
 
@@ -42,6 +42,8 @@ namespace Logger
         System.IO.Directory.CreateDirectory(fi.DirectoryName);
       }
     }
+
+
 
   }
 }

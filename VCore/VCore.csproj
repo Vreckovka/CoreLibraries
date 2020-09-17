@@ -163,6 +163,7 @@
     <Compile Include="Modularity\RegionProviders\RegistredView.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="ViewModels\BaseMainWindowViewModel.cs" />
     <Compile Include="Interfaces\ViewModels\ICollectionViewModel.cs" />
     <Compile Include="ViewModels\Navigation\INavigationItem.cs" />
