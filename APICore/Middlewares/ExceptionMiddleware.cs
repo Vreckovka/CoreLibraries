@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using APICore.Logging;
+using Logger;
 using Microsoft.AspNetCore.Http;
 
 namespace APICore.Middlewares

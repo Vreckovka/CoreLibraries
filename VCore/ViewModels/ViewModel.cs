@@ -3,6 +3,7 @@ using Prism.Mvvm;
 using PropertyChanged;
 using System;
 using System.ComponentModel;
+using VCore.Common;
 
 namespace VCore.ViewModels
 {
@@ -14,20 +15,18 @@ namespace VCore.ViewModels
   {
   }
 
-  [AddINotifyPropertyChangedInterface]
-  public abstract class ViewModel : BindableBase, IViewModel
+
+  public abstract class ViewModel : VBindableBase, IViewModel
   {
     #region Methods
-
-    public void Dispose()
-    {
-    }
 
     public virtual void Initialize()
     {
     }
 
-    #endregion Methods
+    #endregion 
+
+
   }
 
   public abstract class ViewModel<TModel> : ViewModel, IParametrizedViewModel

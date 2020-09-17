@@ -13,13 +13,6 @@ namespace VCore.ViewModels
     {
     }
 
-    public string Title { get; set; }
-
-    public override void Initialize()
-    {
-      base.Initialize();
-
-      Title = "BASE WPF APP";
-    }
+    public virtual string Title { get; set; } = "BASE WPF APP";
   }
 }

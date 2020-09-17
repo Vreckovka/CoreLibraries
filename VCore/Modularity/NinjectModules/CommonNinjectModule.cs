@@ -17,7 +17,7 @@ namespace VCore.Modularity.NinjectModules
 
     public override void RegisterProviders()
     {
-      Kernel.Bind<IRegionProvider>().To<BaseRegionProvider>().InSingletonScope();
+      Kernel.Bind<IRegionProvider>().To<RegionProvider>().InSingletonScope();
       Kernel.Bind<INavigationProvider>().To<NavigationProvider>().InSingletonScope();
     }
 

@@ -23,7 +23,7 @@ namespace VCore.ViewModels
   {
     #region Fields
 
-    private readonly IRegionProvider regionProvider;
+    protected readonly IRegionProvider regionProvider;
 
     #endregion Fields
 

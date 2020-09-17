@@ -12,8 +12,10 @@ namespace VCore.Modularity.RegionProviders
     string ViewName { get; set; }
     IRegion Region { get; set; }
 
+    void Refresh();
     void Activate();
     void Deactivate();
 
+    void DeactivateDataContext();
   }
 }

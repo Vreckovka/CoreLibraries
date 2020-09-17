@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +44,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -54,7 +54,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.2</LangVersion>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -117,6 +117,8 @@
   <ItemGroup>
     <Compile Include="ActionCommand.cs" />
     <Compile Include="AttachedProperties\AttachedProperty.cs" />
+    <Compile Include="AttachedProperties\Multistyle\MultiStyleExtension.cs" />
+    <Compile Include="AttachedProperties\ScrollAnimationBehavior.cs" />
     <Compile Include="Behaviors\DropBehavior.cs" />
     <Compile Include="Behaviors\Text\PanningTextWithFontSizeBehavior.cs" />
     <Compile Include="Controls\Finder.cs" />
@@ -128,33 +130,49 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Design\DesignTimeRegionProvider.cs" />
     <Compile Include="Design\DesignTimeViewsProvider.cs" />
-    <Compile Include="ExtentionsMethods\ObjectExtentions.cs" />
-    <Compile Include="ExtentionsMethods\RxExtentions.cs" />
+    <Compile Include="Helpers\AsyncHelpers.cs" />
+    <Compile Include="Helpers\CollectionExtentions.cs" />
+    <Compile Include="Helpers\ObjectExtentions.cs" />
+    <Compile Include="Helpers\RxExtentions.cs" />
     <Compile Include="Factories\ViewModels\BaseViewModelFactory.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="Factories\ViewModels\IViewModelsFactory.cs" />
     <Compile Include="Factories\Views\BaseViewFactory.cs" />
     <Compile Include="Factories\Views\IViewFactory.cs" />
+    <Compile Include="Common\VDisposableObject.cs" />
+    <Compile Include="Helpers\VisualTreeHelper.cs" />
     <Compile Include="ItemsCollections\RxObservableCollection.cs" />
+    <Compile Include="ItemsCollections\VirtualList\PagedRepository.cs" />
+    <Compile Include="LRC\Domain\LRCFile.cs" />
+    <Compile Include="LRC\Domain\LRCLyricLine.cs" />
+    <Compile Include="LRC\ILrcProvider.cs" />
+    <Compile Include="LRC\LRCParser.cs" />
+    <Compile Include="LRC\LrcProvider.cs" />
     <Compile Include="Modularity\Events\Changed.cs" />
     <Compile Include="Modularity\Events\ItemChanged.cs" />
     <Compile Include="Modularity\Interfaces\IActivable.cs" />
     <Compile Include="Modularity\Interfaces\IView.cs" />
     <Compile Include="Modularity\Navigation\NavigationProvider.cs" />
+    <Compile Include="Modularity\Navigation\NavigationSet.cs" />
     <Compile Include="Modularity\NinjectModules\BaseNinjectModule.cs" />
     <Compile Include="Modularity\NinjectModules\CommonNinjectModule.cs" />
     <Compile Include="Modularity\NinjectModules\NinjectModuleExtentions.cs" />
     <Compile Include="Modularity\RegionProviders\IRegionProvider.cs" />
-    <Compile Include="Modularity\RegionProviders\BaseRegionProvider.cs" />
+    <Compile Include="Modularity\RegionProviders\RegionProvider.cs" />
     <Compile Include="Modularity\RegionProviders\IRegistredView.cs" />
     <Compile Include="Modularity\RegionProviders\RegistredView.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BaseMainWindowViewModel.cs" />
     <Compile Include="Interfaces\ViewModels\ICollectionViewModel.cs" />
     <Compile Include="ViewModels\Navigation\INavigationItem.cs" />
     <Compile Include="ViewModels\Navigation\NavigationViewModel.cs" />
     <Compile Include="ViewModels\RegionCollectionViewModel.cs" />
+    <Compile Include="Common\VBindableBase.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
+    <Compile Include="ItemsCollections\VirtualList\ItemsGenerator.cs" />
+    <Compile Include="ItemsCollections\VirtualList\IObjectGenerator.cs" />
+    <Compile Include="ItemsCollections\VirtualList\VirtualList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -163,7 +181,9 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Providers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.4.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.4.2.1\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -11,7 +11,7 @@ using VCore.ViewModels;
 
 namespace VCore.Modularity.RegionProviders
 {
-  public class BaseRegionProvider : IRegionProvider
+  public class RegionProvider : IRegionProvider
   {
     #region Fields
 
@@ -20,13 +20,13 @@ namespace VCore.Modularity.RegionProviders
     private readonly IRegionManager regionManager;
     private readonly IViewFactory viewFactory;
     private List<IRegistredView> Views = new List<IRegistredView>();
-    private Dictionary<IRegistredView,IDisposable> ActivateSubscriptions = new Dictionary<IRegistredView, IDisposable>();
+    private Dictionary<IRegistredView, IDisposable> ActivateSubscriptions = new Dictionary<IRegistredView, IDisposable>();
 
     #endregion Fields
 
     #region Constructors
 
-    public BaseRegionProvider(
+    public RegionProvider(
       IRegionManager regionManager,
       IViewFactory viewFactory,
       IViewModelsFactory viewModelsFactory,
@@ -50,8 +50,7 @@ namespace VCore.Modularity.RegionProviders
     {
       var disposable = view.ViewWasActivated.Subscribe((x) =>
       {
-        x.Activate();
-        navigationProvider.SetNavigation(x);
+        navigationProvider.Navigate(x);
       });
 
       ActivateSubscriptions.Add(view, disposable);
@@ -61,12 +60,12 @@ namespace VCore.Modularity.RegionProviders
 
     #region RegisterView
 
-      public Guid RegisterView<TView, TViewModel>(
-      string regionName,
-      TViewModel viewModel,
-      bool containsNestedRegion)
-      where TView : class, IView
-      where TViewModel : class, INotifyPropertyChanged
+    public Guid RegisterView<TView, TViewModel>(
+    string regionName,
+    TViewModel viewModel,
+    bool containsNestedRegion)
+    where TView : class, IView
+    where TViewModel : class, INotifyPropertyChanged
     {
       var registredView = Views.SingleOrDefault(x => x.ViewName == RegistredView<TView, TViewModel>.GetViewName(regionName));
 
@@ -116,18 +115,24 @@ namespace VCore.Modularity.RegionProviders
       view?.Activate();
     }
 
-    #endregion ActivateView
+    #endregion
+
+    public void RefreshView(Guid guid)
+    {
+      var view = Views.SingleOrDefault(x => x.Guid == guid);
+      view?.Refresh();
+
+    }
 
     #region DectivateView
 
-    public void DectivateView(
-      Guid guid)
+    public void DectivateView(Guid guid)
     {
       var view = Views.SingleOrDefault(x => x.Guid == guid);
       view?.Deactivate();
     }
 
-    #endregion DectivateView
+    #endregion 
 
     #region GoBack
 

@@ -7,7 +7,7 @@ using VCore.Modularity.Interfaces;
 
 namespace VCore.ViewModels.Navigation
 {
-  public interface INavigationItem : IActivable
+  public interface INavigationItem : IActivable, IDisposable
   {
     string Header { get; }
   }

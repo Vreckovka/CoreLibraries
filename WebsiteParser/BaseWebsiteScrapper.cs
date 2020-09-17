@@ -6,7 +6,7 @@ namespace WebsiteParser
 {
   public class WebsiteScrapperTags
   {
-    public const string PRODUCT_INDEX = "productIndex";
+    public const string ITEM_INDEX = "ITEM_INDEX";
     public const string PAGE_INDEX = "pageIndex";
   }
   public class BaseWebsiteScrapper
@@ -75,9 +75,9 @@ namespace WebsiteParser
 
     #region GetFinalXPath
 
-    public string GetFinalXPath(string defaltProductsInfomationXPath, int index)
+    public string GetItemFinalXPath(string defaltItemXPath, int index)
     {
-      var split = defaltProductsInfomationXPath.Split(WebsiteScrapperTags.PRODUCT_INDEX);
+      var split = defaltItemXPath.Split(WebsiteScrapperTags.ITEM_INDEX);
 
       var finalXPath = split[0] + index + split[1];
 
@@ -104,6 +104,8 @@ namespace WebsiteParser
 
     #endregion
 
+    #region GetDataOriginal
+
     public string GetDataOriginal(string xPath, HtmlDocument doc)
     {
       var nodes = doc.DocumentNode.SelectNodes(xPath);
@@ -117,6 +119,8 @@ namespace WebsiteParser
 
       return null;
     }
+
+    #endregion
 
     #region GetCurrencyPrice
 
@@ -141,6 +145,24 @@ namespace WebsiteParser
       }
 
       return true;
+    }
+
+    #endregion
+
+    #region GetRefLink
+
+    public string GetRefLink(string xPath, HtmlDocument doc)
+    {
+      var nodes = doc.DocumentNode.SelectNodes(xPath);
+
+      if (nodes != null)
+      {
+        var htmlValue = nodes[0].Attributes.FirstOrDefault(x => x.Name == "href");
+
+        return htmlValue.Value;
+      }
+
+      return null;
     }
 
     #endregion

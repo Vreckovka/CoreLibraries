@@ -9,7 +9,7 @@ namespace VCore.Modularity.RegionProviders
     #region Methods
 
     void ActivateView(Guid guidObject);
-
+    void RefreshView(Guid guidObject);
     void DectivateView(Guid guidObject);
 
     Guid RegisterView<TView, TViewModel>(
