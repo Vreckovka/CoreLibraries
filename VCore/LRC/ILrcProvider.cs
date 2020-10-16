@@ -8,11 +8,8 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
     LRCProviders LRCProvider { get; }
 
     string GetFileName(string artistName, string songName);
-
-
     LRCFile ParseLRCFile(string[] lines);
-
-
-    Task<LRCFile> TryGetLrcAsync(string songName, string artistName, string albumName);
+    Task<ILRCFile> TryGetLrcAsync(string songName, string artistName, string albumName);
+    void Update(ILRCFile lRCFile);
   }
 }

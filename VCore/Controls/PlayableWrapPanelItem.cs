@@ -55,25 +55,10 @@ namespace VCore.Controls
             nameof(ImageThumbnail),
             typeof(ImageSource),
             typeof(PlayableWrapPanelItem),
-            new PropertyMetadata(null));
-
-
-    #endregion
-
-    #region DefaultImage
-
-    public ImageSource DefaultImage
-    {
-      get { return (ImageSource)GetValue(DefaultImageProperty); }
-      set { SetValue(DefaultImageProperty, value); }
-    }
-
-    public static readonly DependencyProperty DefaultImageProperty =
-        DependencyProperty.Register(
-            nameof(DefaultImage),
-            typeof(ImageSource),
-            typeof(PlayableWrapPanelItem),
-            new PropertyMetadata(null));
+            new PropertyMetadata(null, (x, y) =>
+            {
+              var newValue = y.NewValue;
+            }));
 
 
     #endregion

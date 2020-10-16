@@ -10,6 +10,8 @@ namespace VCore.Interfaces.ViewModels
 
     Task<ICollection<TViewModel>> GetViewModelsAsync(IQueryable<TModel> optionalQuery = null);
 
+    void RecreateCollection();
+
     #endregion Methods
   }
 }

@@ -271,7 +271,7 @@ namespace ScrollAnimateBehavior.AttachedBehaviors
     {
       if (sender is ScrollViewer scrollViewer)
 
-        Application.Current.Dispatcher.Invoke(() =>
+        Application.Current?.Dispatcher?.Invoke(() =>
         {
           if (isDraggingThumb.TryGetValue(scrollViewer, out var isDragging))
           {

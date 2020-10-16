@@ -13,9 +13,9 @@ namespace VCore.ItemsCollections.VirtualList
 
     #region Constructors
 
-    public ItemsGenerator(IEnumerable<TViewModel> source)
+    public ItemsGenerator(IEnumerable<TViewModel> source, int pageSize)
     {
-      _repository = new PagedRepository<TViewModel>(source.ToArray());
+      _repository = new PagedRepository<TViewModel>(source.ToArray(), pageSize);
     }
 
     #endregion 

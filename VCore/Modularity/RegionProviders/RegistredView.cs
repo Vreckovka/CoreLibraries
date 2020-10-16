@@ -194,7 +194,8 @@ namespace VCore.Modularity.RegionProviders
 
       View = newView;
 
-      Region.Activate(View);
+
+      //Region.Activate(View);
     }
 
     #endregion

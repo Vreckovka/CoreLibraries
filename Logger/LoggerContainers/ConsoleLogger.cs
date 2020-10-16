@@ -9,8 +9,10 @@ namespace Logger
 
     public Task Log(MessageType messageType, string message)
     {
-      //… makes beep sound
-      return Task.Run(() =>
+      lock (Console.Out)
+      {
+        //… makes beep sound
+        return Task.Run(() =>
       {
         Console.ForegroundColor = ConsoleColor.White;
 
@@ -41,6 +43,7 @@ namespace Logger
 
         Console.ForegroundColor = ConsoleColor.White;
       });
+      }
     }
 
     #endregion Methods

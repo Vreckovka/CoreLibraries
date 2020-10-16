@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ninject;
@@ -12,6 +13,8 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
     Google,
     Local
   }
+
+
 
   public abstract class LrcProvider<TFileOutput> : ILrcProvider, IInitializable
   {
@@ -44,24 +47,29 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     #region TryGetLrcAsync
 
-    public async Task<LRCFile> TryGetLrcAsync(string songName, string artistName, string albumName)
+    public async Task<ILRCFile> TryGetLrcAsync(string songName, string artistName, string albumName)
     {
-      var lrcFilePath = await GetLinesLrcFileAsync(songName, artistName, albumName);
+      var output = await GetLinesLrcFileAsync(songName, artistName, albumName);
 
-      LRCFile lRCFile = null;
+      ILRCFile ilRCFile = output.Value;
+      var lines = output.Key;
 
-      if (lrcFilePath != null)
+      if (lines != null && ilRCFile != null)
       {
-        lRCFile = ParseLRCFile(lrcFilePath);
+        var lRCFile = ParseLRCFile(lines);
 
         if (lRCFile == null && LrcFileExists(songName, artistName, albumName))
         {
           throw new Exception("FAILED TO PARSE " + songName + " " + artistName + " " + albumName);
         }
+
+        ilRCFile.Update(lRCFile);
       }
 
-      return lRCFile;
+      return ilRCFile;
     }
+
+    public abstract void Update(ILRCFile lRCFile);
 
     #endregion
 
@@ -81,7 +89,7 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     #endregion
 
-    protected abstract Task<string[]> GetLinesLrcFileAsync(string songName, string artistName, string albumName);
+    protected abstract Task<KeyValuePair<string[], ILRCFile>> GetLinesLrcFileAsync(string songName, string artistName, string albumName);
     protected abstract TFileOutput GetFile(string songName, string artistName, string albumName);
 
     public abstract LRCProviders LRCProvider { get; }

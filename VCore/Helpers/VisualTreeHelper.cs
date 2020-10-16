@@ -1,9 +1,7 @@
 ﻿using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using VCore.Common;
 using VCore.Controls;
 
 namespace VCore.Helpers
@@ -91,14 +89,6 @@ namespace VCore.Helpers
       } while (result == null);
 
       return result;
-    }
-  }
-
-  public static class DisposableExtentions
-  {
-    public static void DisposeWith(this IDisposable disposable, VDisposableObject disposableObject)
-    {
-      disposableObject.AddAutoDisposeObject(disposable);
     }
   }
 }

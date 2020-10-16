@@ -4,7 +4,32 @@ using System.Linq;
 
 namespace VPlayer.AudioStorage.InfoDownloader.LRC.Domain
 {
-  public class LRCFile
+  public class GoogleLRCFile : LRCFile
+  {
+    public string GoogleDriveFileId { get; set; }
+
+    public GoogleLRCFile(List<LRCLyricLine> lines) : base(lines)
+    {
+    }
+  }
+
+
+  public interface ILRCFile
+  {
+    string Id { get; set; }
+    string Artist { get; set; }
+    string Title { get; set; }
+    string Album { get; set; }
+    string By { get; set; }
+
+    TimeSpan? Length { get; set; }
+    List<LRCLyricLine> Lines { get;  }
+    string GetString();
+
+    void Update(LRCFile lRCFile);
+  }
+
+  public class LRCFile : ILRCFile
   {
     public LRCFile(List<LRCLyricLine> lines)
     {
@@ -32,6 +57,12 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC.Domain
       toString += "\n" + String.Join("\n", Lines.Select(x => x.ToString()).ToArray());
 
       return toString;
+    }
+
+    public void Update(LRCFile lRCFile)
+    {
+      Id = lRCFile.Id;
+      Lines = lRCFile.Lines;
     }
   }
 }

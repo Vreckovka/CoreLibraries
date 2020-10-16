@@ -115,7 +115,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionCommand.cs" />
+    <Compile Include="Misc\ActionCommand.cs" />
     <Compile Include="AttachedProperties\AttachedProperty.cs" />
     <Compile Include="AttachedProperties\Multistyle\MultiStyleExtension.cs" />
     <Compile Include="AttachedProperties\ScrollAnimationBehavior.cs" />
@@ -132,10 +132,12 @@
     <Compile Include="Design\DesignTimeViewsProvider.cs" />
     <Compile Include="Helpers\AsyncHelpers.cs" />
     <Compile Include="Helpers\CollectionExtentions.cs" />
+    <Compile Include="Helpers\DisposableExtentions.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\ObjectExtentions.cs" />
     <Compile Include="Helpers\RxExtentions.cs" />
     <Compile Include="Factories\ViewModels\BaseViewModelFactory.cs" />
-    <Compile Include="Extentions.cs" />
+    <Compile Include="Misc\Extentions.cs" />
     <Compile Include="Factories\ViewModels\IViewModelsFactory.cs" />
     <Compile Include="Factories\Views\BaseViewFactory.cs" />
     <Compile Include="Factories\Views\IViewFactory.cs" />

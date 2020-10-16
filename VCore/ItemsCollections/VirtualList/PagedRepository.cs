@@ -11,16 +11,20 @@ namespace VCore.ItemsCollections.VirtualList
 
     public int NumberOfItems = -1;
     public readonly TItem[] source;
+    private readonly int pageSize;
     private TItem[] _cache;
-    private int _pageSize = 40;
 
     #endregion Fields
 
     #region Constructors
 
-    public PagedRepository(TItem[] source)
+    public PagedRepository(TItem[] source, int pageSize)
     {
+      if (pageSize <= 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
       this.source = source ?? throw new ArgumentNullException(nameof(source));
+      this.pageSize = pageSize;
+
       NumberOfItems = source.Length;
     }
 
@@ -32,8 +36,7 @@ namespace VCore.ItemsCollections.VirtualList
 
     public int PageSize
     {
-      get { return _pageSize; }
-      set { _pageSize = value; }
+      get { return pageSize; }
     }
 
     private int PageCursorStartIndex

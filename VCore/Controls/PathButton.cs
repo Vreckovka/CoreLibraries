@@ -443,6 +443,23 @@ namespace VCore.Controls
 
     #endregion
 
+    #region IconMargin
+
+    public Thickness IconMargin
+    {
+      get { return (Thickness)GetValue(IconMarginProperty); }
+      set { SetValue(IconMarginProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconMarginProperty =
+      DependencyProperty.Register(
+        nameof(IconMargin),
+        typeof(Thickness),
+        typeof(ButtonWithIcon),
+        new PropertyMetadata(new Thickness(0)));
+
+    #endregion
+
     #region IconHoverColor
 
     public Color IconHoverColor
