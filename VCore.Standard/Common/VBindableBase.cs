@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using VCore.Annotations;
 
-namespace VCore.Common
+namespace VCore.Standard.Common
 {
   public abstract class VBindableBase : VDisposableObject, INotifyPropertyChanged
   {
@@ -13,7 +12,6 @@ namespace VCore.Common
       OnPropertyChanged(propertyName);
     }
 
-    [NotifyPropertyChangedInvocator]
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

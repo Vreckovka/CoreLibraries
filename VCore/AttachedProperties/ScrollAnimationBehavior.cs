@@ -3,10 +3,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Controls.Primitives;
-using VCore.Controls;
 using VCore.Helpers;
 
 namespace ScrollAnimateBehavior.AttachedBehaviors

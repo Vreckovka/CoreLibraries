@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using VCore.Factories;
-using VCore.Factories.Views;
-using VCore.Modularity.Interfaces;
 using VCore.Modularity.Navigation;
-using VCore.ViewModels;
+using VCore.Standard.Factories.ViewModels;
+using VCore.Standard.Factories.Views;
+using VCore.Standard.Modularity.Interfaces;
 
 namespace VCore.Modularity.RegionProviders
 {

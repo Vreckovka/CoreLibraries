@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Input;
-using VCore.Modularity.Interfaces;
 using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
+using VCore.Standard.Modularity.Interfaces;
 using VCore.ViewModels.Navigation;
 
 namespace VCore.ViewModels

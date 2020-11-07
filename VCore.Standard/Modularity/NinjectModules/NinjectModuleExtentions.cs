@@ -1,10 +1,7 @@
 ﻿using Ninject;
 using Ninject.Syntax;
-using VCore.Factories.Views;
-using VCore.Modularity.Interfaces;
-using VCore.ViewModels;
 
-namespace VCore.Modularity.NinjectModules
+namespace VCore.Standard.Modularity.NinjectModules
 {
   public static class NinjectModuleExtentions
   {

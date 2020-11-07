@@ -1,7 +1,6 @@
-﻿using VCore.Modularity.Interfaces;
-using VCore.ViewModels;
+﻿using VCore.Standard.Modularity.Interfaces;
 
-namespace VCore.Factories.Views
+namespace VCore.Standard.Factories.Views
 {
   public interface IViewFactory
   {

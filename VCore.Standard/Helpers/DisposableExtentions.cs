@@ -1,7 +1,7 @@
 ﻿using System;
-using VCore.Common;
+using VCore.Standard.Common;
 
-namespace VCore.Helpers
+namespace VCore.Standard.Helpers
 {
   public static class DisposableExtentions
   {

@@ -1,6 +1,4 @@
-﻿using VCore.ViewModels;
-
-namespace VCore.Modularity.Interfaces
+﻿namespace VCore.Standard.Modularity.Interfaces
 {
   public interface IView
   {

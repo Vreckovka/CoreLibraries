@@ -5,8 +5,9 @@ using System.Linq;
 using System.Reflection;
 using Ninject;
 using Ninject.Parameters;
+using VCore.Standard.Helpers;
 
-namespace VCore.Factories
+namespace VCore.Standard.Factories.ViewModels
 {
   public class BaseViewModelsFactory : IViewModelsFactory
   {

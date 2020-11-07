@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace VCore.Modularity.Interfaces
+namespace VCore.Standard.Modularity.Interfaces
 {
   public interface IActivable : INotifyPropertyChanged
   {

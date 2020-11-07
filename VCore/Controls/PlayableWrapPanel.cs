@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Windows.Controls;
-using Prism.Events;
 
 namespace VCore.Controls
 {

@@ -1,10 +1,6 @@
 ﻿using Ninject.Modules;
-using Prism.Ioc;
-using Prism.Modularity;
-using VCore.Factories;
-using VCore.Modularity.RegionProviders;
 
-namespace VCore.Modularity.NinjectModules
+namespace VCore.Standard.Modularity.NinjectModules
 {
   public class BaseNinjectModule : NinjectModule
   {

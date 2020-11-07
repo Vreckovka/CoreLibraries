@@ -4,10 +4,9 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Windows.Controls;
-using VCore.Factories;
-using VCore.Factories.Views;
-using VCore.Modularity.Interfaces;
+using VCore.Standard.Factories.ViewModels;
+using VCore.Standard.Factories.Views;
+using VCore.Standard.Modularity.Interfaces;
 using VCore.ViewModels;
 
 namespace VCore.Modularity.RegionProviders

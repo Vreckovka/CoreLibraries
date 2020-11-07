@@ -1,15 +1,14 @@
-﻿using Ninject;
-using System;
+﻿using System;
 using System.ComponentModel;
 using VCore.Standard.Common;
 
-namespace VCore.ViewModels
+namespace VCore.Standard
 {
   public interface IParametrizedViewModel
   {
   }
 
-  public interface IViewModel : IInitializable, IDisposable, INotifyPropertyChanged
+  public interface IViewModel : IDisposable, INotifyPropertyChanged
   {
   }
 

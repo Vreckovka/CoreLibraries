@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VCore.Modularity.Interfaces;
+using VCore.Standard.Modularity.Interfaces;
 
 namespace VCore.ViewModels.Navigation
 {

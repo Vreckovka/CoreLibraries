@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reactive.Disposables;
 
-namespace VCore.Common
+namespace VCore.Standard.Common
 {
   public abstract class VDisposableObject : IDisposable
   {

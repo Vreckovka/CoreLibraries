@@ -1,4 +1,4 @@
-﻿namespace VCore.Factories
+﻿namespace VCore.Standard.Factories.ViewModels
 {
   public interface IViewModelsFactory
   {
