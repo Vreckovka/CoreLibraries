@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
+using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.ViewModels.Navigation;
 

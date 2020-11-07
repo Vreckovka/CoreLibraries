@@ -1,4 +1,6 @@
-﻿namespace VCore.ViewModels
+﻿using VCore.Standard;
+
+namespace VCore.ViewModels
 {
   public class BaseMainWindowViewModel : ViewModel
   {

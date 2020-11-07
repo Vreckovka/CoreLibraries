@@ -8,8 +8,8 @@
     <ProjectGuid>{5AA43597-FD3D-4F10-89A5-EB77D3B831D9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VCore</RootNamespace>
-    <AssemblyName>VCore</AssemblyName>
+    <RootNamespace>VCore.WPF</RootNamespace>
+    <AssemblyName>VCore.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -162,7 +162,6 @@
     <Compile Include="ViewModels\Navigation\INavigationItem.cs" />
     <Compile Include="ViewModels\Navigation\NavigationViewModel.cs" />
     <Compile Include="ViewModels\RegionCollectionViewModel.cs" />
-    <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ItemsCollections\VirtualList\ItemsGenerator.cs" />
     <Compile Include="ItemsCollections\VirtualList\IObjectGenerator.cs" />
     <Compile Include="ItemsCollections\VirtualList\VirtualList.cs" />
@@ -174,9 +173,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Providers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj">
       <Project>{fa80de69-5166-4402-81f1-293bf7a99213}</Project>
