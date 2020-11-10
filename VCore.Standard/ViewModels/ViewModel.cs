@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Ninject;
 using VCore.Standard.Common;
 
 namespace VCore.Standard
@@ -8,7 +9,7 @@ namespace VCore.Standard
   {
   }
 
-  public interface IViewModel : IDisposable, INotifyPropertyChanged
+  public interface IViewModel : IInitializable,IDisposable, INotifyPropertyChanged
   {
   }
 

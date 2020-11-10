@@ -74,8 +74,6 @@ namespace VCore.Modularity.RegionProviders
 
         SubscribeToChanges(view);
 
-        Views.Add(view);
-
         return view.Guid;
       }
       else if (registredView is RegistredView<TView, TViewModel> view)
@@ -116,12 +114,16 @@ namespace VCore.Modularity.RegionProviders
 
     #endregion
 
+    #region RefreshView
+
     public void RefreshView(Guid guid)
     {
       var view = Views.SingleOrDefault(x => x.Guid == guid);
       view?.Refresh();
 
     }
+
+    #endregion
 
     #region DectivateView
 

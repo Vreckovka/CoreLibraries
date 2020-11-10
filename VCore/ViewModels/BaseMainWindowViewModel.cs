@@ -1,8 +1,9 @@
-﻿using VCore.Standard;
+﻿using Ninject;
+using VCore.Standard;
 
 namespace VCore.ViewModels
 {
-  public class BaseMainWindowViewModel : ViewModel
+  public class BaseMainWindowViewModel : ViewModel, IInitializable
   {
     public BaseMainWindowViewModel()
     {

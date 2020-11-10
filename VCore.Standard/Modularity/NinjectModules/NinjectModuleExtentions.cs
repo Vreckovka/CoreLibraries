@@ -8,7 +8,6 @@ namespace VCore.Standard.Modularity.NinjectModules
     #region BindToSelfInSingletonScope
 
     public static IBindingOnSyntax<TInitializable> BindToSelfInSingletonScope<TInitializable>(this IKernel kernel)
-      where TInitializable : IInitializable
     {
         return kernel.Bind<TInitializable>().ToSelf().InSingletonScope();
     }

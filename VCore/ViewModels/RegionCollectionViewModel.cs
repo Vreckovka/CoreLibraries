@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using Ninject;
 using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
 using VCore.Standard;
@@ -9,7 +10,7 @@ using VCore.ViewModels.Navigation;
 
 namespace VCore.ViewModels
 {
-  public interface IRegionViewModel : IActivable
+  public interface IRegionViewModel : IActivable, IInitializable
   {
     #region Properties
 
@@ -61,9 +62,9 @@ namespace VCore.ViewModels
 
         var genericMethod = method.MakeGenericMethod(registredView.Key, typeof(SelfActivableNavigationItem));
 
-        var guid = genericMethod.Invoke(regionProvider, new object[] {registredView.Value.Item1, this, registredView.Value.Item2});
+        var guid = genericMethod.Invoke(regionProvider, new object[] { registredView.Value.Item1, this, registredView.Value.Item2 });
 
-        Views.Add(registredView.Key, new SelfActivableNavigationItem(regionProvider,(Guid)guid));
+        Views.Add(registredView.Key, new SelfActivableNavigationItem(regionProvider, (Guid)guid));
       }
     }
 
@@ -90,7 +91,7 @@ namespace VCore.ViewModels
 
     #region Properties
 
-    public abstract bool ContainsNestedRegions { get; }
+    public virtual bool ContainsNestedRegions { get; }
     public Guid Guid { get; private set; }
     public abstract string RegionName { get; protected set; }
 
