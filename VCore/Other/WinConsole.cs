@@ -11,6 +11,10 @@ namespace VCore.Other
     [DllImport("kernel32.dll")]
     public static extern bool AllocConsole();
 
+    [DllImport("kernel32.dll")]
+    public static extern bool FreeConsole();
+
+
     [DllImport("kernel32.dll", SetLastError = true)]
     public static extern IntPtr GetStdHandle(int nStdHandle);
 
@@ -68,24 +72,7 @@ namespace VCore.Other
       if (GetConsoleMode(hRealOut, out var cMode))
         SetConsoleMode(hRealOut, cMode | ENABLE_VIRTUAL_TERMINAL_INPUT);
     }
-
-    public static void CreateConsole1()
-    {
-      AllocConsole();
-
-      var outFile = CreateFileW("CONOUT$", GENERIC_WRITE | GENERIC_READ, FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, /*FILE_ATTRIBUTE_NORMAL*/0, IntPtr.Zero);
-      var safeHandle = new SafeFileHandle(outFile, true);
-      SetStdHandle(STD_OUTPUT_HANDLE, outFile);
-      var fs = new FileStream(safeHandle, FileAccess.Write);
-      var writer = new StreamWriter(fs) { AutoFlush = true };
-      Console.SetOut(writer);
-      if (GetConsoleMode(outFile, out var cMode))
-        SetConsoleMode(outFile, cMode | ENABLE_VIRTUAL_TERMINAL_INPUT);
-
-      Console.Write("This will show up in the Console window.");
-    }
-
-   
+    
 
     private enum StdHandle : int
     {
@@ -94,7 +81,7 @@ namespace VCore.Other
       Error = -12
     }
 
-    public static void CreateConsole()
+    public static bool CreateConsole()
     {
       if (AllocConsole())
       {
@@ -117,7 +104,11 @@ namespace VCore.Other
         var standardOutput = new StreamWriter(Console.OpenStandardOutput());
         standardOutput.AutoFlush = true;
         Console.SetOut(standardOutput);
+
+        return true;
       }
+
+      return false;
     }
   }
 }
