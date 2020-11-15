@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Input;
 using Ninject;
-using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
@@ -71,111 +69,6 @@ namespace VCore.ViewModels
     #endregion Methods
   }
 
-  public abstract class RegionViewModel<TView> : ViewModel, IRegionViewModel where TView : class, IView
-  {
-    #region Fields
-
-    protected readonly IRegionProvider regionProvider;
-    private readonly INavigationProvider navigationProvider;
-
-    #endregion Fields
-
-    #region Constructors
-
-    public RegionViewModel(IRegionProvider regionProvider)
-    {
-      this.regionProvider = regionProvider ?? throw new ArgumentNullException(nameof(regionProvider));
-    }
-
-    #endregion Constructors
-
-    #region Properties
-
-    public virtual bool ContainsNestedRegions { get; }
-    public Guid Guid { get; private set; }
-    public abstract string RegionName { get; protected set; }
-
-    #region IsActive
-
-    private bool isActive;
-    private bool wasActivated;
-
-    public bool IsActive
-    {
-      get { return isActive; }
-      set
-      {
-        if (value != isActive)
-        {
-          isActive = value;
-
-          if (isActive)
-          {
-            OnActivation(!wasActivated);
-
-            if (!wasActivated)
-            {
-              wasActivated = true;
-            }
-          }
-
-          RaisePropertyChanged();
-        }
-      }
-    }
-
-    #endregion IsActive
-
-    #endregion Properties
-
-    #region BackCommand
-
-    private ActionCommand backCommand;
-
-    public ICommand BackCommand
-    {
-      get
-      {
-        if (backCommand == null)
-        {
-          backCommand = new ActionCommand(OnBackCommand);
-        }
-
-        return backCommand;
-      }
-    }
-
-    protected virtual void OnBackCommand()
-    {
-      regionProvider.GoBack(Guid);
-    }
-
-    #endregion BackCommand
-
-    #region Methods
-
-    #region Initialize
-
-    public override void Initialize()
-    {
-      base.Initialize();
-
-      Guid = regionProvider.RegisterView<TView, RegionViewModel<TView>>(RegionName, this, ContainsNestedRegions);
-    }
-
-    #endregion Initialize
-
-    #region OnActivation
-
-    public virtual void OnActivation(
-      bool firstActivation)
-    {
-    }
-
-    #endregion OnActivation
-
-    #endregion Methods
-  }
 
   public class SelfActivableNavigationItem : ViewModel, INavigationItem
   {

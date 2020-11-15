@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Prism.Regions;
 using VCore.Standard.Modularity.Interfaces;
 
 namespace VCore.Modularity.RegionProviders
@@ -12,14 +13,17 @@ namespace VCore.Modularity.RegionProviders
     void RefreshView(Guid guidObject);
     void DectivateView(Guid guidObject);
 
-    Guid RegisterView<TView, TViewModel>(
+    IRegionManager RegisterView<TView, TViewModel>(
       string regionName,
       TViewModel viewModel,
-      bool containsNestedRegion)
+      bool containsNestedRegion,
+      out Guid guid,
+      IRegionManager regionManager = null)
       where TView : class, IView
       where TViewModel : class, INotifyPropertyChanged;
+  
 
-    void GoBack(Guid guid);
+      void GoBack(Guid guid);
 
     #endregion Methods
   }

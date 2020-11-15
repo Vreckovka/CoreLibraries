@@ -75,10 +75,6 @@
       <HintPath>..\packages\Prism.Wpf.7.2.0.1367\lib\net45\Prism.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PropertyChanged, Version=2.6.1.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
-      <HintPath>..\packages\PropertyChanged.Fody.2.6.1\lib\net452\PropertyChanged.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -165,12 +161,10 @@
     <Compile Include="ItemsCollections\VirtualList\ItemsGenerator.cs" />
     <Compile Include="ItemsCollections\VirtualList\IObjectGenerator.cs" />
     <Compile Include="ItemsCollections\VirtualList\VirtualList.cs" />
+    <Compile Include="ViewModels\RegionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="FodyWeavers.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace VCore.ItemsCollections
 {
@@ -28,6 +29,7 @@ namespace VCore.ItemsCollections
       ItemAdded = new Subject<EventPattern<TItem>>();
       ItemUpdated = new Subject<EventPattern<PropertyChangedEventArgs>>();
       ItemRemoved = new Subject<EventPattern<TItem>>();
+
     }
 
     #endregion Constructors
@@ -37,6 +39,8 @@ namespace VCore.ItemsCollections
     public Subject<EventPattern<TItem>> ItemAdded { get; }
     public Subject<EventPattern<TItem>> ItemRemoved { get; }
     public Subject<EventPattern<PropertyChangedEventArgs>> ItemUpdated { get; }
+
+    public NotifyCollectionChangedAction? LastAction { get; set; }
 
     #endregion Properties
 
@@ -61,7 +65,10 @@ namespace VCore.ItemsCollections
 
       try
       {
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
+        if (list.Count > 0)
+        {
+          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
+        }
       }
       catch (NotSupportedException ex)
       {
@@ -95,7 +102,10 @@ namespace VCore.ItemsCollections
           ItemRemoved.OnNext(new EventPattern<TItem>(this, oldItem));
         }
       }
+
+      LastAction = e.Action;
     }
+
 
     #endregion Methods
   }

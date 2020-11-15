@@ -88,7 +88,7 @@ namespace VCore.ItemsCollections.VirtualList
       {
         if (source.Length > i)
         {
-          Thread.Sleep(TimeSpan.FromMilliseconds(1));
+          //Thread.Sleep(TimeSpan.FromMilliseconds(1));
           items.Add(source[i]);
         }
       }

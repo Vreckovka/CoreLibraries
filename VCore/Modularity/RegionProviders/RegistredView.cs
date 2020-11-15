@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using System.Windows;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
 using VCore.Standard.Modularity.Interfaces;
@@ -18,7 +20,6 @@ namespace VCore.Modularity.RegionProviders
 
     #region Fields
 
-    private readonly bool initializeImmediately;
     private readonly IViewFactory viewFactory;
     private readonly IViewModelsFactory viewModelsFactory;
     private readonly SerialDisposable viewWasActivatedDisposable;
@@ -47,7 +48,6 @@ namespace VCore.Modularity.RegionProviders
     {
       this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
-      this.initializeImmediately = initializeImmediately;
 
       viewWasActivatedDisposable = new SerialDisposable();
       viewWasDeactivatedDisposable = new SerialDisposable();
@@ -60,7 +60,7 @@ namespace VCore.Modularity.RegionProviders
 
       if (initializeImmediately)
       {
-        View = RegisterView();
+        View = RegisterView(initializeImmediately);
       }
     }
 
@@ -95,6 +95,7 @@ namespace VCore.Modularity.RegionProviders
     public string ViewName { get; set; }
     public Subject<IRegistredView> ViewWasActivated { get; } = new Subject<IRegistredView>();
     public Subject<IRegistredView> ViewWasDeactivated { get; } = new Subject<IRegistredView>();
+    public IRegionManager RegionManager { get; set; }
 
     #region ViewModel
 
@@ -192,16 +193,13 @@ namespace VCore.Modularity.RegionProviders
       Region.Add(newView);
 
       View = newView;
-
-
-      //Region.Activate(View);
     }
 
     #endregion
 
     #region RegisterView
 
-    public TView RegisterView()
+    public TView RegisterView(bool createScope = false)
     {
       if (View == null)
       {
@@ -212,9 +210,10 @@ namespace VCore.Modularity.RegionProviders
           ViewModel = viewModelsFactory.Create<TViewModel>();
         }
 
-        Region.Add(View, ViewName);
-
+        RegionManager = Region.Add(View, ViewName, createScope);
+        
         View.DataContext = ViewModel;
+
       }
 
       return View;
@@ -226,7 +225,10 @@ namespace VCore.Modularity.RegionProviders
 
     public TView Create()
     {
-      return viewFactory.Create<TView>();
+      return Application.Current?.Dispatcher?.Invoke(() =>
+      {
+        return viewFactory.Create<TView>();
+      });
     }
 
     #endregion Create

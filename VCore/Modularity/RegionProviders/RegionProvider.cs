@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using VCore.Modularity.Navigation;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
@@ -16,7 +17,7 @@ namespace VCore.Modularity.RegionProviders
 
     protected readonly IViewModelsFactory viewModelsFactory;
     private readonly INavigationProvider navigationProvider;
-    private readonly IRegionManager regionManager;
+    private readonly IRegionManager globalRegionManager;
     private readonly IViewFactory viewFactory;
     private List<IRegistredView> Views = new List<IRegistredView>();
     private Dictionary<IRegistredView, IDisposable> ActivateSubscriptions = new Dictionary<IRegistredView, IDisposable>();
@@ -31,7 +32,7 @@ namespace VCore.Modularity.RegionProviders
       IViewModelsFactory viewModelsFactory,
       INavigationProvider navigationProvider)
     {
-      this.regionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
+      this.globalRegionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
       this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.navigationProvider = navigationProvider ?? throw new ArgumentNullException(nameof(navigationProvider));
@@ -59,10 +60,12 @@ namespace VCore.Modularity.RegionProviders
 
     #region RegisterView
 
-    public Guid RegisterView<TView, TViewModel>(
+    public IRegionManager RegisterView<TView, TViewModel>(
     string regionName,
     TViewModel viewModel,
-    bool containsNestedRegion)
+    bool containsNestedRegion, 
+    out Guid guid,
+    IRegionManager parentRegionManager = null)
     where TView : class, IView
     where TViewModel : class, INotifyPropertyChanged
     {
@@ -70,16 +73,40 @@ namespace VCore.Modularity.RegionProviders
 
       if (registredView == null)
       {
-        var view = CreateView<TView, TViewModel>(regionName, viewModel, containsNestedRegion);
+        var actualRegionManager = globalRegionManager;
+
+        if (parentRegionManager != null)
+        {
+          actualRegionManager = parentRegionManager;
+        }
+
+        if (actualRegionManager.Regions.Count(x => x.Name == regionName) == 0)
+        {
+          IRegion region = new Region();
+
+          region.Name = regionName;
+
+          actualRegionManager.Regions.Add(region);
+        }
+
+        var view = Application.Current?.Dispatcher?.Invoke(() =>
+        {
+          return CreateView<TView, TViewModel>(regionName, viewModel, actualRegionManager, containsNestedRegion);
+        });
 
         SubscribeToChanges(view);
 
-        return view.Guid;
+        guid = view.Guid;
+
+        return view.RegionManager;
       }
       else if (registredView is RegistredView<TView, TViewModel> view)
       {
         view.ViewModel = viewModel;
-        return view.Guid;
+
+        guid = view.Guid;
+
+        return view.RegionManager;
       }
       else
       {
@@ -94,11 +121,13 @@ namespace VCore.Modularity.RegionProviders
     public RegistredView<TView, TViewModel> CreateView<TView, TViewModel>(
       string regionName,
       TViewModel viewModel,
+      IRegionManager regionManager,
       bool initializeImmediately = false)
       where TViewModel : class, INotifyPropertyChanged
       where TView : class, IView
     {
       var region = regionManager.Regions[regionName];
+
       return new RegistredView<TView, TViewModel>(region, viewFactory, viewModelsFactory, viewModel, initializeImmediately);
     }
 

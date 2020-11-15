@@ -24,5 +24,19 @@ namespace VCore.Standard.Helpers
     }
 
     #endregion
+
+    #region SplitList
+
+    public static IEnumerable<List<T>> SplitList<T>(this IEnumerable<T> locations, int nSize = 30)
+    {
+      var list = locations.ToList();
+
+      for (int i = 0; i < list.Count; i += nSize)
+      {
+        yield return list.GetRange(i, Math.Min(nSize, list.Count - i));
+      }
+    } 
+
+    #endregion
   }
 }

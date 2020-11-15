@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using VCore.Annotations;
 
 namespace VCore
 {
@@ -43,15 +44,32 @@ namespace VCore
   public class ActionCommand : ICommand
   {
     private readonly Action _action;
+    private readonly Func<bool> canExecute;
 
     public ActionCommand(Action action)
     {
       _action = action ?? throw new ArgumentNullException(nameof(action));
     }
 
-    public bool CanExecute(object parameter)
+    public ActionCommand(Action action, [NotNull] Func<bool> canExecute)
     {
-      return true;
+      _action = action ?? throw new ArgumentNullException(nameof(action));
+      this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+    }
+
+    public virtual bool CanExecute(object parameter)
+    {
+      if (canExecute == null)
+      {
+        return true;
+      }
+
+      return canExecute.Invoke();
+    }
+
+    public void RaiseCanExecuteChanged()
+    {
+      CanExecuteChanged?.Invoke(this, new EventArgs());
     }
 
     public void Execute(object parameter)
