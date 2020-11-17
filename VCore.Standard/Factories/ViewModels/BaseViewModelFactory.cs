@@ -98,8 +98,22 @@ namespace VCore.Standard.Factories.ViewModels
             .DistinctBy(p => p.Name)
             .ToList();
 
+
+
         if (constructorArguments.Count == 0)
-          throw new ArgumentException("Could not find constructor with specified argument", "TArgumentType");
+        {
+          constructorArguments = constructedType.GetConstructors()
+            .SelectMany(c => c.GetParameters())
+            .Where(x => argumentType.IsSubclassOf(x.ParameterType))
+            .DistinctBy(p => p.Name)
+            .ToList();
+
+          if (constructorArguments.Count == 0)
+          {
+            throw new ArgumentException("Could not find constructor with specified argument", "TArgumentType");
+            }
+        }
+          
 
         if (constructorArguments.Count > 1)
           throw new ArgumentException("Found multiple arguments of given type with different names", "TArgumentType");

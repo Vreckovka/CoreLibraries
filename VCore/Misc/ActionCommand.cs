@@ -57,7 +57,7 @@ namespace VCore
       this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
     }
 
-    public virtual bool CanExecute(object parameter)
+    public virtual bool CanExecute(object parameter = null)
     {
       if (canExecute == null)
       {

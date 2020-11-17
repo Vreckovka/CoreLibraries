@@ -6,6 +6,7 @@ using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
+using VCore.ViewModels.Navigation;
 
 namespace VCore.ViewModels
 {
@@ -21,7 +22,7 @@ namespace VCore.ViewModels
     public IRegionManager RegionManager { get; set; }
   }
 
-  public abstract class RegionViewModel<TView> : RegionViewModel, IRegionViewModel where TView : class, IView
+  public abstract class RegionViewModel<TView> : RegionViewModel, INavigationItem, IRegionViewModel where TView : class, IView
   {
     #region Fields
 
@@ -35,6 +36,7 @@ namespace VCore.ViewModels
     public RegionViewModel(IRegionProvider regionProvider)
     {
       this.regionProvider = regionProvider ?? throw new ArgumentNullException(nameof(regionProvider));
+      Header = this.ToString();
     }
 
     #endregion Constructors
@@ -45,6 +47,7 @@ namespace VCore.ViewModels
 
     private bool isActive;
     private bool wasActivated;
+    public virtual string Header { get; } 
 
     public bool IsActive
     {
@@ -118,5 +121,7 @@ namespace VCore.ViewModels
 
   
     #endregion Methods
+
+   
   }
 }

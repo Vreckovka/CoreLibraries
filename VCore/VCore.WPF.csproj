@@ -117,10 +117,6 @@
     <Compile Include="AttachedProperties\ScrollAnimationBehavior.cs" />
     <Compile Include="Behaviors\DropBehavior.cs" />
     <Compile Include="Behaviors\Text\PanningTextWithFontSizeBehavior.cs" />
-    <Compile Include="Controls\Finder.cs" />
-    <Compile Include="Controls\PathButton.cs" />
-    <Compile Include="Controls\PlayableWrapPanelItem.cs" />
-    <Compile Include="Controls\PlayableWrapPanel.cs" />
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\TimeConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
@@ -152,7 +148,10 @@
     <Compile Include="Other\WinConsole.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Controls\Finder.cs" />
+    <Compile Include="Controls\PathButton.cs" />
+    <Compile Include="Controls\PlayableWrapPanel.cs" />
+    <Compile Include="Controls\PlayableWrapPanelItem.cs" />
     <Compile Include="ViewModels\BaseMainWindowViewModel.cs" />
     <Compile Include="Interfaces\ViewModels\ICollectionViewModel.cs" />
     <Compile Include="ViewModels\Navigation\INavigationItem.cs" />
