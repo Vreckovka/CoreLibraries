@@ -42,7 +42,7 @@ namespace TradingBroker.MachineLearning
     }
 
     public T[] Genes { get; private set; }
-    public float Fitness { get; private set; }
+    public float Fitness { get; private set; } = float.MinValue;
     public double Score { get; set; }
 
     #region CalculateFitness
@@ -52,10 +52,26 @@ namespace TradingBroker.MachineLearning
       int exponentialRate = 3;
 
       var score = scoreFunction(genes);
+      double expScore = 0;
 
-      var expScore = (Math.Pow(score, exponentialRate)) - 1 / (exponentialRate - 1);
+      if (score == float.MinValue)
+      {
+        Console.WriteLine("NASIEL SOM MIN");
+        expScore = float.MinValue;
+      }
+      else
+      {
+        expScore = (Math.Pow(score, exponentialRate)) - 1 / (exponentialRate - 1);
+      }
 
+      
       Fitness = (float)expScore;
+
+      if (Fitness == 0)
+      {
+
+      }
+
 
       Score = score;
 

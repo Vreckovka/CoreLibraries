@@ -114,7 +114,7 @@
     <Compile Include="Misc\ActionCommand.cs" />
     <Compile Include="AttachedProperties\AttachedProperty.cs" />
     <Compile Include="AttachedProperties\Multistyle\MultiStyleExtension.cs" />
-    <Compile Include="AttachedProperties\ScrollAnimationBehavior.cs" />
+    <Compile Include="Behaviors\ScrollAnimationBehavior.cs" />
     <Compile Include="Behaviors\DropBehavior.cs" />
     <Compile Include="Behaviors\Text\PanningTextWithFontSizeBehavior.cs" />
     <Compile Include="Converters\BaseConverter.cs" />

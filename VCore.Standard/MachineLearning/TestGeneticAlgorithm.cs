@@ -5,7 +5,7 @@ namespace TradingBroker.MachineLearning
 {
   public class TestGeneticAlgorithm
   {
-    private string phrase = "Be or not to Be";
+    private string phrase = "Be or not to Be or be a bee";
     string chars = "$%#@!*abcdefghijklmnopqrstuvwxyz1234567890?;:ABCDEFGHIJKLMNOPQRSTUVWXYZ^& ,";
 
     private Random Random = new Random();

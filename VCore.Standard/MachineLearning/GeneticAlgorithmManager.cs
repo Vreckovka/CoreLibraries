@@ -7,91 +7,6 @@ using System.Threading;
 
 namespace TradingBroker.MachineLearning
 {
-  public interface IGeneticAlgorithmCalculator<TData>
-  {
-    float GetScore(TData[] genes);
-    TData GetRandomGene(string key);
-    string[] Keys { get; set; }
-    void StoreRandom(Func<double> getRandomDouble, Func<int, int, int> getNext);
-
-  }
-
-
-  public class GeneticAlgorithmManager<TData, TCalculationClass> : GeneticAlgorithmManager<TData> where TCalculationClass : IGeneticAlgorithmCalculator<TData>
-  {
-    private readonly TCalculationClass[] calculationClasses;
-
-    public GeneticAlgorithmManager(
-      int threadCount,
-      int populationSize,
-      int geneLength,
-      TCalculationClass[] calculationClasses) : base(threadCount, populationSize, geneLength, null)
-    {
-      this.calculationClasses = calculationClasses ?? throw new ArgumentNullException(nameof(calculationClasses));
-
-      foreach (var cClass in calculationClasses)
-      {
-        cClass.StoreRandom(GetRandomDouble, GetRandomNext);
-      }
-    }
-
-
-    #region Run
-
-    public  override void Run()
-    {
-      List<Thread> threads = new List<Thread>();
-
-      IsRunning = true;
-      cancellationTokenSource = new CancellationTokenSource();
-      var token = cancellationTokenSource.Token;
-
-      for (int i = 0; i < threadCount; i++)
-      {
-        var newCalculationClass = calculationClasses[i];
-
-        var newThread = new Thread(() =>
-        {
-          var geneticAlgorithm = new ThreadingGeneticAlgorithm<TData>(
-            populationSize,
-            geneLength,
-            GetRandomNext,
-            GetRandomDouble,
-            newCalculationClass.GetRandomGene,
-            newCalculationClass.GetScore,
-            newCalculationClass.Keys,
-            token);
-
-          algorithms.Add(geneticAlgorithm);
-
-          geneticAlgorithm.MaxGenerationCount = 1000;
-
-          geneticAlgorithm.ElitismCount = 5;
-
-          geneticAlgorithm.generationCreated.Subscribe(GenerationGenerated);
-
-          geneticAlgorithm.Run();
-        });
-
-        newThread.Name = i.ToString();
-
-        threads.Add(newThread);
-        newThread.Start();
-      }
-
-
-      foreach (var thread in threads)
-      {
-        thread.Join();
-      }
-    }
-
-    #endregion
-
-  }
-
-
-
   public class GeneticAlgorithmManager<TData>
   {
     protected CancellationTokenSource cancellationTokenSource;
@@ -309,6 +224,16 @@ namespace TradingBroker.MachineLearning
           selectedPopulation.Add(totalGenerations[i]);
         }
 
+        var best = totalGenerations.OrderByDescending(x => x.Fitness).First();
+
+
+        if (best.Fitness == 0)
+        {
+
+        }
+
+        newPopulationsCreatedSubject.OnNext(best);
+
         for (int i = 0; i < algorithms.Count; i++)
         {
           var algorith = algorithms[i];
@@ -316,11 +241,6 @@ namespace TradingBroker.MachineLearning
           algorith.Population = poulations[i];
           algorith.semaphor.Release();
         }
-
-
-        var best = totalGenerations.OrderByDescending(x => x.Fitness).First();
-
-        newPopulationsCreatedSubject.OnNext(best);
 
         totalGenerations.Clear();
       }

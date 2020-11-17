@@ -201,8 +201,6 @@ namespace TradingBroker.MachineLearning
         doneIteration++;
 
         Console.WriteLine("Generation calculated: " + doneIteration);
-        generationGenerated.OnNext(new KeyValuePair<T[], double>(bestGenes, bestScore));
-
 
         if (MaxGenerationCount == doneIteration)
         {
