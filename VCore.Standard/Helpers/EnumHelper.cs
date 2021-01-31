@@ -31,7 +31,9 @@ namespace VCore.Standard.Helpers
       if (!t.IsEnum)
         throw new ArgumentException($"{nameof(t)} must be an enum type");
 
-      return Enum.GetValues(t).Cast<Enum>().Select((e) => new ValueDescription() { Value = e, Description = e.Description() }).ToList();
+      var asd = Enum.GetValues(t).Cast<Enum>().Select((e) => new ValueDescription() { Value = e, Description = e.Description() }).ToList();
+
+      return asd;
     }
   }
 }

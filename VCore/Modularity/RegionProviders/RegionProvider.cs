@@ -13,6 +13,8 @@ namespace VCore.Modularity.RegionProviders
 {
   public class RegionProvider : IRegionProvider
   {
+    
+
     #region Fields
 
     protected readonly IViewModelsFactory viewModelsFactory;
@@ -36,6 +38,8 @@ namespace VCore.Modularity.RegionProviders
       this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.navigationProvider = navigationProvider ?? throw new ArgumentNullException(nameof(navigationProvider));
+
+      RegionManager = regionManager;
     }
 
     #endregion Constructors
@@ -134,6 +138,8 @@ namespace VCore.Modularity.RegionProviders
     #endregion CreateView
 
     #region ActivateView
+
+    public IRegionManager RegionManager { get; set; }
 
     public void ActivateView(Guid guid)
     {

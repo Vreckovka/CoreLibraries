@@ -78,7 +78,7 @@ namespace VCore.ItemsCollections
 
     private void ItemPropertyChanged(EventPattern<PropertyChangedEventArgs> eventPattern)
     {
-      ItemUpdated.OnNext(eventPattern);
+      ItemUpdated?.OnNext(eventPattern);
     }
 
     private void ObservableItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

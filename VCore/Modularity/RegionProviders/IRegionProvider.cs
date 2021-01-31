@@ -7,6 +7,8 @@ namespace VCore.Modularity.RegionProviders
 {
   public interface IRegionProvider
   {
+    public IRegionManager RegionManager { get; set; }
+
     #region Methods
 
     void ActivateView(Guid guidObject);

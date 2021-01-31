@@ -11,7 +11,8 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
   {
     NotIdentified,
     Google,
-    Local
+    Local,
+    MiniLyrics
   }
 
 

@@ -47,7 +47,13 @@ namespace VCore.Standard.Common
 
         this.IsDisposed = true;
 
-        autoDisposeObjects?.Dispose();
+        if (autoDisposeObjects != null)
+        {
+          foreach (var disposable in autoDisposeObjects)
+          {
+            disposable?.Dispose();
+          }
+        }
 
         GC.SuppressFinalize(this);
       }

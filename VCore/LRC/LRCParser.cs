@@ -22,41 +22,49 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     public LRCFile Parse(List<string> lines)
     {
-      var id = ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"id{parameterSeparator}")));
-      var artist = ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"ar{parameterSeparator}")));
-      var album = ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"ti{parameterSeparator}")));
-      var title = ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"al{parameterSeparator}")));
-      var by = ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"by{parameterSeparator}")));
-      var length = ParseTime(ParseLrcParameterLine(lines.SingleOrDefault(x => x.Contains($"length{parameterSeparator}"))));
-
-      var bla = 0;
-
-      var lyricsLines = lines.Where(x => x.Length > 2 && char.IsDigit(x[1])).Select(ParseLrcLyricLine).Where(x => x != null).SelectMany(x => x).OrderBy(x => x.Timestamp).ToList();
-      var nullLines = lyricsLines.Where(x => string.IsNullOrEmpty(x.Text)).ToList();
-
-      if (nullLines.Count > 0)
+      try
       {
-        foreach (var line in nullLines)
-        {
-          var originalLineIndex = lines.IndexOf(line.OriginalLine);
 
-          if (lines.Count - 1 > originalLineIndex && !IsTimestamp(lines[originalLineIndex + 1].Split(']')[0] + "]"))
+        var id = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"id{parameterSeparator}")));
+        var artist = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"ar{parameterSeparator}")));
+        var album = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"ti{parameterSeparator}")));
+        var title = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"al{parameterSeparator}")));
+        var by = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"by{parameterSeparator}")));
+        var length = ParseTime(ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"length{parameterSeparator}"))));
+
+        var bla = 0;
+
+        var lyricsLines = lines.Where(x => x.Length > 2 && char.IsDigit(x[1])).Select(ParseLrcLyricLine).Where(x => x != null).SelectMany(x => x).OrderBy(x => x.Timestamp).ToList();
+        var nullLines = lyricsLines.Where(x => string.IsNullOrEmpty(x.Text)).ToList();
+
+        if (nullLines.Count > 0)
+        {
+          foreach (var line in nullLines)
           {
-            line.Text = lines[originalLineIndex + 1];
+            var originalLineIndex = lines.IndexOf(line.OriginalLine);
+
+            if (lines.Count - 1 > originalLineIndex && !IsTimestamp(lines[originalLineIndex + 1].Split(']')[0] + "]"))
+            {
+              line.Text = lines[originalLineIndex + 1];
+            }
           }
+
         }
 
+        return new LRCFile(lyricsLines)
+        {
+          Id = id,
+          Album = album,
+          Artist = artist,
+          By = by,
+          Length = length,
+          Title = title,
+        };
       }
-
-      return new LRCFile(lyricsLines)
+      catch (Exception ex)
       {
-        Id = id,
-        Album = album,
-        Artist = artist,
-        By = by,
-        Length = length,
-        Title = title,
-      };
+        throw;
+      }
     }
 
     public LRCFile Parse(string path)

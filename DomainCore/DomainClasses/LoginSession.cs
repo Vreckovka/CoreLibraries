@@ -9,10 +9,10 @@ namespace DomainCore.DomainClasses
     public Guid Token { get; set; }
 
 
-    [ForeignKey("Administrator")]
-    public int AdministratorId { get; set; }
+    [ForeignKey("User")]
+    public int UserId { get; set; }
 
 
-    public Administrator Administrator { get; set; }
+    public User User { get; set; }
   }
 }

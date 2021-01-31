@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using VCore;
 
 namespace TradingBroker.MachineLearning
@@ -31,7 +32,10 @@ namespace TradingBroker.MachineLearning
         }
       });
 
-      algorithm.Run();
+      var cancellationTokenSource = new CancellationTokenSource();
+      var token = cancellationTokenSource.Token;
+
+      algorithm.Run(token);
     }
 
     #region GetGene

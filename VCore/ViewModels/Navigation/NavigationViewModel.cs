@@ -15,7 +15,7 @@ namespace VCore.ViewModels.Navigation
 
   public class NavigationItem : ViewModel, INavigationItem
   {
-    private readonly INavigationItem navigationItem;
+    public readonly INavigationItem navigationItem;
 
     public NavigationItem([NotNull] INavigationItem navigationItem)
     {
@@ -55,6 +55,13 @@ namespace VCore.ViewModels.Navigation
 
     #endregion
 
+
+    public override void Dispose()
+    {
+      base.Dispose();
+
+      navigationItem?.Dispose();
+    }
 
 
 

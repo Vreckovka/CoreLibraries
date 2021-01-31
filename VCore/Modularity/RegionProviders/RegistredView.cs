@@ -201,8 +201,17 @@ namespace VCore.Modularity.RegionProviders
 
     public TView RegisterView(bool createScope = false)
     {
+
       if (View == null)
       {
+        var view = Region.GetView(ViewName);
+
+        if (view != null)
+        {
+          Region.Remove(view);
+        }
+
+
         View = Create();
 
         if (ViewModel == null)
@@ -211,8 +220,9 @@ namespace VCore.Modularity.RegionProviders
         }
 
         RegionManager = Region.Add(View, ViewName, createScope);
-        
+
         View.DataContext = ViewModel;
+
 
       }
 

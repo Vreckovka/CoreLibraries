@@ -96,20 +96,18 @@ namespace TradingBroker.MachineLearning
 
     #region Run
 
-    public virtual void Run()
+    public virtual void Run(CancellationToken cancellationToken)
     {
       List<Thread> threads = new List<Thread>();
 
       IsRunning = true;
-      cancellationTokenSource = new CancellationTokenSource();
-      var token = cancellationTokenSource.Token;
-
+     
       for (int i = 0; i < threadCount; i++)
       {
 
         var newThread = new Thread(() =>
         {
-          var geneticAlgorithm = new ThreadingGeneticAlgorithm<TData>(populationSize, geneLength, GetRandomNext, GetRandomDouble, getRandomGene, getScore, keys, token);
+          var geneticAlgorithm = new ThreadingGeneticAlgorithm<TData>(populationSize, geneLength, GetRandomNext, GetRandomDouble, getRandomGene, getScore, keys, cancellationToken);
 
           algorithms.Add(geneticAlgorithm);
 
