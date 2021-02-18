@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows;
+using VCore.Helpers;
 using VCore.Modularity.Navigation;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
@@ -13,7 +15,7 @@ namespace VCore.Modularity.RegionProviders
 {
   public class RegionProvider : IRegionProvider
   {
-    
+
 
     #region Fields
 
@@ -50,12 +52,12 @@ namespace VCore.Modularity.RegionProviders
 
     private void SubscribeToChanges<TView, TViewModel>(RegistredView<TView, TViewModel> view)
       where TView : class, IView
-      where TViewModel : class, INotifyPropertyChanged
+      where TViewModel : class, INotifyPropertyChanged, IActivable
     {
-      var disposable = view.ViewWasActivated.Subscribe((x) =>
+      var disposable = view.ViewModel.ObservePropertyChange(x => x.IsActive).Where(x => x).Subscribe((x) =>
       {
-        navigationProvider.Navigate(x);
-      });
+        navigationProvider.Navigate(view);
+      }, err => throw err);
 
       ActivateSubscriptions.Add(view, disposable);
     }
@@ -67,11 +69,11 @@ namespace VCore.Modularity.RegionProviders
     public IRegionManager RegisterView<TView, TViewModel>(
     string regionName,
     TViewModel viewModel,
-    bool containsNestedRegion, 
+    bool containsNestedRegion,
     out Guid guid,
     IRegionManager parentRegionManager = null)
     where TView : class, IView
-    where TViewModel : class, INotifyPropertyChanged
+    where TViewModel : class, INotifyPropertyChanged, IActivable
     {
       var registredView = Views.SingleOrDefault(x => x.ViewName == RegistredView<TView, TViewModel>.GetViewName(regionName));
 
@@ -127,7 +129,7 @@ namespace VCore.Modularity.RegionProviders
       TViewModel viewModel,
       IRegionManager regionManager,
       bool initializeImmediately = false)
-      where TViewModel : class, INotifyPropertyChanged
+      where TViewModel : class, INotifyPropertyChanged, IActivable
       where TView : class, IView
     {
       var region = regionManager.Regions[regionName];

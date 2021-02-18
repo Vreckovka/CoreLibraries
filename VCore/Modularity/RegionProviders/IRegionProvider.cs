@@ -22,7 +22,7 @@ namespace VCore.Modularity.RegionProviders
       out Guid guid,
       IRegionManager regionManager = null)
       where TView : class, IView
-      where TViewModel : class, INotifyPropertyChanged;
+      where TViewModel : class, INotifyPropertyChanged, IActivable;
   
 
       void GoBack(Guid guid);

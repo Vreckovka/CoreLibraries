@@ -6,8 +6,6 @@ namespace VCore.Modularity.RegionProviders
 {
   public interface IRegistredView
   {
-    Subject<IRegistredView> ViewWasActivated { get; }
-    Subject<IRegistredView> ViewWasDeactivated { get; }
     Guid Guid { get; }
     string ViewName { get; set; }
     IRegion Region { get; set; }

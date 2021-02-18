@@ -14,7 +14,7 @@ namespace VCore.ViewModels
 
     bool ContainsNestedRegions { get; }
     string RegionName { get; }
-
+    
     #endregion Properties
   }
 

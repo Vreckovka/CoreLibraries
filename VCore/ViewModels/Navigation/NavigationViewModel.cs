@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using VCore.Annotations;
+using VCore.Helpers;
 using VCore.Standard;
 
 namespace VCore.ViewModels.Navigation
@@ -21,33 +22,25 @@ namespace VCore.ViewModels.Navigation
     {
       this.navigationItem = navigationItem ?? throw new ArgumentNullException(nameof(navigationItem));
 
-      navigationItem.PropertyChanged += NavigationItem_PropertyChanged;
+      //navigationItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
     }
 
-    private void NavigationItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      if (sender is INavigationItem navigationItem && e.PropertyName == nameof(IsActive))
-      {
-        RaisePropertyChanged(nameof(IsActive));
-      }
-    
-    }
 
     public string Header => navigationItem.Header;
 
 
     #region IsActive
 
+    private bool isActive;
     public bool IsActive
     {
-      get { return navigationItem.IsActive; }
+      get { return isActive; }
       set
       {
-        if (value != navigationItem.IsActive)
+        if (value != isActive)
         {
+          isActive = value;
           navigationItem.IsActive = value;
-
-          
           RaisePropertyChanged();
         }
       }

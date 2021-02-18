@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
+using VCore.Helpers;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
 using VCore.Standard.Modularity.Interfaces;
@@ -15,15 +16,13 @@ namespace VCore.Modularity.RegionProviders
 {
   public class RegistredView<TView, TViewModel> : IDisposable, IRegistredView
     where TView : class, IView
-    where TViewModel : class, INotifyPropertyChanged
+    where TViewModel : class, INotifyPropertyChanged, IActivable
   {
 
     #region Fields
 
     private readonly IViewFactory viewFactory;
     private readonly IViewModelsFactory viewModelsFactory;
-    private readonly SerialDisposable viewWasActivatedDisposable;
-    private readonly SerialDisposable viewWasDeactivatedDisposable;
 
     #endregion Fields
 
@@ -48,9 +47,6 @@ namespace VCore.Modularity.RegionProviders
     {
       this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
-
-      viewWasActivatedDisposable = new SerialDisposable();
-      viewWasDeactivatedDisposable = new SerialDisposable();
 
       Guid = Guid.NewGuid();
 
@@ -93,8 +89,8 @@ namespace VCore.Modularity.RegionProviders
 
     public TView View { get; set; }
     public string ViewName { get; set; }
-    public Subject<IRegistredView> ViewWasActivated { get; } = new Subject<IRegistredView>();
-    public Subject<IRegistredView> ViewWasDeactivated { get; } = new Subject<IRegistredView>();
+    
+
     public IRegionManager RegionManager { get; set; }
 
     #region ViewModel
@@ -110,23 +106,16 @@ namespace VCore.Modularity.RegionProviders
         {
           viewModel = value;
 
-          viewWasActivatedDisposable.Disposable = Observable
-            .FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-              x => ViewModel.PropertyChanged += x,
-              x => ViewModel.PropertyChanged -= x)
-            .Where(x => x.EventArgs.PropertyName == nameof(RegionViewModel<IView>.IsActive) &&
-                        ((IActivable)x.Sender).IsActive)
-            .Subscribe((
-              x) => ViewWasActivated.OnNext(this));
-
-          viewWasDeactivatedDisposable.Disposable = Observable
-            .FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-              x => ViewModel.PropertyChanged += x,
-              x => ViewModel.PropertyChanged -= x)
-            .Where(x => x.EventArgs.PropertyName == nameof(RegionViewModel<IView>.IsActive) &&
-                        !((IActivable)x.Sender).IsActive)
-            .Subscribe((
-              x) => ViewWasDeactivated.OnNext(this));
+          if (viewModel != null)
+          {
+            //viewActivationDisposable.Disposable = viewModel.ObservePropertyChange(x => x.IsActive).Subscribe(x =>
+            //{
+            //  if (x)
+            //    viewWasActivatedSubject.OnNext(this);
+            //  else
+            //    viewWasDeactivatedSubject.OnNext(this);
+            //});
+          }
 
           if (View != null)
             View.DataContext = viewModel;
@@ -265,15 +254,12 @@ namespace VCore.Modularity.RegionProviders
 
     public void Dispose()
     {
-      viewWasActivatedDisposable?.Dispose();
-      viewWasDeactivatedDisposable?.Dispose();
-      ViewWasActivated?.Dispose();
-      ViewWasDeactivated?.Dispose();
+     
     }
 
     #endregion Dispose
 
-    #endregion Methods
+    #endregion 
 
   }
 }

@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interactivity;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using Microsoft.Xaml.Behaviors;
 using FlowDirection = System.Windows.FlowDirection;
 
 namespace VCore.Behaviors.Text

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Prism.Regions;
 using VCore.Modularity.Navigation;
@@ -27,7 +30,6 @@ namespace VCore.ViewModels
     #region Fields
 
     protected readonly IRegionProvider regionProvider;
-    private readonly INavigationProvider navigationProvider;
 
     #endregion Fields
 
@@ -43,11 +45,12 @@ namespace VCore.ViewModels
 
     #region Properties
 
+    public virtual string Header { get; }
+
     #region IsActive
 
     private bool isActive;
     private bool wasActivated;
-    public virtual string Header { get; } 
 
     public bool IsActive
     {
@@ -67,15 +70,16 @@ namespace VCore.ViewModels
               wasActivated = true;
             }
           }
-
+          
           RaisePropertyChanged();
         }
       }
     }
 
-    #endregion IsActive
+    #endregion 
 
-    #endregion Properties
+ 
+    #endregion
 
     #region BackCommand
 
@@ -114,14 +118,14 @@ namespace VCore.ViewModels
 
         Guid = newGuid;
       }
-    
+
     }
 
     #endregion OnActivation
 
-  
-    #endregion Methods
 
-   
+    #endregion 
+
+
   }
 }
