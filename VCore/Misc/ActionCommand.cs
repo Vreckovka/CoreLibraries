@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows.Input;
 using VCore.Annotations;
+using VCore.Standard.Common;
 
 namespace VCore
 {
-  public class ActionCommand<TArgument> : ICommand
+  public class ActionCommand<TArgument> : VDisposableObject, ICommand
   {
     private readonly Action<TArgument> _action;
     private readonly TArgument baseArgument;

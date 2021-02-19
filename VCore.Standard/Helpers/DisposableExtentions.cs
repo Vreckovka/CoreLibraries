@@ -5,9 +5,11 @@ namespace VCore.Standard.Helpers
 {
   public static class DisposableExtentions
   {
-    public static void DisposeWith(this IDisposable disposable, VDisposableObject disposableObject)
+    public static TObject DisposeWith<TObject>(this TObject disposable, VDisposableObject disposableObject) where TObject :IDisposable
     {
       disposableObject.AddAutoDisposeObject(disposable);
+
+      return disposable;
     }
   }
 }
