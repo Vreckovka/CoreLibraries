@@ -51,7 +51,7 @@ namespace VCore.Modularity.RegionProviders
       Guid = Guid.NewGuid();
 
       ViewModel = viewModel;
-      ViewName = GetViewName(region.Name);
+      ViewName = GetViewName(region.Name, ViewModel);
       Region = region;
 
       if (initializeImmediately)
@@ -234,9 +234,9 @@ namespace VCore.Modularity.RegionProviders
 
     #region GetViewName
 
-    public static string GetViewName(string regionName)
+    public static string GetViewName(string regionName, object viewModel)
     {
-      return typeof(TView).Name + "_" + typeof(TViewModel).Name + "_" + regionName;
+      return typeof(TView).Name + "_" + viewModel + "_" + regionName;
     }
 
     #endregion GetViewName

@@ -7,10 +7,6 @@ namespace VCore.Modularity.RegionProviders
 {
   public interface IRegionProvider
   {
-    public IRegionManager RegionManager { get; set; }
-
-    #region Methods
-
     void ActivateView(Guid guidObject);
     void RefreshView(Guid guidObject);
     void DectivateView(Guid guidObject);
@@ -27,6 +23,6 @@ namespace VCore.Modularity.RegionProviders
 
       void GoBack(Guid guid);
 
-    #endregion Methods
+   
   }
 }

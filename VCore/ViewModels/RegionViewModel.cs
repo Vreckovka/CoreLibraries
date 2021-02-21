@@ -22,7 +22,9 @@ namespace VCore.ViewModels
 
     public abstract string RegionName { get; protected set; }
 
-    public IRegionManager RegionManager { get; set; }
+    public IRegionManager RegionManager { get; protected set; }
+
+   
   }
 
   public abstract class RegionViewModel<TView> : RegionViewModel, INavigationItem, IRegionViewModel where TView : class, IView
@@ -70,15 +72,14 @@ namespace VCore.ViewModels
               wasActivated = true;
             }
           }
-          
+
           RaisePropertyChanged();
         }
       }
     }
 
-    #endregion 
+    #endregion
 
- 
     #endregion
 
     #region BackCommand

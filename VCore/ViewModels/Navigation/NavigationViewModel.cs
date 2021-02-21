@@ -22,7 +22,7 @@ namespace VCore.ViewModels.Navigation
     {
       this.navigationItem = navigationItem ?? throw new ArgumentNullException(nameof(navigationItem));
 
-      //navigationItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
+      navigationItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
     }
 
 

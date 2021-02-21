@@ -13,7 +13,7 @@ namespace VCore.Interfaces.ViewModels
 
     void RecreateCollection();
 
-    IRegionManager RegionManager { get; set; }
+    IRegionManager RegionManager { get; }
 
     #endregion Methods
   }

@@ -15,13 +15,11 @@ namespace VCore.Modularity.RegionProviders
 {
   public class RegionProvider : IRegionProvider
   {
-
-
     #region Fields
 
+    private List<IRegionManager> regionManagers = new List<IRegionManager>();
     protected readonly IViewModelsFactory viewModelsFactory;
     private readonly INavigationProvider navigationProvider;
-    private readonly IRegionManager globalRegionManager;
     private readonly IViewFactory viewFactory;
     private List<IRegistredView> Views = new List<IRegistredView>();
     private Dictionary<IRegistredView, IDisposable> ActivateSubscriptions = new Dictionary<IRegistredView, IDisposable>();
@@ -36,12 +34,11 @@ namespace VCore.Modularity.RegionProviders
       IViewModelsFactory viewModelsFactory,
       INavigationProvider navigationProvider)
     {
-      this.globalRegionManager = regionManager ?? throw new ArgumentNullException(nameof(regionManager));
       this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.navigationProvider = navigationProvider ?? throw new ArgumentNullException(nameof(navigationProvider));
 
-      RegionManager = regionManager;
+      regionManagers.Add(regionManager);
     }
 
     #endregion Constructors
@@ -59,7 +56,15 @@ namespace VCore.Modularity.RegionProviders
         navigationProvider.Navigate(view);
       }, err => throw err);
 
-      ActivateSubscriptions.Add(view, disposable);
+      if (!ActivateSubscriptions.TryGetValue(view, out var subscription))
+      {
+        ActivateSubscriptions.Add(view, disposable);
+      }
+      else
+      {
+        subscription.Dispose();
+        ActivateSubscriptions[view] = disposable;
+      }
     }
 
     #endregion SubscribeToChanges
@@ -75,11 +80,11 @@ namespace VCore.Modularity.RegionProviders
     where TView : class, IView
     where TViewModel : class, INotifyPropertyChanged, IActivable
     {
-      var registredView = Views.SingleOrDefault(x => x.ViewName == RegistredView<TView, TViewModel>.GetViewName(regionName));
+      var registredView = Views.SingleOrDefault(x => x.ViewName == RegistredView<TView, TViewModel>.GetViewName(regionName, viewModel));
 
       if (registredView == null)
       {
-        var actualRegionManager = globalRegionManager;
+        var actualRegionManager = regionManagers.Single(x => x.Regions.Any(x => x.Name == regionName));
 
         if (parentRegionManager != null)
         {
@@ -88,11 +93,7 @@ namespace VCore.Modularity.RegionProviders
 
         if (actualRegionManager.Regions.Count(x => x.Name == regionName) == 0)
         {
-          IRegion region = new Region();
-
-          region.Name = regionName;
-
-          actualRegionManager.Regions.Add(region);
+          throw new Exception($"RegionManager does not contains region {regionName}");
         }
 
         var view = Application.Current?.Dispatcher?.Invoke(() =>
@@ -100,11 +101,17 @@ namespace VCore.Modularity.RegionProviders
           return CreateView<TView, TViewModel>(regionName, viewModel, actualRegionManager, containsNestedRegion);
         });
 
-        SubscribeToChanges(view);
-
+        Views.Add(view);
         guid = view.Guid;
 
-        return view.RegionManager;
+        SubscribeToChanges(view);
+
+        var regionManager = view.RegionManager;
+
+        if (regionManager != null)
+          regionManagers.Add(regionManager);
+
+        return regionManager;
       }
       else if (registredView is RegistredView<TView, TViewModel> view)
       {
@@ -112,12 +119,15 @@ namespace VCore.Modularity.RegionProviders
 
         guid = view.Guid;
 
+        SubscribeToChanges(view);
+
         return view.RegionManager;
       }
       else
       {
         throw new NotImplementedException();
       }
+
     }
 
     #endregion RegisterView
@@ -140,8 +150,6 @@ namespace VCore.Modularity.RegionProviders
     #endregion CreateView
 
     #region ActivateView
-
-    public IRegionManager RegionManager { get; set; }
 
     public void ActivateView(Guid guid)
     {
