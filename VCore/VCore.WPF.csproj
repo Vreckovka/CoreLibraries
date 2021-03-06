@@ -6,6 +6,9 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	</PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\window_switch.png" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
@@ -14,6 +17,6 @@
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Managers\" />
+    <Resource Include="Resources\window_switch.png" />
   </ItemGroup>
 </Project>

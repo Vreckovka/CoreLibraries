@@ -13,6 +13,15 @@ namespace VCore.Standard
   {
   }
 
+  public interface IViewModel<TModel> : IViewModel
+  {
+    #region Properties
+
+    TModel Model { get; set; }
+
+    #endregion Properties
+  }
+
 
   public abstract class ViewModel : VBindableBase, IViewModel
   {
@@ -25,7 +34,7 @@ namespace VCore.Standard
     #endregion 
   }
 
-  public abstract class ViewModel<TModel> : ViewModel, IParametrizedViewModel
+  public abstract class ViewModel<TModel> : ViewModel, IParametrizedViewModel, IViewModel<TModel>
   {
     #region Constructors
 

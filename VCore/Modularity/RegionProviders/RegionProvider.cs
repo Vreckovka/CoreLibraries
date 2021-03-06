@@ -84,11 +84,15 @@ namespace VCore.Modularity.RegionProviders
 
       if (registredView == null)
       {
-        var actualRegionManager = regionManagers.Single(x => x.Regions.Any(x => x.Name == regionName));
+        IRegionManager actualRegionManager = null;
 
         if (parentRegionManager != null)
         {
           actualRegionManager = parentRegionManager;
+        }
+        else
+        {
+          actualRegionManager = regionManagers.Single(x => x.Regions.Any(y => y.Name == regionName));
         }
 
         if (actualRegionManager.Regions.Count(x => x.Name == regionName) == 0)
@@ -102,6 +106,7 @@ namespace VCore.Modularity.RegionProviders
         });
 
         Views.Add(view);
+
         guid = view.Guid;
 
         SubscribeToChanges(view);
@@ -109,7 +114,9 @@ namespace VCore.Modularity.RegionProviders
         var regionManager = view.RegionManager;
 
         if (regionManager != null)
+        {
           regionManagers.Add(regionManager);
+        }
 
         return regionManager;
       }

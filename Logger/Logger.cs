@@ -27,7 +27,7 @@ namespace Logger
 
     public List<string> Logs { get; } = new List<string>();
 
-    public bool LogSuccess = false;
+    public bool LogSuccess = true;
 
     #endregion Properties
 

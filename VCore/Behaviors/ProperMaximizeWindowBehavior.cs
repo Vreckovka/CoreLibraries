@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
 using Microsoft.Xaml.Behaviors;
+using VCore.ViewModels;
 
 namespace VCore.WPF.Behaviors
 {
@@ -21,10 +23,12 @@ namespace VCore.WPF.Behaviors
       var handleSource = HwndSource.FromHwnd(handle);
       if (handleSource == null)
         return;
+
+
       handleSource.AddHook(WindowProc);
     }
 
-    private static IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
       switch (msg)
       {
@@ -37,7 +41,19 @@ namespace VCore.WPF.Behaviors
       return (IntPtr)0;
     }
 
-    private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+    private void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
+    {
+      if (AssociatedObject.DataContext is BaseMainWindowViewModel windowViewModel && windowViewModel.WindowChromeVisiblity != Visibility.Visible)
+      {
+        return;
+      }
+      else
+      {
+        AdujstWindow(hwnd, lParam);
+      }
+    }
+
+    private void AdujstWindow(IntPtr hwnd, IntPtr lParam)
     {
       var mmi = (MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(MINMAXINFO));
 

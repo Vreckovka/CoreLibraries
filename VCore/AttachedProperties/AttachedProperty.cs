@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace VCore.AttachedProperties
 {
@@ -19,15 +20,15 @@ namespace VCore.AttachedProperties
 
     private static void OnRememberInitialSize(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
     {
-      if ((bool) dependencyPropertyChangedEventArgs.NewValue)
+      if ((bool)dependencyPropertyChangedEventArgs.NewValue)
       {
-        ((FrameworkElement) dependencyObject).Loaded += AttachedProperty_Loaded;
+        ((FrameworkElement)dependencyObject).Loaded += AttachedProperty_Loaded;
       }
     }
 
     private static void AttachedProperty_Loaded(object sender, RoutedEventArgs e)
     {
-      var frameworkElement = (FrameworkElement) sender;
+      var frameworkElement = (FrameworkElement)sender;
       var isBubbleSource = GetRememberInitialWidth(frameworkElement);
       if (isBubbleSource)
       {
@@ -42,7 +43,7 @@ namespace VCore.AttachedProperties
 
     public static bool GetRememberInitialWidth(UIElement element)
     {
-      return (bool) element.GetValue(RememberInitialWidthProperty);
+      return (bool)element.GetValue(RememberInitialWidthProperty);
     }
 
     #endregion
@@ -51,7 +52,7 @@ namespace VCore.AttachedProperties
 
     public static double GetScrollSpeed(DependencyObject obj)
     {
-      return (double) obj.GetValue(ScrollSpeedProperty);
+      return (double)obj.GetValue(ScrollSpeedProperty);
     }
 
     public static void SetScrollSpeed(DependencyObject obj, double value)
@@ -105,7 +106,7 @@ namespace VCore.AttachedProperties
     {
       DependencyObject scrollHost = sender as DependencyObject;
 
-      double scrollSpeed = (double) (scrollHost).GetValue(AttachedProperty.ScrollSpeedProperty);
+      double scrollSpeed = (double)(scrollHost).GetValue(AttachedProperty.ScrollSpeedProperty);
 
       ScrollViewer scrollViewer = GetScrollViewer(scrollHost) as ScrollViewer;
 
@@ -132,6 +133,81 @@ namespace VCore.AttachedProperties
         throw new NotSupportedException("ScrollSpeed Attached Property is not attached to an element containing a ScrollViewer.");
       }
     }
+
+    #endregion
+
+    #region TintImageColor
+
+    public static readonly DependencyProperty TintImageColorProperty = DependencyProperty.RegisterAttached(
+      "TintImageColor",
+      typeof(Brush),
+      typeof(AttachedProperty),
+      new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, OnTintImage)
+    );
+
+    private static void OnTintImage(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+    {
+      ((FrameworkElement)dependencyObject).Loaded += OnTintImage_Loaded;
+    }
+
+    #region OnTintImage_Loaded
+
+    private static void OnTintImage_Loaded(object sender, RoutedEventArgs e)
+    {
+      var frameworkElement = (FrameworkElement)sender;
+
+      if (frameworkElement is Image image)
+      {
+        var tintColor = GetTintImageColor(frameworkElement);
+
+        var mask = CreateMask(tintColor, image.Source);
+
+        var imageParent = VisualTreeHelper.GetParent(image);
+
+        var grid = new Grid();
+        grid.Children.Add(image);
+        grid.Children.Add(mask);
+
+       //TODO: FINISH
+      }
+    }
+
+    #endregion
+
+    #region CreateMask
+
+    private static Rectangle CreateMask(Brush color, ImageSource imageSource)
+    {
+      var rectangle = new Rectangle();
+      rectangle.Fill = color;
+
+      rectangle.OpacityMask = new ImageBrush()
+      {
+        ImageSource = imageSource
+      };
+
+      return rectangle;
+    }
+
+    #endregion
+
+    #region SetTintImageColor
+
+    public static void SetTintImageColor(UIElement element, Brush value)
+    {
+      element.SetValue(TintImageColorProperty, value);
+    }
+
+    #endregion
+
+    #region GetTintImageColor
+
+    public static Brush GetTintImageColor(UIElement element)
+    {
+      return (Brush)element.GetValue(TintImageColorProperty);
+    }
+
+    #endregion
 
     #endregion
 

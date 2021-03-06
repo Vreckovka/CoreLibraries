@@ -396,7 +396,10 @@ namespace VCore.Controls
         nameof(IconPathStyle),
         typeof(Style),
         typeof(ButtonWithIcon),
-        new PropertyMetadata(null));
+        new PropertyMetadata((x,y) =>
+        {
+
+        }));
 
 
     #endregion

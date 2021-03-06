@@ -1,6 +1,7 @@
 ﻿using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
 using VCore.Standard.Modularity.NinjectModules;
+using VCore.WPF.Managers;
 
 namespace VCore.Modularity.NinjectModules
 {
@@ -10,6 +11,7 @@ namespace VCore.Modularity.NinjectModules
     {
       Kernel.Bind<IRegionProvider>().To<RegionProvider>().InSingletonScope();
       Kernel.Bind<INavigationProvider>().To<NavigationProvider>().InSingletonScope();
+      Kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
     }
   }
 }
