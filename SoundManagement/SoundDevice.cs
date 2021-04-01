@@ -5,16 +5,16 @@ namespace SoundManagement
 {
   public class SoundDevice 
   {
-    private readonly MMDevice mMDevice;
 
     public SoundDevice(MMDevice mMDevice)
     {
-      this.mMDevice = mMDevice ?? throw new ArgumentNullException(nameof(mMDevice));
+      MMDevice = mMDevice ?? throw new ArgumentNullException(nameof(mMDevice));
     }
 
-    public int Index { get; set; }
-    public DeviceState DeviceState => mMDevice.DeviceState;
-    public string Description => mMDevice.FriendlyName;
-    public string ID => mMDevice.DeviceID;
+    public MMDevice MMDevice { get; set; }
+    public int Index { get; set; } = -1;
+    public DeviceState DeviceState => MMDevice.DeviceState;
+    public string Description => MMDevice.FriendlyName;
+    public string ID => MMDevice.DeviceID;
   }
 }

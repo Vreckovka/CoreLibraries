@@ -88,7 +88,49 @@ namespace SoundManagement
         {
           selectedSoundDevice = value;
 
+          RegisterVolume(selectedSoundDevice.MMDevice);
+
           RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #region ActualVolume
+
+    private double actualVolume;
+
+    public double ActualVolume
+    {
+      get { return actualVolume; }
+      set
+      {
+        if (value != actualVolume)
+        {
+          actualVolume = value;
+
+          SetVolume(false, value);
+        }
+      }
+    }
+
+    #endregion
+
+    #region IsActualMuted
+
+    private bool isActualMuted;
+
+    public bool IsActualMuted
+    {
+      get { return isActualMuted; }
+      set
+      {
+        if (value != isActualMuted)
+        {
+          isActualMuted = value;
+
+          SetIsMuted(false, value);
         }
       }
     }
@@ -129,27 +171,9 @@ namespace SoundManagement
     {
       var devices = new List<SoundDevice>();
 
-      //if (System.IO.File.Exists(controllerExePath))
-      //{
-      //  var p = new Process
-      //  {
-      //    StartInfo =
-      //    {
-      //      UseShellExecute = false,
-      //      RedirectStandardOutput = true,
-      //      CreateNoWindow = true,
-      //      FileName = controllerExePath,
-      //      Arguments = "-f \"%d|%ws|%d|%d|%ws|%ws|%ws\""
-      //    }
-      //  };
-      //  p.Start();
-      //  p.WaitForExit();
-      //  var stdout = p.StandardOutput.ReadToEnd().Trim();
-      //}
-
       var ssd = mMDeviceEnumerator.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active);
 
-      for (int i = 0; i < ssd.Count; i++ )
+      for (int i = 0; i < ssd.Count; i++)
       {
         var device = new SoundDevice(ssd[i])
         {
@@ -189,7 +213,7 @@ namespace SoundManagement
     #endregion
 
     #region RefreshAudioDevices
-
+    
     public void RefreshAudioDevices()
     {
       Application.Current.Dispatcher.Invoke(() =>
@@ -208,16 +232,92 @@ namespace SoundManagement
           {
             SoundDevices.Add(notIn);
           }
-
-          foreach (var device in devices)
-          {
-            var cachedDevice = SoundDevices.SingleOrDefault(x => device.ID == x.ID);
-          }
         }
 
-        var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render,Role.Multimedia);
+        var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
-        SelectedSoundDevice = SoundDevices.SingleOrDefault(x => x.ID == defaultEndPoint.DeviceID);
+
+      SelectedSoundDevice = SoundDevices.SingleOrDefault(x => x.ID == defaultEndPoint.DeviceID);
+      });
+    }
+
+    #endregion
+
+    #region RegisterVolume
+
+    private AudioEndpointVolumeCallback audioEndpointVolumeCallback;
+    private AudioEndpointVolume audioEndpoint;
+    private void RegisterVolume(MMDevice mMDevice)
+    {
+      if (audioEndpointVolumeCallback != null && audioEndpoint != null)
+      {
+        audioEndpointVolumeCallback.NotifyRecived -= VolumeCallBack_NotifyRecived;
+        audioEndpoint.UnregisterControlChangeNotify(audioEndpointVolumeCallback);
+
+        audioEndpoint.Dispose();
+      }
+
+      audioEndpoint = AudioEndpointVolume.FromDevice(mMDevice);
+
+      audioEndpointVolumeCallback = new AudioEndpointVolumeCallback();
+
+      audioEndpoint.RegisterControlChangeNotify(audioEndpointVolumeCallback);
+
+      audioEndpointVolumeCallback.NotifyRecived += VolumeCallBack_NotifyRecived;
+
+
+      ActualVolume = audioEndpoint.MasterVolumeLevelScalar * 100;
+      IsActualMuted = audioEndpoint.IsMuted;
+    }
+
+    #endregion
+
+    #region SetVolume
+
+    private void SetVolume(bool fromEvent, double value)
+    {
+      if (!fromEvent)
+      {
+        var scalarVolume = (float)(value / 100.0);
+        audioEndpoint?.SetMasterVolumeLevelScalar(scalarVolume, Guid.NewGuid());
+      }
+
+      if (actualVolume != value)
+      {
+        actualVolume = value;
+        RaisePropertyChanged(nameof(ActualVolume));
+      }
+      
+    }
+
+    #endregion
+
+    #region SetIsMuted
+
+    private void SetIsMuted(bool fromEvent, bool value)
+    {
+      if (!fromEvent)
+      {
+        audioEndpoint?.SetMute(value, Guid.NewGuid());
+      }
+
+      if(isActualMuted != value)
+      {
+        isActualMuted = value;
+        RaisePropertyChanged(nameof(IsActualMuted));
+      }
+    }
+
+    #endregion
+
+    #region VolumeCallBack_NotifyRecived
+
+    private void VolumeCallBack_NotifyRecived(object sender, AudioEndpointVolumeCallbackEventArgs e)
+    {
+      Application.Current.Dispatcher.Invoke(() =>
+      {
+        SetVolume(true, e.MasterVolume * 100);
+        SetIsMuted(true,e.IsMuted);
       });
     }
 
@@ -279,10 +379,11 @@ namespace SoundManagement
 
     public void OnPropertyValueChanged(string pwstrDeviceId, PropertyKey key)
     {
+     
     }
 
     #endregion
 
     #endregion
   }
-  }
+}
