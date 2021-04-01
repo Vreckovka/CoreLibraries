@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using VCore.Helpers;
 
 namespace VCore.AttachedProperties
 {
@@ -136,80 +138,126 @@ namespace VCore.AttachedProperties
 
     #endregion
 
-    #region TintImageColor
+  }
 
-    public static readonly DependencyProperty TintImageColorProperty = DependencyProperty.RegisterAttached(
-      "TintImageColor",
-      typeof(Brush),
-      typeof(AttachedProperty),
-      new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsRender, OnTintImage)
-    );
+  public class ScrollViewerCorrector
+  {
+    #region FixScrollingProperty
 
-    private static void OnTintImage(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+    public static readonly DependencyProperty FixScrollingProperty =
+      DependencyProperty.RegisterAttached("FixScrolling", typeof(bool), typeof(ScrollViewerCorrector),
+        new FrameworkPropertyMetadata(false, ScrollViewerCorrector.OnFixScrollingPropertyChanged));
+
+
+    public static bool GetFixScrolling(DependencyObject obj)
     {
-      ((FrameworkElement)dependencyObject).Loaded += OnTintImage_Loaded;
+      return (bool)obj.GetValue(FixScrollingProperty);
     }
 
-    #region OnTintImage_Loaded
-
-    private static void OnTintImage_Loaded(object sender, RoutedEventArgs e)
+    public static void SetFixScrolling(DependencyObject obj, bool value)
     {
-      var frameworkElement = (FrameworkElement)sender;
+      obj.SetValue(FixScrollingProperty, value);
+    }
 
-      if (frameworkElement is Image image)
+    #endregion
+
+    private static EventHandler listviewEventHandler;
+    private static MouseWheelEventHandler scrollViewerEventHandler;
+
+    public static void OnFixScrollingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      var dependencySender = ((FrameworkElement)sender);
+
+      ScrollViewer viewer = null;
+      if (dependencySender is ScrollViewer viewer1)
       {
-        var tintColor = GetTintImageColor(frameworkElement);
+        viewer = viewer1;
+      }
+      else
+        viewer = dependencySender.GetFirstChildOfType<ScrollViewer>();
 
-        var mask = CreateMask(tintColor, image.Source);
+      if (viewer == null)
+      {
+        if (listviewEventHandler == null)
+        {
+          listviewEventHandler = new EventHandler((x, y) => ListView_LayoutUpdated(dependencySender, new EventArgs(), (bool)e.NewValue));
+        }
 
-        var imageParent = VisualTreeHelper.GetParent(image);
+        dependencySender.LayoutUpdated += listviewEventHandler;
+      }
 
-        var grid = new Grid();
-        grid.Children.Add(image);
-        grid.Children.Add(mask);
 
-       //TODO: FINISH
+      if (viewer == null)
+        return;
+
+      HookToScrollViewer(viewer, (bool)e.NewValue, (UIElement)VisualTreeHelper.GetParent(dependencySender));
+
+    }
+
+    private static void ListView_LayoutUpdated(object sender, EventArgs e, bool hook)
+    {
+      var listview = (FrameworkElement)sender;
+
+      listview.LayoutUpdated -= listviewEventHandler;
+
+      var viewer = listview.GetFirstChildOfType<ScrollViewer>();
+
+      if (viewer != null)
+        HookToScrollViewer(viewer, hook, listview);
+
+    }
+
+    private static void HookToScrollViewer(ScrollViewer viewer, bool hook, UIElement owner)
+    {
+      if (scrollViewerEventHandler == null)
+      {
+        scrollViewerEventHandler = new MouseWheelEventHandler((x, y) => HandlePreviewMouseWheel(viewer, y, owner));
+      }
+
+      if (hook)
+        viewer.PreviewMouseWheel += scrollViewerEventHandler;
+      else
+        viewer.PreviewMouseWheel -= scrollViewerEventHandler;
+    }
+
+    private static List<MouseWheelEventArgs> _reentrantList = new List<MouseWheelEventArgs>();
+
+    private static void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e, UIElement owner)
+    {
+      var scrollControl = sender as ScrollViewer;
+
+      if (!e.Handled && sender != null && !_reentrantList.Contains(e))
+      {
+        var previewEventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+        {
+          RoutedEvent = UIElement.PreviewMouseWheelEvent,
+          Source = sender
+        };
+
+        var originalSource = e.OriginalSource as UIElement;
+
+        _reentrantList.Add(previewEventArg);
+
+        originalSource?.RaiseEvent(previewEventArg);
+
+        _reentrantList.Remove(previewEventArg);
+
+
+        if (!previewEventArg.Handled)
+        {
+          e.Handled = true;
+
+          var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+
+          eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+
+          eventArg.Source = sender;
+
+          owner?.RaiseEvent(eventArg);
+
+          scrollControl?.ScrollToVerticalOffset(scrollControl.VerticalOffset - (0.3 * e.Delta));
+        }
       }
     }
-
-    #endregion
-
-    #region CreateMask
-
-    private static Rectangle CreateMask(Brush color, ImageSource imageSource)
-    {
-      var rectangle = new Rectangle();
-      rectangle.Fill = color;
-
-      rectangle.OpacityMask = new ImageBrush()
-      {
-        ImageSource = imageSource
-      };
-
-      return rectangle;
-    }
-
-    #endregion
-
-    #region SetTintImageColor
-
-    public static void SetTintImageColor(UIElement element, Brush value)
-    {
-      element.SetValue(TintImageColorProperty, value);
-    }
-
-    #endregion
-
-    #region GetTintImageColor
-
-    public static Brush GetTintImageColor(UIElement element)
-    {
-      return (Brush)element.GetValue(TintImageColorProperty);
-    }
-
-    #endregion
-
-    #endregion
-
   }
 }

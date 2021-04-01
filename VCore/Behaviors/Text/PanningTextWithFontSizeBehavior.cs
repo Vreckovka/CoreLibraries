@@ -7,7 +7,7 @@ using System.Windows.Media.Animation;
 using Microsoft.Xaml.Behaviors;
 using FlowDirection = System.Windows.FlowDirection;
 
-namespace VCore.Behaviors.Text
+namespace VCore.WPF.Behaviors.Text
 {
   public class PanningTextWithFontSizeBehavior : Behavior<TextBlock>
   {

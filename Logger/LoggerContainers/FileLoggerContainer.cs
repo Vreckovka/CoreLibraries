@@ -6,6 +6,7 @@ namespace Logger
 {
   public class FileLoggerContainer : ILoggerContainer
   {
+    private static object batton = new object();
     private readonly string logFilePath;
 
     public FileLoggerContainer(string logFilePath)
@@ -17,7 +18,7 @@ namespace Logger
     {
       return Task.Run(() =>
       {
-        lock (this)
+        lock (batton)
         {
           EnsureDirectoryExists(logFilePath);
 

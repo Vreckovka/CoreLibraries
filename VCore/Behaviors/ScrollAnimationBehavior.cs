@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Input;
-using System.Collections.Generic;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 using VCore.Helpers;
 
-namespace ScrollAnimateBehavior.AttachedBehaviors
+namespace VCore.WPF.Behaviors
 {
   public static class ScrollAnimationBehavior
   {

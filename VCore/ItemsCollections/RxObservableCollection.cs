@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace VCore.ItemsCollections
 {
-  public class RxObservableCollection<TItem> : ObservableCollection<TItem>, IDisposable where TItem : class, INotifyPropertyChanged
+  public class RxObservableCollection<TItem> : ObservableCollection<TItem>, IDisposable where TItem : INotifyPropertyChanged
   {
     #region Fields
 
@@ -25,32 +26,67 @@ namespace VCore.ItemsCollections
     public RxObservableCollection()
     {
       CollectionChanged += ObservableItems_CollectionChanged;
-
-      ItemAdded = new Subject<EventPattern<TItem>>();
-      ItemUpdated = new Subject<EventPattern<PropertyChangedEventArgs>>();
-      ItemRemoved = new Subject<EventPattern<TItem>>();
-
     }
 
     #endregion Constructors
 
     #region Properties
 
-    public Subject<EventPattern<TItem>> ItemAdded { get; }
-    public Subject<EventPattern<TItem>> ItemRemoved { get; }
-    public Subject<EventPattern<PropertyChangedEventArgs>> ItemUpdated { get; }
+    #region ItemAdded
 
-    public NotifyCollectionChangedAction? LastAction { get; set; }
+    private ReplaySubject<EventPattern<TItem>> itemAddedSubject = new ReplaySubject<EventPattern<TItem>>(1);
+
+    public IObservable<EventPattern<TItem>> ItemAdded
+    {
+      get
+      {
+        return itemAddedSubject.AsObservable();
+      }
+    }
+
+    #endregion
+
+    #region ItemRemoved
+
+    private ReplaySubject<EventPattern<TItem>> itemRemovedSubject = new ReplaySubject<EventPattern<TItem>>(1);
+
+    public IObservable<EventPattern<TItem>> ItemRemoved
+    {
+      get
+      {
+        return itemRemovedSubject.AsObservable();
+      }
+    }
+
+    #endregion
+
+    #region ItemUpdated
+
+    private ReplaySubject<EventPattern<PropertyChangedEventArgs>> itemUpdatedSubject = new ReplaySubject<EventPattern<PropertyChangedEventArgs>>(1);
+
+    public IObservable<EventPattern<PropertyChangedEventArgs>> ItemUpdated
+    {
+      get
+      {
+        return itemUpdatedSubject.AsObservable();
+      }
+    }
+
+    #endregion
+
+    public NotifyCollectionChangedAction? LastAction { get; private set; }
 
     #endregion Properties
 
     #region Methods
 
+    #region Dispose
+
     public void Dispose()
     {
-      ItemUpdated?.Dispose();
-      ItemAdded?.Dispose();
-      ItemRemoved?.Dispose();
+      itemAddedSubject?.Dispose();
+      itemRemovedSubject?.Dispose();
+      itemUpdatedSubject?.Dispose();
 
       foreach (var disposable in itemsDisposables)
       {
@@ -58,28 +94,30 @@ namespace VCore.ItemsCollections
       }
     }
 
-    protected override void ClearItems()
-    {
-      var list = this.ToList();
-      base.ClearItems();
+    #endregion
 
-      try
+    #region ForEach
+
+    public void ForEach(Action<TItem> action)
+    {
+      foreach (var item in this)
       {
-        if (list.Count > 0)
-        {
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, list));
-        }
-      }
-      catch (NotSupportedException ex)
-      {
-        Debug.WriteLine(ex);
+        action.Invoke(item);
       }
     }
+
+    #endregion
+
+    #region ItemPropertyChanged
 
     private void ItemPropertyChanged(EventPattern<PropertyChangedEventArgs> eventPattern)
     {
-      ItemUpdated?.OnNext(eventPattern);
+      itemUpdatedSubject?.OnNext(eventPattern);
     }
+
+    #endregion
+
+    #region ObservableItems_CollectionChanged
 
     private void ObservableItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
@@ -91,7 +129,7 @@ namespace VCore.ItemsCollections
             x => newItem.PropertyChanged += x,
             x => newItem.PropertyChanged -= x).Subscribe(ItemPropertyChanged));
 
-          ItemAdded.OnNext(new EventPattern<TItem>(this, newItem));
+          itemAddedSubject.OnNext(new EventPattern<TItem>(this, newItem));
         }
       }
 
@@ -99,14 +137,15 @@ namespace VCore.ItemsCollections
       {
         foreach (var oldItem in e.OldItems.OfType<TItem>())
         {
-          ItemRemoved.OnNext(new EventPattern<TItem>(this, oldItem));
+          itemRemovedSubject.OnNext(new EventPattern<TItem>(this, oldItem));
         }
       }
 
       LastAction = e.Action;
     }
 
+    #endregion
 
-    #endregion Methods
+    #endregion 
   }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using VCore.Annotations;
 using VCore.Standard.Common;
 
 namespace VCore
@@ -52,7 +51,7 @@ namespace VCore
       _action = action ?? throw new ArgumentNullException(nameof(action));
     }
 
-    public ActionCommand(Action action, [NotNull] Func<bool> canExecute)
+    public ActionCommand(Action action, Func<bool> canExecute)
     {
       _action = action ?? throw new ArgumentNullException(nameof(action));
       this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));

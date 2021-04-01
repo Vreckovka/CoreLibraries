@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace VCore
 {
@@ -48,14 +50,6 @@ namespace VCore
 
     #region Similarity
 
-    /// <summary>
-    /// Similarity use LevenshteinDistance retuns value between 0 and 1
-    /// </summary>
-    /// <param name="s"></param>
-    /// <param name="t"></param>
-    /// <param name="useAbsoluteString"></param>
-    /// <param name="ignorCase"></param>
-    /// <returns></returns>
     public static float Similarity(this string s, string t, bool useAbsoluteString = false, bool ignorCase = true)
     {
       if (useAbsoluteString)
@@ -83,5 +77,42 @@ namespace VCore
     }
 
     #endregion
+
+    #region ChunkSimilarity
+
+    public static double ChunkSimilarity(this string original, string predicate)
+    {
+      if (original.Length > predicate.Length)
+      {
+        var splits = original.SplitToChunks(predicate.Length);
+
+        return splits.Max(x => x.Similarity(predicate));
+      }
+      else
+      {
+        return original.Similarity(predicate);
+      }
+
+    }
+
+    #endregion
+
+    public static IEnumerable<string> SplitToChunks(this string str, int chunkSize)
+    {
+      var list = new List<string>();
+
+      for (int i = 0; i < str.Length; i += chunkSize)
+      {
+        if (i + chunkSize < str.Length)
+          list.Add(str.Substring(i, chunkSize));
+        else
+        {
+          var diff = -1 * ( str.Length - i - chunkSize);
+          list.Add(str.Substring(i - diff, chunkSize));
+        }
+      }
+
+      return list;
+    }
   }
 }

@@ -10,22 +10,32 @@ namespace VCore.WPF.Behaviors
 {
   public class ProperMaximizeWindowBehavior : Behavior<Window>
   {
+    private HwndSource hwndSource;
     protected override void OnAttached()
     {
       base.OnAttached();
 
       AssociatedObject.SourceInitialized += new EventHandler(win_SourceInitialized);
+      AssociatedObject.StateChanged += AssociatedObject_StateChanged;
+    }
+
+    private void AssociatedObject_StateChanged(object sender, EventArgs e)
+    {
+      if (AssociatedObject.WindowState == WindowState.Normal)
+      {
+        AssociatedObject.ResizeMode = ResizeMode.CanResize;
+      }
     }
 
     void win_SourceInitialized(object sender, System.EventArgs e)
     {
       var handle = (new WindowInteropHelper(AssociatedObject)).Handle;
-      var handleSource = HwndSource.FromHwnd(handle);
-      if (handleSource == null)
+      hwndSource = HwndSource.FromHwnd(handle);
+
+      if (hwndSource == null)
         return;
 
-
-      handleSource.AddHook(WindowProc);
+      hwndSource.AddHook(WindowProc);
     }
 
     private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -74,6 +84,7 @@ namespace VCore.WPF.Behaviors
       base.OnDetaching();
 
       AssociatedObject.SourceInitialized -= win_SourceInitialized;
+      hwndSource?.RemoveHook(WindowProc);
     }
 
   }

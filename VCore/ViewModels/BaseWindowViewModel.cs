@@ -30,7 +30,6 @@ namespace VCore.ViewModels
 
     public virtual string Title { get; set; } = "BASE WPF APP";
 
-
     #region TopMost
 
     private bool topMost;
@@ -50,7 +49,7 @@ namespace VCore.ViewModels
 
     #endregion
 
-  
+    public Window Window { get; set; }
 
     #endregion
 
@@ -67,7 +66,6 @@ namespace VCore.ViewModels
         return closeCommand ??= new ActionCommand<Window>(OnClose).DisposeWith(this);
       }
     }
-
 
     protected virtual void OnClose(Window window)
     {

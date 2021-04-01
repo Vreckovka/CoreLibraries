@@ -48,7 +48,6 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
               line.Text = lines[originalLineIndex + 1];
             }
           }
-
         }
 
         return new LRCFile(lyricsLines)

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace VCore.Behaviors
+namespace VCore.WPF.Behaviors
 {
   /// <summary>
   /// This is an Attached Behavior and is intended for use with

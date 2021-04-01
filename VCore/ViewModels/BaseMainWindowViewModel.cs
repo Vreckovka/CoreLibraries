@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using System.Windows;
+using Ninject;
 
 namespace VCore.ViewModels
 {
@@ -6,9 +7,12 @@ namespace VCore.ViewModels
   {
     public BaseMainWindowViewModel()
     {
+      Application.Current.MainWindow.Closed += MainWindow_Closed;
     }
 
-   
-
+    private void MainWindow_Closed(object sender, System.EventArgs e)
+    {
+      Application.Current.Shutdown();
+    }
   }
 }

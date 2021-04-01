@@ -11,7 +11,7 @@ namespace VCore.Standard.Factories.ViewModels
 {
   public class BaseViewModelsFactory : IViewModelsFactory
   {
-    private readonly IKernel kernel;
+    protected readonly IKernel kernel;
 
     public BaseViewModelsFactory(IKernel kernel)
     {
