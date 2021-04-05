@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Microsoft.Xaml.Behaviors;
@@ -25,7 +27,8 @@ namespace VCore.WPF.Behaviors
     private EventHandler showEventHandler;
     private EventHandler hideEventHandler;
     private bool wasInitlized;
-    private Button executeButton;
+    private ButtonBase executeButton;
+    private Window parentWindow;
 
     #endregion
 
@@ -102,6 +105,8 @@ namespace VCore.WPF.Behaviors
       AssociatedObject.LayoutUpdated += AssociatedObject_LayoutUpdated;
     }
 
+  
+
     #endregion
 
     #region AssociatedObject_LayoutUpdated
@@ -112,9 +117,10 @@ namespace VCore.WPF.Behaviors
       {
         var grid = (FrameworkElement)AssociatedObject;
         parentGrid = (Grid)VisualTreeHelper.GetParent(grid);
-
-        executeButton = parentGrid.FindChildByName<Button>(ExecuteButtonName);
+        executeButton = (ButtonBase)parentGrid.FindChildByName(ExecuteButtonName);
         gridSplitter = parentGrid.FindChildByName<GridSplitter>(GridSplitterName);
+
+        parentWindow = parentGrid.GetFirstParentOfType<Window>();
 
 
         if (ResizeParameter == ResizeParameter.Height)
@@ -198,6 +204,9 @@ namespace VCore.WPF.Behaviors
         }
         else
         {
+          var asd = AssociatedObject.IsFocused;
+          AssociatedObject.Focus();
+
           double valueToExpand = 0;
 
           if (lastValue != null)

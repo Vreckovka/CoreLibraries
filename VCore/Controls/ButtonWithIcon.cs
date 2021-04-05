@@ -1,48 +1,83 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
 namespace VCore.Controls
 {
-
-  public class PathButton : ToggleButton
+  public class ButtonWithIcon : Button
   {
-    #region PathStyle
+    #region IconPathStyle
 
-    public Style PathStyle
+    public Style IconPathStyle
     {
-      get { return (Style) GetValue(PathStyleProperty); }
-      set { SetValue(PathStyleProperty, value); }
+      get { return (Style)GetValue(IconPathStyleProperty); }
+      set { SetValue(IconPathStyleProperty, value); }
     }
 
-    public static readonly DependencyProperty PathStyleProperty =
+    public static readonly DependencyProperty IconPathStyleProperty =
       DependencyProperty.Register(
-        nameof(PathStyle),
+        nameof(IconPathStyle),
         typeof(Style),
-        typeof(PathButton),
-        new PropertyMetadata(null));
+        typeof(ButtonWithIcon),
+        new PropertyMetadata((x,y) =>
+        {
+
+        }));
 
 
     #endregion
 
-    #region PathCheckedBrush
+    #region IconHeight
 
-    public Brush PathCheckedBrush
+    public double IconHeight
     {
-      get { return (Brush) GetValue(PathCheckedBrushProperty); }
-      set { SetValue(PathCheckedBrushProperty, value); }
+      get { return (double)GetValue(IconHeightProperty); }
+      set { SetValue(IconHeightProperty, value); }
     }
 
-    public static readonly DependencyProperty PathCheckedBrushProperty =
+    public static readonly DependencyProperty IconHeightProperty =
       DependencyProperty.Register(
-        nameof(PathCheckedBrush),
-        typeof(Brush),
-        typeof(PathButton),
-        new PropertyMetadata(Brushes.Black));
+        nameof(IconHeight),
+        typeof(double),
+        typeof(ButtonWithIcon),
+        new PropertyMetadata(25.0));
 
+    #endregion
+
+    #region IconWidth
+
+    public double IconWidth
+    {
+      get { return (double)GetValue(IconWidthProperty); }
+      set { SetValue(IconWidthProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconWidthProperty =
+      DependencyProperty.Register(
+        nameof(IconWidth),
+        typeof(double),
+        typeof(ButtonWithIcon),
+        new PropertyMetadata(25.0));
+
+    #endregion
+
+    #region IconMargin
+
+    public Thickness IconMargin
+    {
+      get { return (Thickness)GetValue(IconMarginProperty); }
+      set { SetValue(IconMarginProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconMarginProperty =
+      DependencyProperty.Register(
+        nameof(IconMargin),
+        typeof(Thickness),
+        typeof(ButtonWithIcon),
+        new PropertyMetadata(new Thickness(0)));
 
     #endregion
 
@@ -50,7 +85,7 @@ namespace VCore.Controls
 
     public Color IconHoverColor
     {
-      get { return (Color) GetValue(IconHoverColorProperty); }
+      get { return (Color)GetValue(IconHoverColorProperty); }
       set { SetValue(IconHoverColorProperty, value); }
     }
 
@@ -58,8 +93,8 @@ namespace VCore.Controls
       DependencyProperty.Register(
         nameof(IconHoverColor),
         typeof(Color),
-        typeof(PathButton),
-        new PropertyMetadata((Color) ColorConverter.ConvertFromString("#f0f8ff")));
+        typeof(ButtonWithIcon),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff")));
 
 
     #endregion
@@ -68,7 +103,7 @@ namespace VCore.Controls
 
     public Color IconDefaultColor
     {
-      get { return (Color) GetValue(IconDefaultColorProperty); }
+      get { return (Color)GetValue(IconDefaultColorProperty); }
       set { SetValue(IconDefaultColorProperty, value); }
     }
 
@@ -76,10 +111,10 @@ namespace VCore.Controls
       DependencyProperty.Register(
         nameof(IconDefaultColor),
         typeof(Color),
-        typeof(PathButton),
+        typeof(ButtonWithIcon),
         new PropertyMetadata(Colors.Transparent, (x, y) =>
         {
-          if (x is PathButton buttonWithIcon)
+          if (x is ButtonWithIcon buttonWithIcon)
           {
             if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
             {
@@ -105,7 +140,7 @@ namespace VCore.Controls
       DependencyProperty.Register(
         nameof(IconBrush),
         typeof(Brush),
-        typeof(PathButton),
+        typeof(ButtonWithIcon),
         new PropertyMetadata((SolidColorBrush)(new BrushConverter().ConvertFrom("#30ffffff"))));
 
     #endregion
@@ -218,5 +253,6 @@ namespace VCore.Controls
     }
 
     #endregion
+
   }
 }

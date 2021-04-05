@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CSCore.CoreAudioAPI;
@@ -22,8 +23,12 @@ namespace SoundManagement
     string controllerExeName = "EndPointController.exe";
     string controllerExePath;
     private MMDeviceEnumerator mMDeviceEnumerator;
+    private AudioEndpointVolumeCallback audioEndpointVolumeCallback;
+    private AudioEndpointVolume audioEndpoint;
 
     #endregion
+
+    #region Constructors
 
     private AudioDeviceManager()
     {
@@ -32,8 +37,10 @@ namespace SoundManagement
       mMDeviceEnumerator = new MMDeviceEnumerator();
       mMDeviceEnumerator.RegisterEndpointNotificationCallback(this);
 
-      RefreshAudioDevices();
+      Task.Run(RefreshAudioDevices);
     }
+
+    #endregion
 
     #region Properties
 
@@ -58,7 +65,7 @@ namespace SoundManagement
 
     #region SoundDevices
 
-    private ObservableCollection<SoundDevice> soundDevices;
+    private ObservableCollection<SoundDevice> soundDevices = new ObservableCollection<SoundDevice>();
 
     public ObservableCollection<SoundDevice> SoundDevices
     {
@@ -82,17 +89,7 @@ namespace SoundManagement
     public SoundDevice SelectedSoundDevice
     {
       get { return selectedSoundDevice; }
-      set
-      {
-        if (value != selectedSoundDevice)
-        {
-          selectedSoundDevice = value;
-
-          RegisterVolume(selectedSoundDevice.MMDevice);
-
-          RaisePropertyChanged();
-        }
-      }
+      set => SetSelectedSoundDevice(value, false);
     }
 
     #endregion
@@ -133,30 +130,6 @@ namespace SoundManagement
           SetIsMuted(false, value);
         }
       }
-    }
-
-    #endregion
-
-    #endregion
-
-    #region Commands
-
-    #region OnSelectedDeviceChangedCommand
-
-    private ActionCommand onSelectedDeviceChanged;
-
-    public ICommand OnSelectedDeviceChangedCommand
-    {
-      get
-      {
-        return onSelectedDeviceChanged ??= new ActionCommand(OnSelectedDeviceChanged);
-      }
-    }
-
-    private void OnSelectedDeviceChanged()
-    {
-      if (!fromEvent)
-        SelectDevice(SelectedSoundDevice.Index);
     }
 
     #endregion
@@ -213,7 +186,7 @@ namespace SoundManagement
     #endregion
 
     #region RefreshAudioDevices
-    
+
     public void RefreshAudioDevices()
     {
       Application.Current.Dispatcher.Invoke(() =>
@@ -234,27 +207,52 @@ namespace SoundManagement
           }
         }
 
+        foreach(var device in SoundDevices)
+        {
+          var deviceDevice = devices.Single(x => x.ID == device.ID);
+
+          device.Index = deviceDevice.Index;
+        }
+
         var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
-
-      SelectedSoundDevice = SoundDevices.SingleOrDefault(x => x.ID == defaultEndPoint.DeviceID);
+        SetSelectedSoundDevice(SoundDevices.SingleOrDefault(x => x.ID == defaultEndPoint.DeviceID), true);
       });
+    }
+
+    #endregion
+
+    #region SetSelectedSoundDevice
+
+    public void SetSelectedSoundDevice(SoundDevice soundDevice, bool fromEvent)
+    {
+      if (soundDevice != selectedSoundDevice)
+      {
+        selectedSoundDevice = soundDevice;
+
+        if (!fromEvent)
+        {
+          SelectDevice(soundDevice.Index);
+        }
+
+        RegisterVolume(selectedSoundDevice.MMDevice);
+        RaisePropertyChanged(nameof(SelectedSoundDevice));
+      }
     }
 
     #endregion
 
     #region RegisterVolume
 
-    private AudioEndpointVolumeCallback audioEndpointVolumeCallback;
-    private AudioEndpointVolume audioEndpoint;
     private void RegisterVolume(MMDevice mMDevice)
     {
       if (audioEndpointVolumeCallback != null && audioEndpoint != null)
       {
         audioEndpointVolumeCallback.NotifyRecived -= VolumeCallBack_NotifyRecived;
+        
         audioEndpoint.UnregisterControlChangeNotify(audioEndpointVolumeCallback);
 
-        audioEndpoint.Dispose();
+        //audioEndpoint.Dispose();
       }
 
       audioEndpoint = AudioEndpointVolume.FromDevice(mMDevice);
@@ -265,9 +263,8 @@ namespace SoundManagement
 
       audioEndpointVolumeCallback.NotifyRecived += VolumeCallBack_NotifyRecived;
 
-
-      ActualVolume = audioEndpoint.MasterVolumeLevelScalar * 100;
-      IsActualMuted = audioEndpoint.IsMuted;
+      SetVolume(true, audioEndpoint.MasterVolumeLevelScalar * 100);
+      SetIsMuted(true, audioEndpoint.IsMuted);
     }
 
     #endregion
@@ -287,7 +284,7 @@ namespace SoundManagement
         actualVolume = value;
         RaisePropertyChanged(nameof(ActualVolume));
       }
-      
+
     }
 
     #endregion
@@ -301,7 +298,7 @@ namespace SoundManagement
         audioEndpoint?.SetMute(value, Guid.NewGuid());
       }
 
-      if(isActualMuted != value)
+      if (isActualMuted != value)
       {
         isActualMuted = value;
         RaisePropertyChanged(nameof(IsActualMuted));
@@ -317,7 +314,7 @@ namespace SoundManagement
       Application.Current.Dispatcher.Invoke(() =>
       {
         SetVolume(true, e.MasterVolume * 100);
-        SetIsMuted(true,e.IsMuted);
+        SetIsMuted(true, e.IsMuted);
       });
     }
 
@@ -325,19 +322,20 @@ namespace SoundManagement
 
     #region OnDeviceStateChanged
 
-    private bool fromEvent;
     public void OnDeviceStateChanged(string deviceId, DeviceState newState)
     {
-      fromEvent = true;
-      RefreshAudioDevices();
-
-      if (newState == DeviceState.UnPlugged)
+      Application.Current.Dispatcher.Invoke(() =>
       {
-        var removed = SoundDevices.Single(x => x.ID == deviceId);
-        SoundDevices.Remove(removed);
-      }
+        if (newState == DeviceState.UnPlugged)
+        {
+          var removed = SoundDevices.Single(x => x.ID == deviceId);
 
-      fromEvent = false;
+          SoundDevices.Remove(removed);
+        }
+
+        RefreshAudioDevices();
+
+      });
     }
 
     #endregion
@@ -346,9 +344,7 @@ namespace SoundManagement
 
     public void OnDeviceAdded(string pwstrDeviceId)
     {
-      fromEvent = true;
       RefreshAudioDevices();
-      fromEvent = false;
     }
 
     #endregion
@@ -357,9 +353,7 @@ namespace SoundManagement
 
     public void OnDeviceRemoved(string deviceId)
     {
-      fromEvent = true;
       RefreshAudioDevices();
-      fromEvent = false;
     }
 
     #endregion
@@ -368,9 +362,7 @@ namespace SoundManagement
 
     public void OnDefaultDeviceChanged(DataFlow flow, Role role, string defaultDeviceId)
     {
-      fromEvent = true;
       RefreshAudioDevices();
-      fromEvent = false;
     }
 
     #endregion
@@ -379,7 +371,19 @@ namespace SoundManagement
 
     public void OnPropertyValueChanged(string pwstrDeviceId, PropertyKey key)
     {
-     
+
+    }
+
+    #endregion
+
+    #region Dispose
+
+    public override void Dispose()
+    {
+      audioEndpointVolumeCallback.NotifyRecived -= VolumeCallBack_NotifyRecived;
+      audioEndpoint.UnregisterControlChangeNotify(audioEndpointVolumeCallback);
+
+      audioEndpoint.Dispose();
     }
 
     #endregion
