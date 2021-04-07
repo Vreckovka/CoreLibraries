@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -10,6 +11,11 @@ using VCore.Helpers;
 
 namespace VCore.WPF.Behaviors
 {
+  public interface IHideable
+  {
+    event EventHandler<bool> Hide;
+  }
+
   public enum ResizeParameter
   {
     Width,
@@ -17,6 +23,7 @@ namespace VCore.WPF.Behaviors
   }
   public class HideBehavior : Behavior<FrameworkElement>
   {
+
     #region Fields
 
     private GridSplitter gridSplitter;
@@ -92,6 +99,23 @@ namespace VCore.WPF.Behaviors
 
     #endregion
 
+    #region HideOnLostCapture
+
+    public static readonly DependencyProperty HideOnLostCaptureProperty =
+      DependencyProperty.Register(
+        nameof(HideOnLostCapture),
+        typeof(bool),
+        typeof(HideBehavior),
+        new PropertyMetadata(false));
+
+    public bool HideOnLostCapture
+    {
+      get { return (bool)GetValue(HideOnLostCaptureProperty); }
+      set { SetValue(HideOnLostCaptureProperty, value); }
+    }
+
+    #endregion
+
     #endregion
 
     #region Methods
@@ -105,7 +129,57 @@ namespace VCore.WPF.Behaviors
       AssociatedObject.LayoutUpdated += AssociatedObject_LayoutUpdated;
     }
 
-  
+
+    #endregion
+
+    #region AddWindowHandler
+
+    private void AddWindowHandler()
+    {
+      parentWindow?.AddHandler
+      (
+        UIElement.MouseUpEvent,
+        (MouseButtonEventHandler)HandleClickOutsideOfControl,
+        true
+      );
+
+      parentWindow.Deactivated += ParentWindow_Deactivated;
+    }
+
+    private void ParentWindow_Deactivated(object sender, EventArgs e)
+    {
+      ReleaseObject();
+    }
+
+
+
+    #endregion
+
+    #region HandleClickOutsideOfControl
+
+    private void HandleClickOutsideOfControl(object sender, MouseButtonEventArgs e)
+    {
+      ReleaseObject();
+    }
+
+    #endregion
+
+    #region ReleaseObject
+
+    private void ReleaseObject()
+    {
+      AssociatedObject.ReleaseMouseCapture();
+
+      if (CanHide && HideOnLostCapture && !AssociatedObject.IsMouseOver && animation == null)
+      {
+        if (executeButton is ToggleButton toggleButton)
+        {
+          toggleButton.IsChecked = false;
+        }
+
+        Button_Click(null, null);
+      }
+    }
 
     #endregion
 
@@ -119,15 +193,19 @@ namespace VCore.WPF.Behaviors
         parentGrid = (Grid)VisualTreeHelper.GetParent(grid);
         executeButton = (ButtonBase)parentGrid.FindChildByName(ExecuteButtonName);
         gridSplitter = parentGrid.FindChildByName<GridSplitter>(GridSplitterName);
-
         parentWindow = parentGrid.GetFirstParentOfType<Window>();
 
+       
+
+
+        AddWindowHandler();
 
         if (ResizeParameter == ResizeParameter.Height)
         {
           if (AssociatedObject.ActualHeight == 0 || AssociatedObject.Width == 0 || AssociatedObject.Height == MinValue)
           {
             IsHidden = true;
+            CanHide = false;
           }
 
           valueBeforeAnimation = AssociatedObject.Height;
@@ -137,12 +215,17 @@ namespace VCore.WPF.Behaviors
           if (AssociatedObject.ActualWidth == 0 || AssociatedObject.Width == 0 || AssociatedObject.Width == MinValue)
           {
             IsHidden = true;
+            CanHide = false;
           }
 
           valueBeforeAnimation = AssociatedObject.Width;
         }
 
-        if (executeButton != null)
+        if (AssociatedObject.DataContext is IHideable hideable)
+        {
+          hideable.Hide += (s,e) => Button_Click(null,null);
+        }
+        else if (executeButton != null)
         {
           executeButton.Click += Button_Click;
         }
@@ -152,6 +235,7 @@ namespace VCore.WPF.Behaviors
     }
 
     #endregion
+   
 
     #region Button_Click
 
@@ -204,10 +288,7 @@ namespace VCore.WPF.Behaviors
         }
         else
         {
-          var asd = AssociatedObject.IsFocused;
-          AssociatedObject.Focus();
-
-          double valueToExpand = 0;
+         double valueToExpand = 0;
 
           if (lastValue != null)
           {
@@ -231,7 +312,7 @@ namespace VCore.WPF.Behaviors
           animation.Completed += showEventHandler;
 
           AssociatedObject.BeginAnimation(dependencyProperty, animation);
-        }
+          }
       }
     }
 
@@ -253,7 +334,7 @@ namespace VCore.WPF.Behaviors
         {
           AssociatedObject.Width = value;
         }
-      }
+        }
       else
       {
         var setValue = valueBeforeAnimation;
@@ -278,6 +359,8 @@ namespace VCore.WPF.Behaviors
 
           AssociatedObject.Width = setValue;
         }
+
+     
       }
 
       if (showEventHandler != null)
@@ -299,7 +382,15 @@ namespace VCore.WPF.Behaviors
 
       if (executeButton != null)
         executeButton.Click += Button_Click;
+
+      parentWindow?.RemoveHandler
+      (
+        UIElement.MouseDownEvent,
+        (MouseButtonEventHandler)HandleClickOutsideOfControl
+      );
     }
+
+
 
     #endregion 
 

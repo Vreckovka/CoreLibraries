@@ -30,7 +30,7 @@ namespace VCore.WPF.Managers
 
     public MessageBoxResult ShowPrompt(string text, string header = "")
     {
-      return MessageBox.Show(text,header, MessageBoxButton.OK);
+      return MessageBox.Show(text, header, MessageBoxButton.OK);
     }
 
     #endregion
@@ -41,15 +41,11 @@ namespace VCore.WPF.Managers
     {
       var window = new Window();
 
-      //BehaviorCollection Behaviors = Interaction.GetBehaviors(window);
-
-      //Behaviors.Add(new ProperMaximizeWindowBehavior());
-
       window.Content = new TView();
 
       window.DataContext = viewModel;
 
-      if(viewModel is BaseWindowViewModel baseWindowViewModel)
+      if (viewModel is BaseWindowViewModel baseWindowViewModel)
       {
         baseWindowViewModel.Window = window;
       }
@@ -60,14 +56,17 @@ namespace VCore.WPF.Managers
       window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
       window.WindowStyle = WindowStyle.None;
       window.AllowsTransparency = true;
-      window.Topmost = true;
       window.ResizeMode = ResizeMode.NoResize;
       window.ShowInTaskbar = false;
 
       window.Loaded += Window_Loaded;
       window.Closed += Window_Closed;
 
-      
+
+      ShowOverlayWindow();
+
+      window.Owner = overlayWindow;
+
       window.ShowDialog();
     }
 
@@ -88,7 +87,7 @@ namespace VCore.WPF.Managers
     {
       if (sender is Window window)
       {
-        if (IsModal(window))
+        if (IsModal(window) && overlayWindow == null)
         {
           ShowOverlayWindow();
         }
