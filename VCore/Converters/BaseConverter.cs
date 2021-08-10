@@ -19,24 +19,4 @@ namespace VCore.Converters
       throw new NotImplementedException();
     }
   }
-
-  public class IsTypeConverter : BaseConverter
-  {
-    public override object Convert(
-      object value,
-      Type targetType,
-      object parameter,
-      CultureInfo culture)
-    {
-      if (value != null)
-      {
-        if (value?.GetType() == parameter?.GetType())
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  }
 }

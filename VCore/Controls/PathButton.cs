@@ -10,11 +10,14 @@ namespace VCore.Controls
 
   public class PathButton : ToggleButton
   {
+    private double animationInSeconds = .15;
+
+
     #region PathStyle
 
     public Style PathStyle
     {
-      get { return (Style) GetValue(PathStyleProperty); }
+      get { return (Style)GetValue(PathStyleProperty); }
       set { SetValue(PathStyleProperty, value); }
     }
 
@@ -28,11 +31,47 @@ namespace VCore.Controls
 
     #endregion
 
+    #region IconWidth
+
+    public double IconWidth
+    {
+      get { return (double)GetValue(IconWidthProperty); }
+      set { SetValue(IconWidthProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconWidthProperty =
+      DependencyProperty.Register(
+        nameof(IconWidth),
+        typeof(double),
+        typeof(PathButton),
+        new PropertyMetadata(20.0));
+
+
+    #endregion
+
+    #region IconHeight
+
+    public double IconHeight
+    {
+      get { return (double)GetValue(IconHeightProperty); }
+      set { SetValue(IconHeightProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconHeightProperty =
+      DependencyProperty.Register(
+        nameof(IconHeight),
+        typeof(double),
+        typeof(PathButton),
+        new PropertyMetadata(20.0));
+
+
+    #endregion
+
     #region PathCheckedBrush
 
     public Brush PathCheckedBrush
     {
-      get { return (Brush) GetValue(PathCheckedBrushProperty); }
+      get { return (Brush)GetValue(PathCheckedBrushProperty); }
       set { SetValue(PathCheckedBrushProperty, value); }
     }
 
@@ -46,11 +85,29 @@ namespace VCore.Controls
 
     #endregion
 
+    #region ForegroundCheckedBrush
+
+    public Color ForegroundCheckedColor
+    {
+      get { return (Color)GetValue(ForegroundCheckedBrushProperty); }
+      set { SetValue(ForegroundCheckedBrushProperty, value); }
+    }
+
+    public static readonly DependencyProperty ForegroundCheckedBrushProperty =
+      DependencyProperty.Register(
+        nameof(ForegroundCheckedColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata(Colors.White));
+
+
+    #endregion
+
     #region IconHoverColor
 
     public Color IconHoverColor
     {
-      get { return (Color) GetValue(IconHoverColorProperty); }
+      get { return (Color)GetValue(IconHoverColorProperty); }
       set { SetValue(IconHoverColorProperty, value); }
     }
 
@@ -59,7 +116,7 @@ namespace VCore.Controls
         nameof(IconHoverColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color) ColorConverter.ConvertFromString("#f0f8ff")));
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff")));
 
 
     #endregion
@@ -68,7 +125,7 @@ namespace VCore.Controls
 
     public Color IconDefaultColor
     {
-      get { return (Color) GetValue(IconDefaultColorProperty); }
+      get { return (Color)GetValue(IconDefaultColorProperty); }
       set { SetValue(IconDefaultColorProperty, value); }
     }
 
@@ -85,11 +142,47 @@ namespace VCore.Controls
             {
               if (solidColorBrush.Color != newColor)
               {
-                buttonWithIcon.AnimateImageDefaultColor(0);
+                buttonWithIcon.IconDefaultColor = newColor;
+                buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
               }
             }
           }
         }));
+
+    #endregion
+
+    #region ForegroundHoverColor
+
+    public Color ForegroundHoverColor
+    {
+      get { return (Color)GetValue(ForegroundHoverColorProperty); }
+      set { SetValue(ForegroundHoverColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty ForegroundHoverColorProperty =
+      DependencyProperty.Register(
+        nameof(ForegroundHoverColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff")));
+
+
+    #endregion
+
+    #region ForegroundDefaultColor
+
+    public Color ForegroundDefaultColor
+    {
+      get { return (Color)GetValue(ForegroundDefaultColorProperty); }
+      set { SetValue(ForegroundDefaultColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty ForegroundDefaultColorProperty =
+      DependencyProperty.Register(
+        nameof(ForegroundDefaultColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff")));
 
     #endregion
 
@@ -110,9 +203,21 @@ namespace VCore.Controls
 
     #endregion
 
-    ColorAnimation hoverUp;
-    ColorAnimation hoverDown;
-    private double animationInSeconds = .15;
+    #region IsReadOnly
+
+    public bool IsReadOnly
+    {
+      get { return (bool)GetValue(IsReadOnlyProperty); }
+      set { SetValue(IsReadOnlyProperty, value); }
+    }
+
+    public static readonly DependencyProperty IsReadOnlyProperty =
+      DependencyProperty.Register(nameof(IsReadOnly), typeof(bool),
+        typeof(PathButton), new UIPropertyMetadata(false));
+
+    #endregion
+
+    #region Commands
 
     #region AnimateHoverColor
 
@@ -135,28 +240,15 @@ namespace VCore.Controls
 
     public void OnAnimateHoverColor()
     {
-      Brush rootElementBrush;
+      Brush iconBrushColone = IconBrush.Clone();
 
-      if (IconBrush.IsFrozen)
-      {
-        rootElementBrush = IconBrush.Clone();
-      }
-      else
-      {
-        rootElementBrush = IconBrush;
-      }
+      iconBrushColone = GetAnimation(iconBrushColone, IconDefaultColor, IconHoverColor);
 
-      hoverUp = new ColorAnimation();
+      Brush foregroundBrushColone = Foreground.Clone();
 
-      hoverUp.From = IconDefaultColor;
-      hoverUp.To = IconHoverColor;
+      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundHoverColor);
 
-      hoverUp.Duration = new Duration(TimeSpan.FromSeconds(animationInSeconds));
-
-      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, null);
-      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverUp);
-
-      IconBrush = rootElementBrush;
+      SetBrushes(iconBrushColone, foregroundBrushColone, foregroundBrushColone);
     }
 
     #endregion
@@ -180,43 +272,105 @@ namespace VCore.Controls
 
     private void AnimateImageDefaultColor(double? durationSeconds = null)
     {
-      Brush rootElementBrush;
+      Brush iconBrushColone = IconBrush.Clone();
 
-      hoverDown = new ColorAnimation();
+      iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconDefaultColor);
 
-      hoverDown.From = IconHoverColor;
-      hoverDown.To = IconDefaultColor;
+      Brush foregroundBrushColone = Foreground.Clone();
 
-      if (IconBrush.IsFrozen)
+      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundHoverColor, ForegroundDefaultColor);
+
+      SetBrushes(iconBrushColone, foregroundBrushColone, foregroundBrushColone);
+    }
+
+    #endregion
+
+    #endregion
+
+    #region Methods
+
+    protected override void OnToggle()
+    {
+      if (!IsReadOnly)
       {
-        rootElementBrush = IconBrush.Clone();
+        base.OnToggle();
       }
-      else
-      {
-        rootElementBrush = IconBrush;
-      }
+    }
 
-      if (durationSeconds != null)
-      {
-        hoverDown.Duration = new Duration(TimeSpan.FromSeconds(durationSeconds.Value));
-      }
-      else
-      {
-        hoverDown.Duration = new Duration(TimeSpan.FromSeconds(animationInSeconds));
-      }
+    #region OnChecked
 
+    protected override void OnChecked(RoutedEventArgs e)
+    {
+      base.OnChecked(e);
+
+      Foreground = Foreground.Clone();
+
+      Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+
+      Foreground = GetAnimation(Foreground, ForegroundDefaultColor, ForegroundCheckedColor);
+
+    }
+
+    #endregion
+
+    #region OnUnchecked
+
+    protected override void OnUnchecked(RoutedEventArgs e)
+    {
+      base.OnUnchecked(e);
+
+      Foreground = Foreground.Clone();
+
+      Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+
+      Foreground = GetAnimation(Foreground, ForegroundCheckedColor, ForegroundDefaultColor);
+
+    }
+
+    #endregion
+
+    #region GetAnimation
+
+    private Brush GetAnimation(Brush rootElementBrush, Color from, Color to)
+    {
+      var hoverUp = new ColorAnimation();
+
+      hoverUp.From = from;
+      hoverUp.To = to;
+
+      hoverUp.Duration = new Duration(TimeSpan.FromSeconds(animationInSeconds));
 
       rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, null);
-      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverDown);
+      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverUp);
 
-      IconBrush = rootElementBrush;
+      return rootElementBrush;
     }
+
+    #endregion
+
+    #region SetBrushes
+
+    private void SetBrushes(Brush iconBrush, Brush foregroundBrush, Brush borderBrush)
+    {
+      IconBrush = iconBrush;
+
+      if (IsChecked.HasValue && !IsChecked.Value)
+        Foreground = foregroundBrush;
+      //BorderBrush = borderBrush;
+    }
+
+    #endregion
+
+    #region OnAnimateDefaultColor
 
     public void OnAnimateDefaultColor()
     {
       AnimateImageDefaultColor();
     }
 
+    #endregion 
+
     #endregion
+
   }
 }

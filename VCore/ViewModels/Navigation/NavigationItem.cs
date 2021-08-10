@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using VCore.Helpers;
 using VCore.Standard;
 
@@ -7,16 +8,28 @@ namespace VCore.ViewModels.Navigation
 {
   public class NavigationItem : ViewModel, INavigationItem
   {
-    public readonly INavigationItem navigationItem;
-
     public NavigationItem(INavigationItem navigationItem)
     {
-      this.navigationItem = navigationItem ?? throw new ArgumentNullException(nameof(navigationItem));
+      Model = navigationItem ?? throw new ArgumentNullException(nameof(navigationItem));
 
-      navigationItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
+      Model.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
+
+      SubItems.CollectionChanged += SubItems_CollectionChanged;
     }
 
-    public string Header => navigationItem.Header;
+    private void SubItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      if(e.NewItems != null)
+      {
+        foreach (INavigationItem newItem in e.NewItems)
+        {
+          newItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
+        }
+      }
+    }
+
+    public INavigationItem Model { get; }
+    public string Header => Model.Header;
     public ObservableCollection<INavigationItem> SubItems { get; set; } = new ObservableCollection<INavigationItem>();
     public string IconPathData { get; set; }
     public string ImagePath { get; set; }
@@ -51,7 +64,13 @@ namespace VCore.ViewModels.Navigation
         if (value != isActive)
         {
           isActive = value;
-          navigationItem.IsActive = value;
+          Model.IsActive = value;
+
+          if (SubItems.All(x => x.IsActive != value) && SubItems.Count > 0)
+          {
+            SubItems[0].IsActive = value;
+          }
+
           RaisePropertyChanged();
         }
       }
@@ -65,7 +84,7 @@ namespace VCore.ViewModels.Navigation
     {
       base.Dispose();
 
-      navigationItem?.Dispose();
+      Model?.Dispose();
     }
 
     #endregion

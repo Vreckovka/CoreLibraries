@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VCore.WPF.ItemsCollections;
 
 namespace VCore.Standard.ViewModels.TreeView
 {
-
   public class TreeViewItemViewModel<TModel> : TreeViewItemViewModel where TModel : class
   {
     public TreeViewItemViewModel(TModel model)
@@ -33,7 +33,7 @@ namespace VCore.Standard.ViewModels.TreeView
 
   }
 
-  public class TreeViewItemViewModel : ViewModel
+  public class TreeViewItemViewModel : ViewModel, ISelectable
   {
    
     #region IsExpanded
@@ -80,9 +80,9 @@ namespace VCore.Standard.ViewModels.TreeView
 
     #region SubItems
 
-    private List<TreeViewItemViewModel> subItems = new List<TreeViewItemViewModel>();
+    private ItemsViewModel<TreeViewItemViewModel> subItems = new ItemsViewModel<TreeViewItemViewModel>();
 
-    public List<TreeViewItemViewModel> SubItems
+    public ItemsViewModel<TreeViewItemViewModel> SubItems
     {
       get { return subItems; }
       set
@@ -96,7 +96,7 @@ namespace VCore.Standard.ViewModels.TreeView
     }
 
     #endregion
-
+    
     #region Name
 
     private string name;
@@ -115,7 +115,6 @@ namespace VCore.Standard.ViewModels.TreeView
     }
 
     #endregion
-
 
     #region HighlitedText
 
@@ -136,7 +135,36 @@ namespace VCore.Standard.ViewModels.TreeView
 
     #endregion
 
+    #region IsSelected
+
+    private bool isSelected;
+
+    public bool IsSelected
+    {
+      get { return isSelected; }
+      set
+      {
+        if (value != isSelected)
+        {
+          isSelected = value;
+          OnSelected(isSelected);
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    public void AddItem(TreeViewItemViewModel treeViewItemViewModel)
+    {
+      SubItems.Add(treeViewItemViewModel);
+    }
+
     protected virtual void OnExpanded(bool isExpandend)
+    {
+    }
+
+    protected virtual void OnSelected(bool isSelected)
     {
     }
   }

@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace VCore.Standard.Common
 {
+
   public abstract class VBindableBase : VDisposableObject, INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;

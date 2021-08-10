@@ -51,6 +51,29 @@ namespace VCore.ViewModels
 
     public Window Window { get; set; }
 
+
+
+    #region WindowState
+
+    private WindowState windowState;
+
+    public WindowState WindowState
+    {
+      get { return windowState; }
+      set
+      {
+        if (value != windowState)
+        {
+          windowState = value;
+          OnWindowStateChanged(windowState);
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+
     #endregion
 
     #region Commands
@@ -128,5 +151,10 @@ namespace VCore.ViewModels
     #endregion
 
     #endregion
+
+    protected virtual void OnWindowStateChanged(WindowState windowState)
+    {
+
+    }
   }
 }

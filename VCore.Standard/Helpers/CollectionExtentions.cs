@@ -71,17 +71,17 @@ namespace VCore.Standard.Helpers
 
     public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
     {
-     foreach(var item in collection)
-     {
-       action.Invoke(item);
-     }
+      foreach (var item in collection)
+      {
+        action.Invoke(item);
+      }
     }
 
     #endregion
 
     #region IndexOf
 
-    public static int? IndexOf<T>(this IList<T> collection, Func<T,bool> action)
+    public static int? IndexOf<T>(this IList<T> collection, Func<T, bool> action)
     {
       var list = collection.ToList();
 
@@ -97,5 +97,15 @@ namespace VCore.Standard.Helpers
     }
 
     #endregion
+
+    #region GetEnummerable
+
+    public static IEnumerable<T> GetEnummerable<T>(this T item)
+    {
+      return new List<T>() { item }.AsEnumerable();
+    } 
+
+    #endregion
+
   }
 }

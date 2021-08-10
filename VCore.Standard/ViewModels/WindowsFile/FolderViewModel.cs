@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
+using VCore.ItemsCollections;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Helpers;
 using VCore.Standard.ViewModels.TreeView;
+using VCore.WPF.ItemsCollections;
 
 namespace VCore.Standard.ViewModels.WindowsFile
 {
@@ -20,8 +23,6 @@ namespace VCore.Standard.ViewModels.WindowsFile
       this.viewModelsFactory = viewModelsFactory;
 
       CanExpand = true;
-
-      
     }
 
     #region Properties
@@ -64,25 +65,6 @@ namespace VCore.Standard.ViewModels.WindowsFile
 
     #endregion
 
-    #region View
-
-    private List<TreeViewItemViewModel> view;
-
-    public List<TreeViewItemViewModel> View
-    {
-      get { return view; }
-      set
-      {
-        if (value != view)
-        {
-          view = value;
-          RaisePropertyChanged();
-        }
-      }
-    }
-
-    #endregion
-
     #endregion
 
     #region Methods
@@ -91,44 +73,52 @@ namespace VCore.Standard.ViewModels.WindowsFile
 
     public void GetFolderInfo()
     {
-      SubItems = new List<TreeView.TreeViewItemViewModel>();
+      SubItems = new ItemsViewModel<TreeViewItemViewModel>();
 
       string[] soundExtentions = new string[] { ".mp3", ".flac" };
-      string[] videoExtentions = new string[] { ".mkv", ".avi", ".mp4" };
+      string[] videoExtentions = new string[] { ".mkv", ".avi", ".mp4", ".ts" };
 
-      FileInfo[] allFiles = Model.GetFiles();
-      FileInfo[] soundFiles = allFiles.Where(f => soundExtentions.Contains(f.Extension.ToLower())).ToArray();
-      FileInfo[] videoFiles = allFiles.Where(f => videoExtentions.Contains(f.Extension.ToLower())).ToArray();
-
-      if (soundFiles.Length > 0 && videoFiles.Length > 0)
+      if (Model.Name != "System Volume Information")
       {
-        FolderType = FolderType.Mixed;
+        FileInfo[] allFiles = Model.GetFiles();
+        FileInfo[] soundFiles = allFiles.Where(f => soundExtentions.Contains(f.Extension.ToLower())).ToArray();
+        FileInfo[] videoFiles = allFiles.Where(f => videoExtentions.Contains(f.Extension.ToLower())).ToArray();
+
+        if (soundFiles.Length > 0 && videoFiles.Length > 0)
+        {
+          FolderType = FolderType.Mixed;
+        }
+        else if (soundFiles.Length > 0)
+        {
+          FolderType = FolderType.Sound;
+        }
+        else if (videoFiles.Length > 0)
+        {
+          FolderType = FolderType.Video;
+        }
+
+        var files = new List<FileInfo>();
+
+        files.AddRange(soundFiles);
+        files.AddRange(videoFiles);
+
+        SubItems.AddRange(allFiles.Select(CreateNewFileItem));
+
+        var directories = Model.GetDirectories();
+
+        if (allFiles.Length == 0 && directories.Length == 0)
+        {
+          CanExpand = false;
+        }
+
+        RaisePropertyChanged(nameof(SubItems));
+
+        OnGetFolderInfo();
       }
-      else if (soundFiles.Length > 0)
-      {
-        FolderType = FolderType.Sound;
-      }
-      else if (videoFiles.Length > 0)
-      {
-        FolderType = FolderType.Video;
-      }
-
-      var files = new List<FileInfo>();
-
-      files.AddRange(soundFiles);
-      files.AddRange(videoFiles);
-
-      SubItems.AddRange(allFiles.Select(CreateNewFileItem));
-
-      if (allFiles.Length == 0)
+      else
       {
         CanExpand = false;
       }
-
-      View = SubItems;
-
-      RaisePropertyChanged(nameof(SubItems));
-      OnGetFolderInfo();
     }
 
     #endregion
@@ -150,11 +140,6 @@ namespace VCore.Standard.ViewModels.WindowsFile
       {
         LoadSubItems();
       }
-
-      if (isFiltered)
-      {
-        View = SubItems;
-      }
     }
 
     #endregion
@@ -163,20 +148,35 @@ namespace VCore.Standard.ViewModels.WindowsFile
 
     private void LoadSubItems()
     {
-      var directories = Model.GetDirectories();
-
-      var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
-
-      SubItems.AddRange(direViewModels);
-
-      foreach (var dir in direViewModels)
+      if (Model.Name != "System Volume Information")
       {
-        dir.GetFolderInfo();
+        var directories = Model.GetDirectories();
+
+        var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
+
+        SubItems.AddRange(direViewModels);
+
+        foreach (var dir in direViewModels)
+        {
+          dir.GetFolderInfo();
+        }
+
+        foldersLoaded = true;
+
+        OnLoadSubItems();
+        RefreshType();
+
+        RaisePropertyChanged(nameof(SubItems));
       }
+    }
 
+    #endregion
 
-      foldersLoaded = true;
-      RaisePropertyChanged(nameof(SubItems));
+    #region OnLoadSubItems
+
+    protected virtual void OnLoadSubItems()
+    {
+
     }
 
     #endregion
@@ -188,7 +188,7 @@ namespace VCore.Standard.ViewModels.WindowsFile
       if (!folderViewModel.foldersLoaded)
         folderViewModel.LoadSubItems();
 
-      foreach (var directory in folderViewModel.SubItems.OfType<FolderViewModel>())
+      foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel>())
       {
         directory.LoadSubFolders(directory);
       }
@@ -214,7 +214,6 @@ namespace VCore.Standard.ViewModels.WindowsFile
 
     #endregion
 
-  
     #region ChunkSimilarity
 
     private string startHighlight = "|~S~|";
@@ -230,7 +229,7 @@ namespace VCore.Standard.ViewModels.WindowsFile
 
         var originalPredictate = original.Substring(without[0].Length, predicate.Length);
 
-        var secondPart = original.Substring(predicate.Length + without[0].Length , without[1].Length);
+        var secondPart = original.Substring(predicate.Length + without[0].Length, without[1].Length);
 
         var final = firstPart + startHighlight + originalPredictate + endHighlight + secondPart;
 
@@ -261,9 +260,9 @@ namespace VCore.Standard.ViewModels.WindowsFile
       {
         isFiltered = true;
 
-        var viewItems = SubItems.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
+        var viewItems = SubItems.ViewModels.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
 
-        var folders = SubItems.OfType<FolderViewModel>().ToList();
+        var folders = SubItems.ViewModels.OfType<FolderViewModel>().ToList();
 
         foreach (var folder in folders)
         {
@@ -272,7 +271,7 @@ namespace VCore.Standard.ViewModels.WindowsFile
           folder.Filter(predicated);
         }
 
-        var childs = folders.Where(x => x.View.Count > 0);
+        var childs = folders.Where(x => x.SubItems.View.Count > 0);
 
         foreach (var item in viewItems)
         {
@@ -293,9 +292,7 @@ namespace VCore.Standard.ViewModels.WindowsFile
           }
         }
 
-
-
-        View = new List<TreeViewItemViewModel>(viewItems);
+        SubItems.View = new RxObservableCollection<TreeViewItemViewModel>(viewItems);
       }
       else if (isFiltered)
       {
@@ -311,7 +308,7 @@ namespace VCore.Standard.ViewModels.WindowsFile
     {
       if (isFiltered)
       {
-        var folders = SubItems.OfType<FolderViewModel>().ToList();
+        var folders = SubItems.ViewModels.OfType<FolderViewModel>().ToList();
 
         folders.ForEach(x => { x.ResetFilter(); });
 
@@ -321,10 +318,42 @@ namespace VCore.Standard.ViewModels.WindowsFile
           IsExpanded = false;
         }
 
-        View = SubItems;
+        SubItems.ResetFilter();
 
-        SubItems.ForEach(x => x.HighlitedText = x.Name);
+        SubItems.ViewModels.ForEach(x => x.HighlitedText = x.Name);
         isFiltered = false;
+      }
+    }
+
+    #endregion
+
+    #region RefreshType
+
+    private void RefreshType()
+    {
+      var videos = SubItems.View.OfType<FolderViewModel>().Any(x => x.FolderType == FolderType.Video) ||
+                   SubItems.View.OfType<FileViewModel>().Any(x => x.FileType == FileType.Video); 
+
+
+      var sounds = SubItems.View.OfType<FolderViewModel>().Any(x => x.FolderType == FolderType.Sound) ||
+                   SubItems.View.OfType<FileViewModel>().Any(x => x.FileType == FileType.Sound);
+
+
+      if (videos && sounds)
+      {
+        FolderType = FolderType.Mixed;
+      }
+      else if (sounds)
+      {
+        FolderType = FolderType.Sound;
+      }
+      else if (videos)
+      {
+        FolderType = FolderType.Video;
+      }
+      else
+      {
+        FolderType = FolderType.Other;
       }
     }
 

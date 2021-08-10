@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using VCore.Helpers;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
@@ -106,19 +107,12 @@ namespace VCore.Modularity.RegionProviders
         {
           viewModel = value;
 
-          if (viewModel != null)
-          {
-            //viewActivationDisposable.Disposable = viewModel.ObservePropertyChange(x => x.IsActive).Subscribe(x =>
-            //{
-            //  if (x)
-            //    viewWasActivatedSubject.OnNext(this);
-            //  else
-            //    viewWasDeactivatedSubject.OnNext(this);
-            //});
-          }
-
           if (View != null)
+          {
             View.DataContext = viewModel;
+
+            Refresh();
+          }   
         }
       }
     }

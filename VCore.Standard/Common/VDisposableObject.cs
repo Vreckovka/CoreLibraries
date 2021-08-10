@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 
 namespace VCore.Standard.Common
 {
+  [Serializable]
   public abstract class VDisposableObject : IDisposable
   {
     private CompositeDisposable autoDisposeObjects = null;

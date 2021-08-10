@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -10,6 +11,8 @@ using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.ViewModels;
 using VCore.WPF.Behaviors;
+using VCore.WPF.Prompts;
+using VCore.WPF.ViewModels.Prompt;
 
 namespace VCore.WPF.Managers
 {
@@ -21,7 +24,7 @@ namespace VCore.WPF.Managers
 
     public MessageBoxResult ShowYesNoPrompt(string text, string header = "")
     {
-      return MessageBox.Show(header, text, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+      return MessageBox.Show(text, header, MessageBoxButton.YesNo, MessageBoxImage.Warning);
     }
 
     #endregion
@@ -70,12 +73,33 @@ namespace VCore.WPF.Managers
       window.ShowDialog();
     }
 
+
+
+    #endregion
+
+    #region ShowErrorPrompt
+
+    public void ShowErrorPrompt(Exception ex)
+    {
+      var vm = new GenericPromptViewModel()
+      {
+        Title = "Error occured",
+        Text = ex.ToString()
+      };
+
+      ShowPrompt<GenericPromptView>(vm);
+    }
+
+    #endregion
+
     private void Window_Closed(object sender, EventArgs e)
     {
       if (sender is Window window)
       {
         window.Loaded -= Window_Loaded;
         window.Closed -= Window_Closed;
+
+        Application.Current?.MainWindow?.Focus();
 
         overlayWindow?.Close();
       }
@@ -136,6 +160,6 @@ namespace VCore.WPF.Managers
 
     #endregion
 
-    #endregion
+
   }
 }

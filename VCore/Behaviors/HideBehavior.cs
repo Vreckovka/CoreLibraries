@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -23,7 +24,6 @@ namespace VCore.WPF.Behaviors
   }
   public class HideBehavior : Behavior<FrameworkElement>
   {
-
     #region Fields
 
     private GridSplitter gridSplitter;
@@ -45,8 +45,8 @@ namespace VCore.WPF.Behaviors
     public string ExecuteButtonName { get; set; }
     public string GridSplitterName { get; set; }
     public Duration Duration { get; set; } = new Duration(TimeSpan.FromSeconds(1));
-
     public ResizeParameter ResizeParameter { get; set; }
+    public bool ChangeVisibility { get; set; }
 
     #region IsHidden
 
@@ -146,12 +146,14 @@ namespace VCore.WPF.Behaviors
       parentWindow.Deactivated += ParentWindow_Deactivated;
     }
 
+    #endregion
+
+    #region ParentWindow_Deactivated
+
     private void ParentWindow_Deactivated(object sender, EventArgs e)
     {
       ReleaseObject();
     }
-
-
 
     #endregion
 
@@ -195,9 +197,6 @@ namespace VCore.WPF.Behaviors
         gridSplitter = parentGrid.FindChildByName<GridSplitter>(GridSplitterName);
         parentWindow = parentGrid.GetFirstParentOfType<Window>();
 
-       
-
-
         AddWindowHandler();
 
         if (ResizeParameter == ResizeParameter.Height)
@@ -223,7 +222,7 @@ namespace VCore.WPF.Behaviors
 
         if (AssociatedObject.DataContext is IHideable hideable)
         {
-          hideable.Hide += (s,e) => Button_Click(null,null);
+          hideable.Hide += (s, e) => Button_Click(null, null);
         }
         else if (executeButton != null)
         {
@@ -235,7 +234,6 @@ namespace VCore.WPF.Behaviors
     }
 
     #endregion
-   
 
     #region Button_Click
 
@@ -260,9 +258,8 @@ namespace VCore.WPF.Behaviors
 
     #region StartResize
 
-    private void StartResize(double actualValue, DependencyProperty dependencyProperty, ResizeParameter resizeParameter)
+    private async void StartResize(double actualValue, DependencyProperty dependencyProperty, ResizeParameter resizeParameter)
     {
-
       if (hideEventHandler == null)
       {
         hideEventHandler = new EventHandler((x, y) => { DoubleAnim_Completed(MinValue, dependencyProperty, resizeParameter); });
@@ -278,17 +275,25 @@ namespace VCore.WPF.Behaviors
           lastValue = actualValue;
 
           animation = new DoubleAnimation(actualValue, MinValue, Duration);
+          animation.AccelerationRatio = 0.5;
+
 
           animation.FillBehavior = FillBehavior.Stop;
 
           animation.Completed += hideEventHandler;
 
-
           AssociatedObject.BeginAnimation(dependencyProperty, animation);
         }
         else
         {
-         double valueToExpand = 0;
+          if (ChangeVisibility)
+            if (AssociatedObject.Visibility != Visibility.Visible)
+            {
+              AssociatedObject.Visibility = Visibility.Visible;
+              await Task.Delay(10);
+            }
+
+          double valueToExpand = 0;
 
           if (lastValue != null)
           {
@@ -306,13 +311,14 @@ namespace VCore.WPF.Behaviors
           }
 
           animation = new DoubleAnimation(MinValue, valueToExpand, Duration);
+          animation.AccelerationRatio = 0.5;
 
           animation.FillBehavior = FillBehavior.Stop;
 
           animation.Completed += showEventHandler;
 
           AssociatedObject.BeginAnimation(dependencyProperty, animation);
-          }
+        }
       }
     }
 
@@ -334,7 +340,7 @@ namespace VCore.WPF.Behaviors
         {
           AssociatedObject.Width = value;
         }
-        }
+      }
       else
       {
         var setValue = valueBeforeAnimation;
@@ -360,7 +366,7 @@ namespace VCore.WPF.Behaviors
           AssociatedObject.Width = setValue;
         }
 
-     
+
       }
 
       if (showEventHandler != null)

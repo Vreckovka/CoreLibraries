@@ -25,10 +25,13 @@ namespace VCore.Standard
 
   public abstract class ViewModel : VBindableBase, IViewModel
   {
+   
+
     #region Methods
 
     public virtual void Initialize()
     {
+      
     }
 
     #endregion 

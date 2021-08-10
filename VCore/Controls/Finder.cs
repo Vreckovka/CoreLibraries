@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using VCore.WPF.Managers;
 
 namespace VCore.Controls
 {
@@ -23,6 +25,47 @@ namespace VCore.Controls
 
 
     #endregion
+
+    #region FocusChanged
+
+    private ActionCommand<string> focusChanged;
+
+    public ICommand FocusChanged
+    {
+      get
+      {
+        if (focusChanged == null)
+        {
+          focusChanged = new ActionCommand<string>(OnFocusChanged);
+        }
+
+        return focusChanged;
+      }
+    }
+
+    private void OnFocusChanged(string isFocused)
+    {
+      var isFocusBool = bool.Parse(isFocused);
+
+      if (isFocusBool)
+      {
+        VFocusManager.AddToFocusItems(this);
+
+        CaptureMouse();
+
+       
+      }
+      else
+      {
+        VFocusManager.RemoveFromFocusItems(this);
+
+        ReleaseMouseCapture();
+      }
+    }
+
+    #endregion
+
+
 
     #region Text
 

@@ -72,6 +72,10 @@ namespace VCore.ViewModels
               wasActivated = true;
             }
           }
+          else
+          {
+            OnDeactived();
+          }
 
           RaisePropertyChanged();
         }
@@ -124,8 +128,16 @@ namespace VCore.ViewModels
 
     #endregion OnActivation
 
+    #region OnDeactived
 
-    #endregion 
+    public virtual void OnDeactived()
+    {
+
+    }
+
+    #endregion
+
+    #endregion
 
 
   }

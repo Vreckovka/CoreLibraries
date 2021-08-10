@@ -207,11 +207,12 @@ namespace SoundManagement
           }
         }
 
-        foreach(var device in SoundDevices)
+        foreach (var device in SoundDevices)
         {
-          var deviceDevice = devices.Single(x => x.ID == device.ID);
+          var deviceDevice = devices.SingleOrDefault(x => x.ID == device.ID);
 
-          device.Index = deviceDevice.Index;
+          if (deviceDevice != null)
+            device.Index = deviceDevice.Index;
         }
 
         var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
@@ -226,7 +227,7 @@ namespace SoundManagement
 
     public void SetSelectedSoundDevice(SoundDevice soundDevice, bool fromEvent)
     {
-      if (soundDevice != selectedSoundDevice)
+      if (soundDevice != selectedSoundDevice && soundDevice != null)
       {
         selectedSoundDevice = soundDevice;
 
@@ -249,7 +250,7 @@ namespace SoundManagement
       if (audioEndpointVolumeCallback != null && audioEndpoint != null)
       {
         audioEndpointVolumeCallback.NotifyRecived -= VolumeCallBack_NotifyRecived;
-        
+
         audioEndpoint.UnregisterControlChangeNotify(audioEndpointVolumeCallback);
 
         //audioEndpoint.Dispose();
@@ -328,9 +329,10 @@ namespace SoundManagement
       {
         if (newState == DeviceState.UnPlugged)
         {
-          var removed = SoundDevices.Single(x => x.ID == deviceId);
+          var removed = SoundDevices.SingleOrDefault(x => x.ID == deviceId);
 
-          SoundDevices.Remove(removed);
+          if (removed != null)
+            SoundDevices.Remove(removed);
         }
 
         RefreshAudioDevices();

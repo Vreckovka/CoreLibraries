@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using VPlayer.AudioStorage.InfoDownloader.LRC.Domain;
@@ -42,7 +43,7 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
           foreach (var line in nullLines)
           {
             var originalLineIndex = lines.IndexOf(line.OriginalLine);
-
+            
             if (lines.Count - 1 > originalLineIndex && !IsTimestamp(lines[originalLineIndex + 1].Split(']')[0] + "]"))
             {
               line.Text = lines[originalLineIndex + 1];
@@ -83,7 +84,15 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
         {
           if (double.TryParse(time[0], out var minutes))
           {
-            if (double.TryParse(time[1].Replace('.', ','), out var seconds))
+
+            var stringToParse = time[1];
+
+            if (CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator != ".")
+            {
+              stringToParse = stringToParse.Replace('.', ',');
+            }
+
+            if (double.TryParse(stringToParse, out var seconds))
             {
               return TimeSpan.FromMinutes(minutes + (seconds / 60));
             }

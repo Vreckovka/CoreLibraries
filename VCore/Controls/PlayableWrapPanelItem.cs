@@ -42,6 +42,24 @@ namespace VCore.Controls
 
     #endregion
 
+    #region BottomFaGlyph
+
+    public string BottomFaGlyph
+    {
+      get { return (string)GetValue(BottomFaGlyphProperty); }
+      set { SetValue(BottomFaGlyphProperty, value); }
+    }
+
+    public static readonly DependencyProperty BottomFaGlyphProperty =
+      DependencyProperty.Register(
+        nameof(BottomFaGlyph),
+        typeof(string),
+        typeof(PlayableWrapPanelItem),
+        new PropertyMetadata(null));
+
+
+    #endregion
+
     #region ImageThumbnail
 
     public ImageSource ImageThumbnail
@@ -80,5 +98,7 @@ namespace VCore.Controls
 
 
     #endregion
+
+
   }
 }

@@ -7,7 +7,7 @@ namespace VCore.WPF.ViewModels.Prompt
 {
   public class PromptViewModel : BaseWindowViewModel
   {
-    protected Func<bool> CanExecuteOkCommand = () => { return false; };
+    protected Func<bool> CanExecuteOkCommand { get; set; } = () => { return false; };
     public PromptResult PromptResult { get; set; }
 
     #region OkCommand

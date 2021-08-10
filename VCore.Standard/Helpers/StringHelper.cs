@@ -97,6 +97,59 @@ namespace VCore
 
     #endregion
 
+    public static bool SimilarityByTags(this string original, string predicate)
+    {
+      var originalSplits = original.ToLower().Split(" ").ToList();
+      var predicateSplits = predicate.ToLower().Split(" ").Select(x => x.ToLower()).ToList();
+
+      var orderered = predicateSplits.OrderBy(x => x.Length).ToList();
+
+      var min = orderered.First().Length;
+      var max = orderered.Last().Length;
+
+      originalSplits.AddRange(original.SplitToChunks(min < 1 ? 2 : min));
+      originalSplits.AddRange(original.SplitToChunks(max < 1 ? 2 : max));
+
+      originalSplits = originalSplits.Select(x => x.ToLower()).Distinct().ToList();
+
+      bool result = false;
+
+      int resultCount = 0;
+
+      
+      foreach (var originalSplit in originalSplits.Where(x => !string.IsNullOrEmpty(x)))
+      {
+        foreach (var tag in predicateSplits)
+        {
+          if (tag.Length == originalSplit.Length)
+            result = originalSplit.Contains(tag);
+
+          if (result)
+          {
+            break;
+          }
+        }
+
+        if (result)
+        {
+          resultCount++;
+          result = false;
+        }
+
+        if (resultCount >= predicateSplits.Count)
+        {
+          return true;
+        }
+      }
+
+      if (!result)
+      {
+        return original.ToLower().Contains(orderered.Last());
+      }
+
+      return result;
+    }
+
     public static IEnumerable<string> SplitToChunks(this string str, int chunkSize)
     {
       var list = new List<string>();
@@ -107,7 +160,7 @@ namespace VCore
           list.Add(str.Substring(i, chunkSize));
         else
         {
-          var diff = -1 * ( str.Length - i - chunkSize);
+          var diff = -1 * (str.Length - i - chunkSize);
           list.Add(str.Substring(i - diff, chunkSize));
         }
       }

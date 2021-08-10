@@ -14,34 +14,39 @@ namespace Logger
         //… makes beep sound
         return Task.Run(() =>
       {
-        Console.ForegroundColor = ConsoleColor.White;
-
-        switch (messageType)
+        try
         {
-          case MessageType.Inform:
-            Console.WriteLine(message.Replace("…", ""));
-            break;
+          Console.ForegroundColor = ConsoleColor.White;
 
-          case MessageType.Error:
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message.Replace("…", ""));
-            break;
+          switch (messageType)
+          {
+            case MessageType.Error:
+              Console.ForegroundColor = ConsoleColor.Red;
+              break;
 
-          case MessageType.Warning:
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(message.Replace("…", ""));
-            break;
+            case MessageType.Warning:
+              Console.ForegroundColor = ConsoleColor.Yellow;
+              break;
 
-          case MessageType.Success:
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(message.Replace("…", ""));
-            break;
+            case MessageType.Success:
+              Console.ForegroundColor = ConsoleColor.Green;
+              break;
 
-          default:
-            throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
+            default:
+              throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
+          }
+
+          var fixedMessage = message.Replace("…", "");
+
+          Console.WriteLine(fixedMessage);
         }
-
-        Console.ForegroundColor = ConsoleColor.White;
+        catch (Exception ex)
+        {
+        }
+        finally
+        {
+          Console.ForegroundColor = ConsoleColor.White;
+        }
       });
       }
     }

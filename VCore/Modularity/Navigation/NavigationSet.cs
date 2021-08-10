@@ -57,7 +57,11 @@ namespace VCore.Modularity.Navigation
       if (Actual.Previous == null)
         return null;
 
+      if (Actual?.Value != null)
+        Actual.Value.Deactivate();
+
       Actual = Actual.Previous;
+
       isInBackState = true;
 
       return Actual.Value;

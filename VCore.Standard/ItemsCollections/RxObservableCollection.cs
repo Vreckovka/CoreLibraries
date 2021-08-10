@@ -28,6 +28,14 @@ namespace VCore.ItemsCollections
       CollectionChanged += ObservableItems_CollectionChanged;
     }
 
+    public RxObservableCollection(IEnumerable<TItem> items)
+    {
+      foreach (var item in items)
+      {
+        Add(item);
+      }
+    }
+
     #endregion Constructors
 
     #region Properties
