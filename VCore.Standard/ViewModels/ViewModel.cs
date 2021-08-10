@@ -5,11 +5,12 @@ using VCore.Standard.Common;
 
 namespace VCore.Standard
 {
+
   public interface IParametrizedViewModel
   {
   }
 
-  public interface IViewModel : IInitializable,IDisposable, INotifyPropertyChanged
+  public interface IViewModel : IInitializable, IDisposable, INotifyPropertyChanged
   {
   }
 
@@ -25,16 +26,23 @@ namespace VCore.Standard
 
   public abstract class ViewModel : VBindableBase, IViewModel
   {
-   
+
+    public bool WasInitilized { get; set; }
 
     #region Methods
 
     public virtual void Initialize()
     {
-      
+      if (WasInitilized)
+      {
+        throw new Exception("Initilized twice");
+        return;
+      }
+
+      WasInitilized = true;
     }
 
-    #endregion 
+    #endregion
   }
 
   public abstract class ViewModel<TModel> : ViewModel, IParametrizedViewModel, IViewModel<TModel>

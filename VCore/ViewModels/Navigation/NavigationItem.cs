@@ -3,8 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using VCore.Helpers;
 using VCore.Standard;
+using VCore.ViewModels.Navigation;
 
-namespace VCore.ViewModels.Navigation
+namespace VCore.WPF.ViewModels.Navigation
 {
   public class NavigationItem : ViewModel, INavigationItem
   {
@@ -17,16 +18,6 @@ namespace VCore.ViewModels.Navigation
       SubItems.CollectionChanged += SubItems_CollectionChanged;
     }
 
-    private void SubItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-    {
-      if(e.NewItems != null)
-      {
-        foreach (INavigationItem newItem in e.NewItems)
-        {
-          newItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
-        }
-      }
-    }
 
     public INavigationItem Model { get; }
     public string Header => Model.Header;
@@ -78,6 +69,34 @@ namespace VCore.ViewModels.Navigation
 
     #endregion
 
+    #region Methods
+
+    #region Initialize
+
+    public override void Initialize()
+    {
+      base.Initialize();
+
+    
+    }
+
+    #endregion
+
+    #region SubItems_CollectionChanged
+
+    private void SubItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      if (e.NewItems != null)
+      {
+        foreach (INavigationItem newItem in e.NewItems)
+        {
+          newItem.ObservePropertyChange(x => x.IsActive).Subscribe(x => IsActive = x);
+        }
+      }
+    }
+
+    #endregion
+
     #region Dispose
 
     public override void Dispose()
@@ -86,6 +105,8 @@ namespace VCore.ViewModels.Navigation
 
       Model?.Dispose();
     }
+
+    #endregion 
 
     #endregion
   }

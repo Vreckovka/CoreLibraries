@@ -1,4 +1,5 @@
 ﻿
+using Ninject.Extensions.Factory;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
 
@@ -10,8 +11,8 @@ namespace VCore.Standard.Modularity.NinjectModules
 
     public override void RegisterFactories()
     {
-      Kernel.Bind<IViewModelsFactory>().To<BaseViewModelsFactory>();
-      Kernel.Bind<IViewFactory>().To<BaseViewFactory>();
+      Kernel.Bind<IViewModelsFactory>().ToFactory();
+      Kernel.Bind<IViewFactory>().ToFactory(); 
     }
 
    

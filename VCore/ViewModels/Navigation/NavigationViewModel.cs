@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 using VCore.ItemsCollections;
 using VCore.Standard;
+using VCore.WPF.ViewModels.Navigation;
 
 namespace VCore.ViewModels.Navigation
 {

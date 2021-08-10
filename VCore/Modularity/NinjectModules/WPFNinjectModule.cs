@@ -1,7 +1,13 @@
-﻿using VCore.Modularity.Navigation;
+﻿using Ninject;
+using Ninject.Activation;
+using Ninject.Activation.Strategies;
+using VCore.Modularity.Navigation;
 using VCore.Modularity.RegionProviders;
+using VCore.Standard;
 using VCore.Standard.Modularity.NinjectModules;
+using VCore.ViewModels.Navigation;
 using VCore.WPF.Managers;
+using VCore.WPF.ViewModels.Navigation;
 
 namespace VCore.Modularity.NinjectModules
 {
@@ -12,6 +18,13 @@ namespace VCore.Modularity.NinjectModules
       Kernel.Bind<IRegionProvider>().To<RegionProvider>().InSingletonScope();
       Kernel.Bind<INavigationProvider>().To<NavigationProvider>().InSingletonScope();
       Kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
+    }
+
+    public override void RegisterViewModels()
+    {
+      base.RegisterViewModels();
+
+      Kernel.Bind<NavigationItem>().ToSelf();
     }
   }
 }
