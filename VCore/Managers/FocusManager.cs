@@ -10,7 +10,7 @@ namespace VCore.WPF.Managers
 {
   public static class VFocusManager
   {
-    public static HashSet<Control> FocusedItems { get; set; } = new HashSet<Control>();
+    public static HashSet<FrameworkElement> FocusedItems { get; set; } = new HashSet<FrameworkElement>();
 
 
     public static bool IsAnyFocused()
@@ -18,12 +18,12 @@ namespace VCore.WPF.Managers
        return FocusedItems.Any();
     }
 
-    public static void AddToFocusItems(Control control)
+    public static void AddToFocusItems(FrameworkElement control)
     {
       FocusedItems.Add(control);
     }
 
-    public static void RemoveFromFocusItems(Control control)
+    public static void RemoveFromFocusItems(FrameworkElement control)
     {
       FocusedItems.Remove(control);
     }
@@ -37,6 +37,7 @@ namespace VCore.WPF.Managers
         FocusManager.SetFocusedElement(dependencyObject, (IInputElement)dependencyObject);
 
         focusedControl.ReleaseMouseCapture();
+
         Keyboard.ClearFocus();
       }
     }

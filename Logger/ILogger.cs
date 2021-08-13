@@ -12,6 +12,6 @@ namespace Logger
         [CallerFilePath] string callerFilePath = null,
         [CallerMemberName] string methodName = "");
 
-      void Log(Exception ex, bool logToFile = false);
+      void Log(Exception ex, bool logToFile = true);
     }
 }

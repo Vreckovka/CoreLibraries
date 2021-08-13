@@ -33,11 +33,10 @@ namespace VCore.Standard
 
     public virtual void Initialize()
     {
-      if (WasInitilized)
-      {
-        throw new Exception("Initilized twice");
-        return;
-      }
+      //if (WasInitilized)
+      //{
+      //  return;
+      //}
 
       WasInitilized = true;
     }

@@ -115,6 +115,11 @@ namespace VPlayer.WindowsPlayer.Behaviors
 
         cursorTimer.Start();
       }
+      else
+      {
+        cursorTimer.Stop();
+        cursorTimer.Start();
+      }
 
     }
 

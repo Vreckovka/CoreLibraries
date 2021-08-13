@@ -16,6 +16,8 @@ namespace Logger
 
     public Task Log(MessageType messageType, string message)
     {
+      Console.WriteLine("LOGGING TO FILE");
+
       return Task.Run(() =>
       {
         lock (batton)

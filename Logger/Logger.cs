@@ -45,7 +45,7 @@ namespace Logger
 
     #region Log
 
-    public void Log(
+    public async void Log(
       MessageType type,
       string message, 
       bool logToFile = false,
@@ -61,24 +61,24 @@ namespace Logger
         if (type == MessageType.Success && !LogSuccess)
           return;
 
-        loggerContainer.Log(type, log);
+        await loggerContainer.Log(type, log);
 
         Logs.Add(log);
 
-        if (logToFile)
+        if (logToFile || type == MessageType.Error)
         {
-          fileLoggerContainer.Log(type, message);
+          await fileLoggerContainer.Log(type, message);
         }
       }
       catch (Exception ex)
       {
-        loggerContainer.Log(MessageType.Error, ex.Message);
+        await loggerContainer.Log(MessageType.Error, ex.Message);
 
         Logs.Add(ex.Message);
       }
     }
 
-    public void Log(Exception ex, bool logToFile = false)
+    public void Log(Exception ex, bool logToFile = true)
     {
       Log(MessageType.Error, ex.ToString(), logToFile);
     }
