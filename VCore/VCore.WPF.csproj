@@ -21,4 +21,22 @@
   <ItemGroup>
     <Resource Include="Resources\window_switch.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Prompts\ErrorPromptView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Prompts\DeletePromptView .xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Prompts\ErrorPromptView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Prompts\DeletePromptView .xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
-using System.Security.AccessControl;
-using System.Text.RegularExpressions;
 using VCore.ItemsCollections;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Helpers;
 using VCore.Standard.ViewModels.TreeView;
+using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.ItemsCollections;
+using VCore.WPF.Managers;
 
-namespace VCore.Standard.ViewModels.WindowsFile
+namespace VCore.WPF.ViewModels.WindowsFiles
 {
-  public class FolderViewModel : WindowsItem<DirectoryInfo>
+  public class FolderViewModel : WindowsItemViewModel<DirectoryInfo>
   {
     protected readonly IViewModelsFactory viewModelsFactory;
     private bool foldersLoaded;
-    public FolderViewModel(DirectoryInfo directoryInfo, IViewModelsFactory viewModelsFactory) : base(directoryInfo)
+    public FolderViewModel(
+      DirectoryInfo directoryInfo, 
+      IViewModelsFactory viewModelsFactory,
+      IWindowManager windowManager) : base(directoryInfo, windowManager)
     {
       this.viewModelsFactory = viewModelsFactory;
 

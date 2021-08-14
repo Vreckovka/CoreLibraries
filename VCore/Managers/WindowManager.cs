@@ -22,12 +22,51 @@ namespace VCore.WPF.Managers
 
     #region ShowYesNoPrompt
 
-    public MessageBoxResult ShowYesNoPrompt(string text, string header = "")
+    public PromptResult ShowYesNoPrompt(string text, string header = "")
     {
-      return MessageBox.Show(text, header, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+      var vm = new GenericPromptViewModel()
+      {
+        Title = header,
+        Text = text
+      };
+
+      ShowPrompt<GenericPromptView>(vm);
+
+
+      return vm.PromptResult;
     }
 
     #endregion
+
+    #region ShowDeletePrompt
+
+    public PromptResult ShowDeletePrompt(string itemName)
+    {
+      return ShowDeletePrompt(itemName, "Do you really want to delete item ", " ?", "Delete");
+    }
+
+    public PromptResult ShowDeletePrompt(
+      string itemName,
+      string header,
+      string beforeText,
+      string afterText)
+    {
+      var vm = new DeleteItemPromptViewModel()
+      {
+        Text = beforeText,
+        Title = header,
+        ItemName = itemName,
+        AfterText = afterText
+      };
+
+      ShowPrompt<DeletePromptView>(vm);
+
+      return vm.PromptResult;
+    }
+
+    #endregion
+
+
 
     #region ShowPrompt
 
@@ -87,10 +126,12 @@ namespace VCore.WPF.Managers
         Text = ex.ToString()
       };
 
-      ShowPrompt<GenericPromptView>(vm);
+      ShowPrompt<ErrorPromptView>(vm);
     }
 
     #endregion
+
+    #region Window_Closed
 
     private void Window_Closed(object sender, EventArgs e)
     {
@@ -104,6 +145,8 @@ namespace VCore.WPF.Managers
         overlayWindow?.Close();
       }
     }
+
+    #endregion
 
     #region Window_Loaded
 

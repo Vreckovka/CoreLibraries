@@ -1,4 +1,4 @@
-﻿namespace VCore.Standard.ViewModels.WindowsFile
+﻿namespace VCore.WPF.ViewModels.WindowsFiles
 {
   public enum FolderType
   {

@@ -8,6 +8,7 @@ namespace VCore.WPF.ViewModels.Prompt
   public class PromptViewModel : BaseWindowViewModel
   {
     protected Func<bool> CanExecuteOkCommand { get; set; } = () => { return false; };
+
     public PromptResult PromptResult { get; set; }
 
     #region OkCommand
@@ -49,5 +50,8 @@ namespace VCore.WPF.ViewModels.Prompt
     }
 
     #endregion
+
+    public Visibility CancelVisibility { get; set; } = Visibility.Collapsed;
+    public Visibility OkVisibility { get; set; } = Visibility.Visible;
   }
 }
