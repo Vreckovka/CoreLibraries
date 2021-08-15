@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using VCore.Standard.ViewModels.WindowsFile;
@@ -17,7 +18,49 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     }
 
 
-  
+    #region OpenContainingFolder
+
+    private ActionCommand openContainingFolder;
+
+    public ICommand OpenContainingFolder
+    {
+      get
+      {
+        if (openContainingFolder == null)
+        {
+          openContainingFolder = new ActionCommand(OnOpenContainingFolder);
+        }
+
+        return openContainingFolder;
+      }
+    }
+
+
+    private void OnOpenContainingFolder()
+    {
+      if (!string.IsNullOrEmpty(Model.FullName))
+      {
+        var folder = Model.FullName;
+
+        if (!Directory.Exists(Model.FullName))
+        {
+          folder = System.IO.Path.GetDirectoryName(Model.FullName);
+        }
+
+        if (!string.IsNullOrEmpty(folder))
+        {
+          Process.Start(new System.Diagnostics.ProcessStartInfo()
+          {
+            FileName = folder,
+            UseShellExecute = true,
+            Verb = "open"
+          });
+        }
+      }
+    }
+
+
+    #endregion
 
   }
 }
