@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Ninject;
 using VCore.Standard.Common;
 
@@ -27,6 +28,7 @@ namespace VCore.Standard
   public abstract class ViewModel : VBindableBase, IViewModel
   {
 
+    [JsonIgnore]
     public bool WasInitilized { get; set; }
 
     #region Methods
@@ -57,7 +59,7 @@ namespace VCore.Standard
 
     #region Properties
 
-    public TModel Model { get; set; }
+    public virtual TModel Model { get; set; }
 
     #endregion Properties
   }

@@ -1,17 +1,15 @@
 ﻿using System.IO;
+using VCore.Standard.ViewModels.TreeView;
 using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.Managers;
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
-  public class FileViewModel : WindowsItemViewModel<FileInfo>
+  public abstract class FileViewModel : FolderHierarchyItemViewModel<FileInfo>
   {
-    public FileViewModel(FileInfo fileInfo, IWindowManager windowManager) : base(fileInfo, windowManager)
+    public FileViewModel(FileInfo fileInfo) : base(fileInfo)
     {
-      var extention = System.IO.Path.GetExtension(fileInfo.FullName);
-
-      FileType = extention.GetFileType();
-
+      FileType = fileInfo.Extension.GetFileType();
     }
 
     #region FileType
@@ -32,5 +30,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     }
 
     #endregion
+   
   }
 }

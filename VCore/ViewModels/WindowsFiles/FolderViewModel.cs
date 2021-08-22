@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using VCore.ItemsCollections;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Helpers;
@@ -11,18 +12,19 @@ using VCore.WPF.Managers;
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
-  public class FolderViewModel : WindowsItemViewModel<DirectoryInfo>
+  public abstract class FolderViewModel<TFileViewModel> : FolderHierarchyItemViewModel<FolderInfo>
+  where TFileViewModel : FileViewModel
   {
     protected readonly IViewModelsFactory viewModelsFactory;
     private bool foldersLoaded;
-    public FolderViewModel(
-      DirectoryInfo directoryInfo, 
-      IViewModelsFactory viewModelsFactory,
-      IWindowManager windowManager) : base(directoryInfo, windowManager)
+
+    public FolderViewModel(FolderInfo folderInfo, IViewModelsFactory viewModelsFactory) : base(folderInfo)
     {
       this.viewModelsFactory = viewModelsFactory;
 
       CanExpand = true;
+
+      Name = folderInfo.Name;
     }
 
     #region Properties
@@ -69,9 +71,12 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region Methods
 
+    public abstract Task<IEnumerable<FileInfo>> GetFiles();
+    public abstract Task<IEnumerable<FolderInfo>> GetFolders();
+
     #region GetFolderInfo
 
-    public void GetFolderInfo()
+    public async void GetFolderInfo()
     {
       SubItems = new ItemsViewModel<TreeViewItemViewModel>();
 
@@ -80,7 +85,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
       if (Model.Name != "System Volume Information")
       {
-        FileInfo[] allFiles = Model.GetFiles();
+        var allFiles = (await GetFiles()).ToList();
         FileInfo[] soundFiles = allFiles.Where(f => soundExtentions.Contains(f.Extension.ToLower())).ToArray();
         FileInfo[] videoFiles = allFiles.Where(f => videoExtentions.Contains(f.Extension.ToLower())).ToArray();
 
@@ -104,9 +109,9 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
         SubItems.AddRange(allFiles.Select(CreateNewFileItem));
 
-        var directories = Model.GetDirectories();
+        var directories =  (await GetFolders()).ToList();
 
-        if (allFiles.Length == 0 && directories.Length == 0)
+        if (allFiles.Count == 0 && directories.Count == 0)
         {
           CanExpand = false;
         }
@@ -146,11 +151,11 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadSubItems
 
-    private void LoadSubItems()
+    private async void LoadSubItems()
     {
       if (Model.Name != "System Volume Information")
       {
-        var directories = Model.GetDirectories();
+        var directories = await GetFolders();
 
         var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
 
@@ -183,12 +188,12 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadSubFolders
 
-    public void LoadSubFolders(FolderViewModel folderViewModel)
+    public void LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel)
     {
       if (!folderViewModel.foldersLoaded)
         folderViewModel.LoadSubItems();
 
-      foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel>())
+      foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>())
       {
         directory.LoadSubFolders(directory);
       }
@@ -198,18 +203,18 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region CreateNewFolderItem
 
-    protected virtual FolderViewModel CreateNewFolderItem(DirectoryInfo directoryInfo)
+    protected virtual FolderViewModel<TFileViewModel> CreateNewFolderItem(FolderInfo directoryInfo)
     {
-      return viewModelsFactory.Create<FolderViewModel>(directoryInfo);
+      return viewModelsFactory.Create<FolderViewModel<TFileViewModel>>(directoryInfo);
     }
 
     #endregion
 
     #region CreateNewFileItem
 
-    protected virtual FileViewModel CreateNewFileItem(FileInfo fileInfo)
+    protected virtual TFileViewModel CreateNewFileItem(FileInfo fileInfo)
     {
-      return viewModelsFactory.Create<FileViewModel>(fileInfo);
+      return viewModelsFactory.Create<TFileViewModel>(fileInfo);
     }
 
     #endregion
@@ -262,7 +267,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
         var viewItems = SubItems.ViewModels.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
 
-        var folders = SubItems.ViewModels.OfType<FolderViewModel>().ToList();
+        var folders = SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>().ToList();
 
         foreach (var folder in folders)
         {
@@ -308,7 +313,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     {
       if (isFiltered)
       {
-        var folders = SubItems.ViewModels.OfType<FolderViewModel>().ToList();
+        var folders = SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>().ToList();
 
         folders.ForEach(x => { x.ResetFilter(); });
 
@@ -331,12 +336,12 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     private void RefreshType()
     {
-      var videos = SubItems.View.OfType<FolderViewModel>().Any(x => x.FolderType == FolderType.Video) ||
-                   SubItems.View.OfType<FileViewModel>().Any(x => x.FileType == FileType.Video); 
+      var videos = SubItems.View.OfType<FolderViewModel<TFileViewModel>>().Any(x => x.FolderType == FolderType.Video) ||
+                   SubItems.View.OfType<TFileViewModel>().Any(x => x.FileType == FileType.Video);
 
 
-      var sounds = SubItems.View.OfType<FolderViewModel>().Any(x => x.FolderType == FolderType.Sound) ||
-                   SubItems.View.OfType<FileViewModel>().Any(x => x.FileType == FileType.Sound);
+      var sounds = SubItems.View.OfType<FolderViewModel<TFileViewModel>>().Any(x => x.FolderType == FolderType.Sound) ||
+                   SubItems.View.OfType<TFileViewModel>().Any(x => x.FileType == FileType.Sound);
 
 
       if (videos && sounds)

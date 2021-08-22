@@ -297,6 +297,11 @@ namespace VCore.Controls
       }
     }
 
+    protected override void OnClick()
+    {
+      base.OnClick();
+    }
+
     #region OnChecked
 
     protected override void OnChecked(RoutedEventArgs e)
@@ -333,6 +338,8 @@ namespace VCore.Controls
 
     private Brush GetAnimation(Brush rootElementBrush, Color from, Color to)
     {
+      rootElementBrush = new SolidColorBrush(from);
+
       var hoverUp = new ColorAnimation();
 
       hoverUp.From = from;
@@ -360,6 +367,14 @@ namespace VCore.Controls
     }
 
     #endregion
+
+    protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+    {
+      base.OnMouseLeftButtonDown(e);
+
+      AnimateImageDefaultColor();
+
+    }
 
     #region OnAnimateDefaultColor
 

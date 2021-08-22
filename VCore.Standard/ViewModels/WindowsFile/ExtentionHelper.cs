@@ -13,6 +13,7 @@
           return FileType.Video;
         }
         case ".flac":
+        case ".wav":
         case ".mp3":
         {
           return FileType.Sound;

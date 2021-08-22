@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Disposables;
+using System.Text.Json.Serialization;
 
 namespace VCore.Standard.Common
 {
@@ -13,6 +14,8 @@ namespace VCore.Standard.Common
       Dispose(false);
     }
 
+
+    [JsonIgnore]
     public bool IsDisposed { get; private set; }
 
     #region AddAutoDisposeObject

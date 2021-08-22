@@ -67,7 +67,6 @@ namespace VCore.WPF.Managers
     #endregion
 
 
-
     #region ShowPrompt
 
     public MessageBoxResult ShowPrompt(string text, string header = "")
@@ -183,10 +182,11 @@ namespace VCore.WPF.Managers
         overlayWindow.AllowsTransparency = true;
         overlayWindow.ShowInTaskbar = false;
 
-        overlayWindow.Width = mainWn.Width;
-        overlayWindow.Height = mainWn.Height;
+        overlayWindow.Width = mainWn.ActualWidth;
+        overlayWindow.Height = mainWn.ActualHeight;
         overlayWindow.Top = mainWn.Top;
         overlayWindow.Left = mainWn.Left;
+        overlayWindow.WindowState = mainWn.WindowState;
 
         overlayWindow.Show();
       }

@@ -82,6 +82,8 @@ namespace SoundManagement
 
     #endregion
 
+    public bool WasLoaded { get; private set; } = false;
+
     #region SelectedSoundDevice
 
     private SoundDevice selectedSoundDevice;
@@ -195,6 +197,8 @@ namespace SoundManagement
 
         if (SoundDevices == null)
         {
+          WasLoaded = false;
+
           SoundDevices = new ObservableCollection<SoundDevice>(devices);
         }
         else
@@ -218,6 +222,8 @@ namespace SoundManagement
         var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
         SetSelectedSoundDevice(SoundDevices.SingleOrDefault(x => x.ID == defaultEndPoint.DeviceID), true);
+
+        WasLoaded = true;
       });
     }
 
