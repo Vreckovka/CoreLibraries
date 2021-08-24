@@ -10,13 +10,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VCore.Standard.Modularity.Interfaces;
 
 namespace VCore.WPF.Views.SplashScreen
 {
   /// <summary>
   /// Interaction logic for SplashScreenView.xaml
   /// </summary>
-  public partial class SplashScreenView : UserControl
+  public partial class SplashScreenView : UserControl, IView
   {
     public SplashScreenView()
     {

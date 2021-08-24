@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using Logger;
 using Ninject;
 using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Ninject;
 using Prism.Regions;
 using VCore.Modularity.NinjectModules;
@@ -41,12 +42,31 @@ namespace VCore.WPF
 
     #endregion
 
+    private int numberOfSteps = 15;
+
+    #region Methods
+
+    #region OnStartup
+
+    protected override void OnStartup(StartupEventArgs e)
+    {
+      stopWatch = new Stopwatch();
+      stopWatch.Start();
+
+      SplashScreenManager.ShowSplashScreen<TSplashScreen>();
+
+      Control.IsTabStopProperty.OverrideMetadata(typeof(Control), new FrameworkPropertyMetadata(false));
+
+      base.OnStartup(e);
+    }
+
+    #endregion
+
     #region RegisterTypes
 
     protected override void RegisterTypes(IContainerRegistry containerRegistry)
     {
-
-      SplashScreenManager.SetText("Loading modules");
+      SplashScreenManager.SetText("Registering types");
 
       Kernel = Container.GetContainer();
 
@@ -77,7 +97,7 @@ namespace VCore.WPF
 
       BuildVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
 
-      SplashScreenManager.AddProgress(0.33);
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
 
     }
 
@@ -92,21 +112,65 @@ namespace VCore.WPF
 
     #endregion
 
-    #region OnStartup
+    #region ConfigureModuleCatalog
 
-    protected override void OnStartup(StartupEventArgs e)
+    protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
     {
-      stopWatch = new Stopwatch();
-      stopWatch.Start();
+      SplashScreenManager.SetText("Loading modules");
 
-      SplashScreenManager.ShowSplashScreen<TSplashScreen>();
+      base.ConfigureModuleCatalog(moduleCatalog);
 
-      Control.IsTabStopProperty.OverrideMetadata(typeof(Control), new FrameworkPropertyMetadata(false));
-
-      base.OnStartup(e);
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
 
     #endregion
+
+    protected override void ConfigureViewModelLocator()
+    {
+      SplashScreenManager.SetText("Configuring locator");
+
+      base.ConfigureViewModelLocator();
+
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
+    }
+
+    protected override void ConfigureDefaultRegionBehaviors(IRegionBehaviorFactory regionBehaviors)
+    {
+      SplashScreenManager.SetText("Configuring region behaviors");
+
+      base.ConfigureDefaultRegionBehaviors(regionBehaviors);
+
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+    }
+
+    protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
+    {
+      SplashScreenManager.SetText("Configuring adapter mappings");
+
+      base.ConfigureRegionAdapterMappings(regionAdapterMappings);
+
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+    }
+
+    protected override void ConfigureServiceLocator()
+    {
+      SplashScreenManager.SetText("Configuring service locator");
+
+      base.ConfigureServiceLocator();
+
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+    }
+
+    protected override IModuleCatalog CreateModuleCatalog()
+    {
+      SplashScreenManager.SetText("Creating module catalog");
+
+      var catalog = base.CreateModuleCatalog();
+
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
+
+      return catalog;
+    }
 
     #region CreateShell
 
@@ -118,7 +182,7 @@ namespace VCore.WPF
 
       vm.Loaded += MainWindow_Loaded;
 
-      SplashScreenManager.AddProgress(0.33);
+      SplashScreenManager.AddProgress(25);
 
       return vm;
     }
@@ -133,7 +197,7 @@ namespace VCore.WPF
 
       base.OnInitialized();
 
-      SplashScreenManager.AddProgress(0.33);
+      SplashScreenManager.AddProgress(25);
 
       SetupExceptionHandling();
 
@@ -236,5 +300,6 @@ namespace VCore.WPF
 
     #endregion
 
+    #endregion
   }
 }
