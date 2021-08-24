@@ -6,5 +6,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
   {
     public string Name { get; set; }
     public string Indentificator { get; set; }
+    public string ParentIndentificator { get; set; }
   }
 }

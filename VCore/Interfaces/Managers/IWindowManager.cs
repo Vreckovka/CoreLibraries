@@ -13,5 +13,6 @@ namespace VCore.WPF.Managers
     MessageBoxResult ShowPrompt(string text, string header = "");
     void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new();
     void ShowErrorPrompt(Exception ex);
+    Window GetWindowView<TView>(object dataContext, bool setOwner = true) where TView : IView, new();
   }
 }

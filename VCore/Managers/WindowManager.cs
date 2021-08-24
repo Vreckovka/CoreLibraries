@@ -66,7 +66,6 @@ namespace VCore.WPF.Managers
 
     #endregion
 
-
     #region ShowPrompt
 
     public MessageBoxResult ShowPrompt(string text, string header = "")
@@ -80,29 +79,10 @@ namespace VCore.WPF.Managers
 
     public void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new()
     {
-      var window = new Window();
-
-      window.Content = new TView();
-
-      window.DataContext = viewModel;
-
-      if (viewModel is BaseWindowViewModel baseWindowViewModel)
-      {
-        baseWindowViewModel.Window = window;
-      }
-
-      window.Owner = Application.Current.MainWindow;
-
-      window.SizeToContent = SizeToContent.WidthAndHeight;
-      window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-      window.WindowStyle = WindowStyle.None;
-      window.AllowsTransparency = true;
-      window.ResizeMode = ResizeMode.NoResize;
-      window.ShowInTaskbar = false;
+      var window = GetWindowView<TView>(viewModel);
 
       window.Loaded += Window_Loaded;
       window.Closed += Window_Closed;
-
 
       ShowOverlayWindow();
 
@@ -110,8 +90,6 @@ namespace VCore.WPF.Managers
 
       window.ShowDialog();
     }
-
-
 
     #endregion
 
@@ -190,6 +168,39 @@ namespace VCore.WPF.Managers
 
         overlayWindow.Show();
       }
+    }
+
+    #endregion
+
+    #region GetWindowView
+
+    public Window GetWindowView<TView>(object dataContext, bool setOwner = true) where TView : IView, new()
+    {
+      var window = new Window();
+
+      window.Content = new TView();
+
+      window.DataContext = dataContext;
+
+      if (dataContext is BaseWindowViewModel baseWindowViewModel)
+      {
+        baseWindowViewModel.Window = window;
+      }
+
+      if (setOwner)
+      {
+        window.Owner = Application.Current.MainWindow;
+      }
+       
+
+      window.SizeToContent = SizeToContent.WidthAndHeight;
+      window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+      window.WindowStyle = WindowStyle.None;
+      window.AllowsTransparency = true;
+      window.ResizeMode = ResizeMode.NoResize;
+      window.ShowInTaskbar = false;
+
+      return window;
     }
 
     #endregion
