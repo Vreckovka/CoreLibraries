@@ -75,7 +75,7 @@ namespace VCore.WPF.Managers
     {
       splashScreen.Dispatcher.Invoke(() =>
       {
-        //splashScreen.Close();
+        splashScreen.Close();
       });
     }
 
