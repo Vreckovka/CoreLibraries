@@ -1,41 +1,83 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.ViewModels.Windows;
+using VCore.WPF.Views;
 
 namespace VCore.WPF.Managers
 {
-  public class SplashScreenManager : ISplashScreenManager
+  public static class SplashScreenManager 
   {
-    private readonly IWindowManager windowManager;
-    private Window actualSplashScreen;
+    private static SplashScreenWindow splashScreen;
+    private static SplashScreenViewModel viewModel = new SplashScreenViewModel();
+    private static Thread splashScreenThread;
 
-    public SplashScreenManager(IWindowManager windowManager)
-    {
-      this.windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
-    }
+    #region ShowSplashScreen
 
-    public void ShowSplashScreen<TView>() where TView : IView, new()
+
+    public static void ShowSplashScreen<TView>() where TView : IView, new()
     {
-      if (actualSplashScreen != null)
+      viewModel = new SplashScreenViewModel();
+
+      splashScreenThread = new Thread(() =>
       {
-        actualSplashScreen.Close();
-      }
+        splashScreen = new SplashScreenWindow();
+        splashScreen.DataContext = viewModel;
+        splashScreen.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        splashScreen.WindowStyle = WindowStyle.None;
+        splashScreen.AllowsTransparency = true;
+        splashScreen.ResizeMode = ResizeMode.NoResize;
+        splashScreen.ShowInTaskbar = true;
+        splashScreen.SizeToContent = SizeToContent.WidthAndHeight;
 
-      actualSplashScreen = windowManager.GetWindowView<TView>(new SplashScreenViewModel(), false);
+        splashScreen.Content = new TView();
 
-      actualSplashScreen.Show();
+        if (splashScreen != null)
+        {
+          splashScreen.Show();
+
+          EventHandler closedEventHandler = null;
+
+          closedEventHandler = (o, s) =>
+          {
+            splashScreen.Closed -= closedEventHandler;
+            splashScreen.Dispatcher.InvokeShutdown();
+          };
+
+          splashScreen.Closed += closedEventHandler;
+
+          System.Windows.Threading.Dispatcher.Run();
+        }
+      });
+
+      splashScreenThread.SetApartmentState(ApartmentState.STA);
+      splashScreenThread.Start();
     }
 
-    public void PushText(string text)
+    #endregion
+
+    public static void SetText(string text)
     {
-      throw new NotImplementedException();
+      viewModel.Message = text;
     }
 
-    public void CloseActualSplashScreen()
+    public static void AddProgress(double progress)
     {
-      actualSplashScreen.Close();
+      viewModel.Progress += progress;
     }
+
+    #region CloseActualSplashScreen
+
+    public static void CloseActualSplashScreen()
+    {
+      splashScreen.Dispatcher.Invoke(() =>
+      {
+        splashScreen.Close();
+      });
+    }
+
+    #endregion
   }
 }

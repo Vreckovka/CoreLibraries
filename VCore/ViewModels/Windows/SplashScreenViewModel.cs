@@ -11,8 +11,8 @@ namespace VCore.WPF.ViewModels.Windows
     public SplashScreenViewModel()
     {
       ApplicationName = Assembly.GetExecutingAssembly().FullName;
-      Message = "Loading assemblies";
-      progress = 0.5;
+      Message = "Loading...";
+      progress = 0;
     }
 
     #region ApplicationName

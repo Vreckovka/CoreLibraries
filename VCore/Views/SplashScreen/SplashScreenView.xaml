@@ -6,14 +6,41 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="450"
              d:DesignWidth="800"
+             Width="400"
+             Height="350"
              mc:Ignorable="d">
-  <Grid>
-    <TextBlock HorizontalAlignment="Center"
-               VerticalAlignment="Center"
-               FontSize="17"
-               FontWeight="Bold"
-               Foreground="White"
-               Text="Loading..." />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
-  </Grid>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+            </Style>
+        </Grid.Resources>
+
+        <TextBlock Grid.Row="1"
+                   Foreground="White"
+                   Text="{Binding ApplicationName}" />
+
+        <TextBlock Grid.Row="2"
+                   Foreground="#858585"
+                   Text="{Binding Message}" />
+
+        <ProgressBar Grid.Row="3"
+                     Height="5"
+                     Margin="10,25"
+                     Background="#141414"
+                     BorderThickness="0"
+                     Foreground="{StaticResource DefaultRedBrush}"
+                     Maximum="1"
+                     Value="{Binding Progress}" />
+
+
+    </Grid>
 </UserControl>

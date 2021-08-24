@@ -14,8 +14,11 @@
     <PackageReference Include="Prism.Wpf" Version="7.2.0.1422" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
     <PackageReference Include="System.Reactive.Linq" Version="5.0.0" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="Prism.Ninject" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logger\Logger.csproj" />
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj" />
   </ItemGroup>
   <ItemGroup>

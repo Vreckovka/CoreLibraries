@@ -19,7 +19,6 @@ namespace VCore.Modularity.NinjectModules
       Kernel.Bind<IRegionProvider>().To<RegionProvider>().InSingletonScope();
       Kernel.Bind<INavigationProvider>().To<NavigationProvider>().InSingletonScope();
       Kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
-      Kernel.Bind<ISplashScreenManager>().To<SplashScreenManager>().InSingletonScope();
     }
 
     public override void RegisterViewModels()
