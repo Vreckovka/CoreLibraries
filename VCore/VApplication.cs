@@ -282,9 +282,15 @@ namespace VCore.WPF
 
     #region MainWindow_Loaded
 
-    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
       SplashScreenManager.CloseActualSplashScreen();
+
+      Application.Current.MainWindow.Topmost = true;
+
+      await Task.Delay(250);
+
+      Application.Current.MainWindow.Topmost = false;
     }
 
     #endregion
