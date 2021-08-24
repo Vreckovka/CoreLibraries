@@ -13,7 +13,12 @@ namespace VCore.WPF.ViewModels.Windows
       var assemblyName = assembly.GetName();
 
       ApplicationName = assemblyName.Name;
-      ApplicationVersion = assemblyName?.Version?.ToString();
+
+      Version version = assemblyName.Version;
+
+      DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+
+      ApplicationVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
 
       Message = "Loading...";
       progress = 0;
