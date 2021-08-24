@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using VCore.Standard.Modularity.Interfaces;
@@ -11,15 +12,15 @@ namespace VCore.WPF.Managers
   public static class SplashScreenManager 
   {
     private static SplashScreenWindow splashScreen;
-    private static SplashScreenViewModel viewModel = new SplashScreenViewModel();
+    private static SplashScreenViewModel viewModel;
     private static Thread splashScreenThread;
 
     #region ShowSplashScreen
 
 
-    public static void ShowSplashScreen<TView>() where TView : IView, new()
+    public static void ShowSplashScreen<TView>(Assembly actualAssembly) where TView : IView, new()
     {
-      viewModel = new SplashScreenViewModel();
+      viewModel = new SplashScreenViewModel(actualAssembly);
 
       splashScreenThread = new Thread(() =>
       {
@@ -74,7 +75,7 @@ namespace VCore.WPF.Managers
     {
       splashScreen.Dispatcher.Invoke(() =>
       {
-        splashScreen.Close();
+        //splashScreen.Close();
       });
     }
 

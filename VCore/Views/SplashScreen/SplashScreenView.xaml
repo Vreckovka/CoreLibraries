@@ -24,9 +24,16 @@
             </Style>
         </Grid.Resources>
 
-        <TextBlock Grid.Row="1"
-                   Foreground="White"
-                   Text="{Binding ApplicationName}" />
+        <StackPanel Grid.Row="1">
+            <TextBlock FontSize="20"
+                       Foreground="White"
+                       Text="{Binding ApplicationName}" />
+
+            <TextBlock Margin="0,20,0,0"
+                       Foreground="#757575"
+                       Text="{Binding ApplicationVersion}" />
+        </StackPanel>
+
 
         <TextBlock Grid.Row="2"
                    Foreground="#858585"

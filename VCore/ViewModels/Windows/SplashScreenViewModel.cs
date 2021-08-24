@@ -8,9 +8,13 @@ namespace VCore.WPF.ViewModels.Windows
 {
   public class SplashScreenViewModel : BaseWindowViewModel
   {
-    public SplashScreenViewModel()
+    public SplashScreenViewModel(Assembly assembly)
     {
-      ApplicationName = Assembly.GetExecutingAssembly().FullName;
+      var assemblyName = assembly.GetName();
+
+      ApplicationName = assemblyName.Name;
+      ApplicationVersion = assemblyName?.Version?.ToString();
+
       Message = "Loading...";
       progress = 0;
     }
@@ -29,6 +33,27 @@ namespace VCore.WPF.ViewModels.Windows
         if (applicationName != value)
         {
           applicationName = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #region ApplicationVersion
+
+    private string applicationVersion;
+    public string ApplicationVersion
+    {
+      get
+      {
+        return applicationVersion;
+      }
+      set
+      {
+        if (applicationVersion != value)
+        {
+          applicationVersion = value;
           RaisePropertyChanged();
         }
       }

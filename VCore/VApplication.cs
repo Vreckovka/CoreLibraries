@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,7 +54,7 @@ namespace VCore.WPF
       stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      SplashScreenManager.ShowSplashScreen<TSplashScreen>();
+      SplashScreenManager.ShowSplashScreen<TSplashScreen>(System.Reflection.Assembly.GetEntryAssembly());
 
       Control.IsTabStopProperty.OverrideMetadata(typeof(Control), new FrameworkPropertyMetadata(false));
 
