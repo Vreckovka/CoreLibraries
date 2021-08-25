@@ -267,11 +267,11 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
             if (loadLevel < MaxAutomaticLoadLevel)
             {
-              dir.LoadFolder();
+              await dir.LoadFolder();
 
               if (loadLevel < MaxAutomaticFolderLoadLevel)
               {
-                dir.LoadFolders(loadLevel + 1);
+                await dir.LoadFolders(loadLevel + 1);
               }
             }
           }
@@ -379,9 +379,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       if (!string.IsNullOrEmpty(predicated) && !predicated.All(x => char.IsWhiteSpace(x)))
       {
         isFiltered = true;
-
-        //var viewItems = new List<TreeViewItemViewModel>();
-        //var folders = new List<FolderViewModel<TFileViewModel>>();
 
         var viewItems = SubItems.ViewModels.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
         var folders = SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>().ToList();
