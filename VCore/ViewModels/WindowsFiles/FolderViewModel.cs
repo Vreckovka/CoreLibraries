@@ -19,7 +19,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
   where TFileViewModel : FileViewModel
   {
     protected readonly IViewModelsFactory viewModelsFactory;
-    private bool foldersLoaded;
+
     private Subject<bool> isLoadedSubject = new Subject<bool>();
 
     public FolderViewModel(FolderInfo folderInfo, IViewModelsFactory viewModelsFactory) : base(folderInfo)
@@ -27,6 +27,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       this.viewModelsFactory = viewModelsFactory;
 
       CanExpand = true;
+
+      SubItems = new ItemsViewModel<TreeViewItemViewModel>();
 
       Name = folderInfo.Name;
 
@@ -37,6 +39,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     }
 
     #region Properties
+
+   
 
     #region ParentFolder
 
@@ -78,11 +82,49 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region WasLoaded
 
-    private bool wasLoaded;
-
     public bool WasLoaded
     {
-      get { return wasLoaded && foldersLoaded; }
+      get { return WasContentLoaded && WasSubFoldersLoaded; }
+    }
+
+    #endregion
+
+    #region WasContentLoaded
+
+    private bool wasContentLoaded;
+
+    private bool WasContentLoaded
+    {
+      get { return wasContentLoaded; }
+      set
+      {
+        if (value != wasContentLoaded)
+        {
+          wasContentLoaded = value;
+          RaisePropertyChanged();
+          RaisePropertyChanged(nameof(WasLoaded));
+        }
+      }
+    }
+
+    #endregion
+
+    #region WasFoldersLoaded
+
+    private bool wasSubFoldersLoaded;
+
+    public bool WasSubFoldersLoaded
+    {
+      get { return wasSubFoldersLoaded; }
+      set
+      {
+        if (value != wasSubFoldersLoaded)
+        {
+          wasSubFoldersLoaded = value;
+          RaisePropertyChanged();
+          RaisePropertyChanged(nameof(WasLoaded));
+        }
+      }
     }
 
     #endregion
@@ -106,8 +148,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
 
-    public virtual bool LoadSubItemsWhenExpanded { get; } = true;
-
+    public virtual int MaxAutomaticFolderLoadLevel { get; } = 2;
+    public virtual int MaxAutomaticLoadLevel { get; } = 2;
     #endregion
 
     #region Methods
@@ -117,35 +159,49 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadFolder
 
-    public async Task LoadFolder()
+    public Task LoadFolder()
     {
-      SubItems = new ItemsViewModel<TreeViewItemViewModel>();
-
-      if (Model.Name != "System Volume Information")
+      return Task.Run(async () =>
       {
-        var allFiles = (await GetFiles()).ToList();
-
-        SubItems.AddRange(allFiles.Select(CreateNewFileItem));
-
-        var directories = (await GetFolders()).ToList();
-
-        if (allFiles.Count == 0 && directories.Count == 0)
+        if (Model.Name != "System Volume Information")
         {
-          CanExpand = false;
+          var allFiles = (await GetFiles()).ToList();
+
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            SubItems.AddRange(allFiles.Select(CreateNewFileItem));
+          });
+
+          var directories = (await GetFolders()).ToList();
+
+          if (allFiles.Count == 0 && directories.Count == 0)
+          {
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+              CanExpand = false;
+            });
+          }
+
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            RefreshType();
+            RaisePropertyChanged(nameof(SubItems));
+            OnGetFolderInfo();
+          });
+        }
+        else
+        {
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            CanExpand = false;
+          });
         }
 
-        RefreshType();
-        RaisePropertyChanged(nameof(SubItems));
-
-        OnGetFolderInfo();
-      }
-      else
-      {
-        CanExpand = false;
-      }
-
-      wasLoaded = true;
-      RaisePropertyChanged(nameof(WasLoaded));
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+          WasContentLoaded = true;
+        });
+      });
     }
 
     #endregion
@@ -161,59 +217,74 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region OnExpanded
 
-    protected override async void OnExpanded(bool isExpandend)
+    protected override void OnExpanded(bool isExpandend)
     {
-      if (isExpandend)
+      Task.Run(async () =>
       {
-        try
+        if (isExpandend && !wasExpandedByFilter)
         {
-          isLoadedSubject.OnNext(true);
+          try
+          {
+            isLoadedSubject.OnNext(true);
 
-          if (!WasLoaded)
-            await LoadFolder();
+            if (!WasContentLoaded)
+              await LoadFolder();
 
-          if (!foldersLoaded)
-            await LoadFolders();
+            if (!WasSubFoldersLoaded)
+              await LoadFolders();
+          }
+          finally
+          {
+            isLoadedSubject.OnNext(false);
+          }
         }
-        finally
-        {
-          isLoadedSubject.OnNext(false);
-        }
-      }
+      });
     }
 
     #endregion
 
     #region LoadFolders
 
-    private async Task LoadFolders()
+    private Task LoadFolders(int loadLevel = 0)
     {
-      if (Model.Name != "System Volume Information")
+      return Task.Run(async () =>
       {
-        var directories = await GetFolders();
-
-        var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
-
-        SubItems.AddRange(direViewModels);
-
-        foreach (var dir in direViewModels)
+        if (Model.Name != "System Volume Information")
         {
-          if (LoadSubItemsWhenExpanded)
+          var directories = await GetFolders();
+
+          var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
+
+          await Application.Current.Dispatcher.InvokeAsync(() =>
           {
-            await dir.LoadFolder();
+            SubItems.AddRange(direViewModels);
+          });
+
+
+          foreach (var dir in direViewModels)
+          {
+            dir.ParentFolder = this;
+
+            if (loadLevel < MaxAutomaticLoadLevel)
+            {
+              dir.LoadFolder();
+
+              if (loadLevel < MaxAutomaticFolderLoadLevel)
+              {
+                dir.LoadFolders(loadLevel + 1);
+              }
+            }
           }
 
-          dir.ParentFolder = this;
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            OnLoadSubItems();
+            RefreshType();
+
+            WasSubFoldersLoaded = true;
+          });
         }
-
-        OnLoadSubItems();
-        RefreshType();
-
-        foldersLoaded = true;
-
-        RaisePropertyChanged(nameof(SubItems));
-        RaisePropertyChanged(nameof(WasLoaded));
-      }
+      });
     }
 
     #endregion
@@ -231,11 +302,11 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     public async Task LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel)
     {
-      if (!folderViewModel.WasLoaded)
-        await LoadFolder();
+      if (!folderViewModel.WasContentLoaded)
+        await folderViewModel.LoadFolder();
 
-      if (!folderViewModel.foldersLoaded)
-        await LoadFolders();
+      if (!folderViewModel.WasSubFoldersLoaded)
+        await folderViewModel.LoadFolders();
 
       foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>())
       {
@@ -303,29 +374,30 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     private bool isFiltered;
     private bool wasExpandedByFilter;
 
-    public void Filter(string predicated)
+    public async Task Filter(string predicated)
     {
       if (!string.IsNullOrEmpty(predicated) && !predicated.All(x => char.IsWhiteSpace(x)))
       {
         isFiltered = true;
 
-        var viewItems = SubItems.ViewModels.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
+        //var viewItems = new List<TreeViewItemViewModel>();
+        //var folders = new List<FolderViewModel<TFileViewModel>>();
 
+        var viewItems = SubItems.ViewModels.Where(x => x.Name.ToLower().Contains(predicated) || x.Name.ChunkSimilarity(predicated) > 0.70).ToList();
         var folders = SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>().ToList();
 
         foreach (var folder in folders)
         {
-          LoadSubFolders(folder);
-
-          folder.Filter(predicated);
+          await LoadSubFolders(folder);
+          await folder.Filter(predicated);
         }
-
-        var childs = folders.Where(x => x.SubItems.View.Count > 0);
 
         foreach (var item in viewItems)
         {
           item.HighlitedText = ToHighlitedText(item.Name, predicated);
         }
+
+        var childs = folders.Where(x => x.SubItems.View.Count > 0);
 
         foreach (var item in childs)
         {

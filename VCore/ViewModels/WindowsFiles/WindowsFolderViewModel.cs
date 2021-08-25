@@ -59,6 +59,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
         {
           Indentificator = x.FullName,
           Name = x.Name,
+          Length = x.Length
         });
       });
     }
