@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.Reactive.Linq;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using VCore.ItemsCollections;
 using VCore.Standard.Factories.ViewModels;
@@ -8,7 +9,9 @@ using VCore.Standard.Helpers;
 using VCore.Standard.ViewModels.TreeView;
 using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.ItemsCollections;
-using VCore.WPF.Managers;
+using System;
+using System.Windows;
+
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
@@ -17,6 +20,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
   {
     protected readonly IViewModelsFactory viewModelsFactory;
     private bool foldersLoaded;
+    private Subject<bool> isLoadedSubject = new Subject<bool>();
 
     public FolderViewModel(FolderInfo folderInfo, IViewModelsFactory viewModelsFactory) : base(folderInfo)
     {
@@ -25,22 +29,27 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       CanExpand = true;
 
       Name = folderInfo.Name;
+
+      isLoadedSubject.Throttle(TimeSpan.FromMilliseconds(150)).ObserveOn(Application.Current.Dispatcher).Subscribe(x =>
+      {
+        IsLoading = x;
+      }).DisposeWith(this);
     }
 
     #region Properties
 
-    #region IsRoot
+    #region ParentFolder
 
-    private bool isRoot;
+    private FolderViewModel<TFileViewModel> parentFolder;
 
-    public bool IsRoot
+    public FolderViewModel<TFileViewModel> ParentFolder
     {
-      get { return isRoot; }
+      get { return parentFolder; }
       set
       {
-        if (value != isRoot)
+        if (value != parentFolder)
         {
-          isRoot = value;
+          parentFolder = value;
           RaisePropertyChanged();
         }
       }
@@ -67,6 +76,38 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
 
+    #region WasLoaded
+
+    private bool wasLoaded;
+
+    public bool WasLoaded
+    {
+      get { return wasLoaded && foldersLoaded; }
+    }
+
+    #endregion
+
+    #region IsLoading
+
+    private bool isLoading;
+
+    public bool IsLoading
+    {
+      get { return isLoading; }
+      set
+      {
+        if (value != isLoading)
+        {
+          isLoading = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    public virtual bool LoadSubItemsWhenExpanded { get; } = true;
+
     #endregion
 
     #region Methods
@@ -74,48 +115,26 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     public abstract Task<IEnumerable<FileInfo>> GetFiles();
     public abstract Task<IEnumerable<FolderInfo>> GetFolders();
 
-    #region GetFolderInfo
+    #region LoadFolder
 
-    public async void GetFolderInfo()
+    public async Task LoadFolder()
     {
       SubItems = new ItemsViewModel<TreeViewItemViewModel>();
-
-      string[] soundExtentions = new string[] { ".mp3", ".flac" };
-      string[] videoExtentions = new string[] { ".mkv", ".avi", ".mp4", ".ts" };
 
       if (Model.Name != "System Volume Information")
       {
         var allFiles = (await GetFiles()).ToList();
-        FileInfo[] soundFiles = allFiles.Where(f => soundExtentions.Contains(f.Extension.ToLower())).ToArray();
-        FileInfo[] videoFiles = allFiles.Where(f => videoExtentions.Contains(f.Extension.ToLower())).ToArray();
-
-        if (soundFiles.Length > 0 && videoFiles.Length > 0)
-        {
-          FolderType = FolderType.Mixed;
-        }
-        else if (soundFiles.Length > 0)
-        {
-          FolderType = FolderType.Sound;
-        }
-        else if (videoFiles.Length > 0)
-        {
-          FolderType = FolderType.Video;
-        }
-
-        var files = new List<FileInfo>();
-
-        files.AddRange(soundFiles);
-        files.AddRange(videoFiles);
 
         SubItems.AddRange(allFiles.Select(CreateNewFileItem));
 
-        var directories =  (await GetFolders()).ToList();
+        var directories = (await GetFolders()).ToList();
 
         if (allFiles.Count == 0 && directories.Count == 0)
         {
           CanExpand = false;
         }
 
+        RefreshType();
         RaisePropertyChanged(nameof(SubItems));
 
         OnGetFolderInfo();
@@ -124,6 +143,9 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       {
         CanExpand = false;
       }
+
+      wasLoaded = true;
+      RaisePropertyChanged(nameof(WasLoaded));
     }
 
     #endregion
@@ -139,19 +161,32 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region OnExpanded
 
-    protected override void OnExpanded(bool isExpandend)
+    protected override async void OnExpanded(bool isExpandend)
     {
-      if (isExpandend && !foldersLoaded)
+      if (isExpandend)
       {
-        LoadSubItems();
+        try
+        {
+          isLoadedSubject.OnNext(true);
+
+          if (!WasLoaded)
+            await LoadFolder();
+
+          if (!foldersLoaded)
+            await LoadFolders();
+        }
+        finally
+        {
+          isLoadedSubject.OnNext(false);
+        }
       }
     }
 
     #endregion
 
-    #region LoadSubItems
+    #region LoadFolders
 
-    private async void LoadSubItems()
+    private async Task LoadFolders()
     {
       if (Model.Name != "System Volume Information")
       {
@@ -163,15 +198,21 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
         foreach (var dir in direViewModels)
         {
-          dir.GetFolderInfo();
-        }
+          if (LoadSubItemsWhenExpanded)
+          {
+            await dir.LoadFolder();
+          }
 
-        foldersLoaded = true;
+          dir.ParentFolder = this;
+        }
 
         OnLoadSubItems();
         RefreshType();
 
+        foldersLoaded = true;
+
         RaisePropertyChanged(nameof(SubItems));
+        RaisePropertyChanged(nameof(WasLoaded));
       }
     }
 
@@ -188,14 +229,17 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadSubFolders
 
-    public void LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel)
+    public async Task LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel)
     {
+      if (!folderViewModel.WasLoaded)
+        await LoadFolder();
+
       if (!folderViewModel.foldersLoaded)
-        folderViewModel.LoadSubItems();
+        await LoadFolders();
 
       foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>())
       {
-        directory.LoadSubFolders(directory);
+        await directory.LoadSubFolders(directory);
       }
     }
 
@@ -334,7 +378,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region RefreshType
 
-    private void RefreshType()
+    public virtual void RefreshType()
     {
       var videos = SubItems.View.OfType<FolderViewModel<TFileViewModel>>().Any(x => x.FolderType == FolderType.Video) ||
                    SubItems.View.OfType<TFileViewModel>().Any(x => x.FileType == FileType.Video);
@@ -360,6 +404,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       {
         FolderType = FolderType.Other;
       }
+
+      ParentFolder?.RefreshType();
     }
 
     #endregion

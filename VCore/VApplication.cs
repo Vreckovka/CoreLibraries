@@ -141,7 +141,7 @@ namespace VCore.WPF
 
       base.ConfigureDefaultRegionBehaviors(regionBehaviors);
 
-      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
 
     protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
@@ -150,7 +150,7 @@ namespace VCore.WPF
 
       base.ConfigureRegionAdapterMappings(regionAdapterMappings);
 
-      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
 
     protected override void ConfigureServiceLocator()
@@ -159,7 +159,7 @@ namespace VCore.WPF
 
       base.ConfigureServiceLocator();
 
-      SplashScreenManager.AddProgress(100.0 / numberOfSteps );
+      SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
 
     protected override IModuleCatalog CreateModuleCatalog()
@@ -200,7 +200,9 @@ namespace VCore.WPF
 
       SplashScreenManager.AddProgress(25);
 
+#if !DEBUG
       SetupExceptionHandling();
+#endif
 
       stopWatch.Stop();
 
