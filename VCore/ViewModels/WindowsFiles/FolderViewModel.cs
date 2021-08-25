@@ -40,7 +40,24 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region Properties
 
-   
+    #region IsRoot
+
+    private bool isRoot;
+
+    public bool IsRoot
+    {
+      get { return isRoot; }
+      set
+      {
+        if (value != isRoot)
+        {
+          isRoot = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
 
     #region ParentFolder
 
