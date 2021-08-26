@@ -12,7 +12,6 @@ namespace VCore.WPF.Prompts
     }
 
 
-
     #region Name
 
     private string name;
@@ -52,8 +51,6 @@ namespace VCore.WPF.Prompts
     }
 
     #endregion
-
-
 
   }
 }

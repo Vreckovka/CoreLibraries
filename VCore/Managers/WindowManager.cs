@@ -20,6 +20,37 @@ namespace VCore.WPF.Managers
   {
     private Window overlayWindow;
 
+    #region ShowPrompt
+
+    public void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new()
+    {
+      var window = GetWindowView<TView>(viewModel);
+
+      window.Loaded += Window_Loaded;
+      window.Closed += Window_Closed;
+
+      ShowOverlayWindow();
+
+      window.Owner = overlayWindow;
+
+      window.ShowDialog();
+    }
+
+    #endregion
+
+    #region ShowQuestionPrompt
+
+    public PromptResult ShowQuestionPrompt<TView, TViewModel>(TViewModel viewModel)
+      where TView : IView, new()
+      where TViewModel : GenericPromptViewModel
+    {
+      ShowPrompt<TView>(viewModel);
+
+      return viewModel.PromptResult;
+    }
+
+    #endregion
+
     #region ShowYesNoPrompt
 
     public PromptResult ShowYesNoPrompt(string text, string header = "")
@@ -62,33 +93,6 @@ namespace VCore.WPF.Managers
       ShowPrompt<DeletePromptView>(vm);
 
       return vm.PromptResult;
-    }
-
-    #endregion
-
-    #region ShowPrompt
-
-    public MessageBoxResult ShowPrompt(string text, string header = "")
-    {
-      return MessageBox.Show(text, header, MessageBoxButton.OK);
-    }
-
-    #endregion
-
-    #region ShowPrompt
-
-    public void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new()
-    {
-      var window = GetWindowView<TView>(viewModel);
-
-      window.Loaded += Window_Loaded;
-      window.Closed += Window_Closed;
-
-      ShowOverlayWindow();
-
-      window.Owner = overlayWindow;
-
-      window.ShowDialog();
     }
 
     #endregion

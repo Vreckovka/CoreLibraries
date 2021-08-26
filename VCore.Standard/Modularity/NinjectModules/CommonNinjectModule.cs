@@ -13,6 +13,7 @@ namespace VCore.Standard.Modularity.NinjectModules
     {
       Kernel.Bind<IViewModelsFactory>().ToFactory();
       Kernel.Bind<IViewFactory>().ToFactory(); 
+
     }
 
    

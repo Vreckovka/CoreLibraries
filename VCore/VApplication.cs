@@ -70,11 +70,12 @@ namespace VCore.WPF
       SplashScreenManager.SetText("Registering types");
 
       Kernel = Container.GetContainer();
-
       VIoc.Kernel = Kernel;
 
       Kernel.Load<CommonNinjectModule>();
       Kernel.Load<WPFNinjectModule>();
+
+      OnContainerCreated();
 
       LoadModules();
 
@@ -113,6 +114,15 @@ namespace VCore.WPF
 
     #endregion
 
+    #region OnContainerCreated
+
+    protected virtual void OnContainerCreated()
+    {
+
+    }
+
+    #endregion
+
     #region ConfigureModuleCatalog
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -126,6 +136,8 @@ namespace VCore.WPF
 
     #endregion
 
+    #region ConfigureViewModelLocator
+
     protected override void ConfigureViewModelLocator()
     {
       SplashScreenManager.SetText("Configuring locator");
@@ -134,6 +146,10 @@ namespace VCore.WPF
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
+
+    #endregion
+
+    #region ConfigureDefaultRegionBehaviors
 
     protected override void ConfigureDefaultRegionBehaviors(IRegionBehaviorFactory regionBehaviors)
     {
@@ -144,6 +160,10 @@ namespace VCore.WPF
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
 
+    #endregion
+
+    #region ConfigureRegionAdapterMappings
+
     protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
     {
       SplashScreenManager.SetText("Configuring adapter mappings");
@@ -152,6 +172,8 @@ namespace VCore.WPF
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
+
+    #endregion
 
     protected override void ConfigureServiceLocator()
     {

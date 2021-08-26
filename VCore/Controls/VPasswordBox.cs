@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using VCore.Controls;
 
 namespace VCore.WPF.Controls
 {
@@ -12,14 +13,12 @@ namespace VCore.WPF.Controls
     private Grid grid;
     private System.Windows.Controls.PasswordBox passwordBox;
     private TextBox textBox;
-    private Button button;
 
     public VPasswordBox()
     {
       grid = new Grid();
       passwordBox = new System.Windows.Controls.PasswordBox();
       textBox = new TextBox();
-      button = new Button();
       passwordBox.TabIndex = 1;
       passwordBox.IsTabStop = true;
 
@@ -29,14 +28,13 @@ namespace VCore.WPF.Controls
       textBox.IsTabStop = true;
       passwordBox.IsTabStop = true;
 
-      button.HorizontalAlignment = HorizontalAlignment.Right;
 
-      button.PreviewMouseLeftButtonDown += OnShowPassword;
-      button.PreviewMouseLeftButtonUp += HidePassword;
+//      button.PreviewMouseLeftButtonDown += OnShowPassword;
+//      button.PreviewMouseLeftButtonUp += HidePassword;
 
       grid.Children.Add(passwordBox);
       grid.Children.Add(textBox);
-      grid.Children.Add(button);
+      //grid.Children.Add(button);
     }
 
     public override void BeginInit()
