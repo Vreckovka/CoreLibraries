@@ -1,41 +1,45 @@
 ﻿<UserControl x:Class="VCore.WPF.Prompts.LoginPrompt"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:VCore.WPF.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VCore.WPF.Prompts"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="340"
              Height="250"
              mc:Ignorable="d">
-    <Grid>
-        <Grid.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="Margin" Value="10" />
-            </Style>
+  <Grid>
+    <Grid.Resources>
+      <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="10" />
+      </Style>
 
-            <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="Margin" Value="10" />
-            </Style>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+      <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="10" />
+      </Style>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
 
-        <TextBlock HorizontalAlignment="Center" Text="Name" />
-        <TextBox Grid.Row="1" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+    <TextBlock HorizontalAlignment="Center" Text="Name" />
 
-        <TextBlock Grid.Row="2"
-                   HorizontalAlignment="Center"
-                   Text="Password" />
+    <TextBox Grid.Row="1"
+             IsTabStop="True"
+             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-        <TextBox Grid.Row="3" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+    <TextBlock Grid.Row="2"
+               HorizontalAlignment="Center"
+               Text="Password" />
 
-        <local:GenericPromptFooter Grid.Row="4" VerticalAlignment="Bottom" />
-    </Grid>
+    <controls:VPasswordBox Grid.Row="3" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+    <local:GenericPromptFooter Grid.Row="4" VerticalAlignment="Bottom" />
+  </Grid>
 </UserControl>
