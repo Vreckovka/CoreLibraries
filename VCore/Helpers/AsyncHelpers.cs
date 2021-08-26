@@ -59,7 +59,6 @@ namespace VCore.Helpers
         catch (Exception e)
         {
           synch.InnerException = e;
-          throw;
         }
         finally
         {

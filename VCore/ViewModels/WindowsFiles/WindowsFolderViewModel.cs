@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Ninject;
+using VCore.Helpers;
+using VCore.Standard;
 using VCore.Standard.Factories.ViewModels;
 using VCore.WPF.Managers;
 
@@ -16,8 +20,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     public WindowsFolderViewModel(FolderInfo folderInfo, IViewModelsFactory viewModelsFactory) : base(folderInfo, viewModelsFactory)
     {
       directoryInfo = new DirectoryInfo(folderInfo.Indentificator);
-
-
     }
 
     #region OnOpenContainingFolder
