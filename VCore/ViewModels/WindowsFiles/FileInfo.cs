@@ -2,7 +2,7 @@
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
-  public class FileInfo : IFolderHierarchyItem
+  public class FileInfo :  IFolderHierarchyItem
   {
     public string Extension { get; }
     public string Indentificator { get; set; }
