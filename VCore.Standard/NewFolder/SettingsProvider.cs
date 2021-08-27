@@ -108,10 +108,6 @@ namespace VCore.Standard.NewFolder
         {
           settings[key] = value;
         }
-        else
-        {
-          return;
-        }
       }
       else
       {
