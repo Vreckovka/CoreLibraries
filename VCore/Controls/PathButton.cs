@@ -31,6 +31,24 @@ namespace VCore.Controls
 
     #endregion
 
+    #region IconStretch
+
+    public Stretch IconStretch
+    {
+      get { return (Stretch)GetValue(IconStretchProperty); }
+      set { SetValue(IconStretchProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconStretchProperty =
+      DependencyProperty.Register(
+        nameof(IconStretch),
+        typeof(Stretch),
+        typeof(PathButton),
+        new PropertyMetadata(Stretch.Fill));
+
+
+    #endregion
+
     #region IconWidth
 
     public double IconWidth

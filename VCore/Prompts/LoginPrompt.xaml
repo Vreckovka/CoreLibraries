@@ -8,53 +8,53 @@
              Width="350"
              Height="205"
              mc:Ignorable="d">
-    <Border Padding="5">
-        <Grid>
-            <Grid.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Margin" Value="0,5,0,5" />
-                </Style>
+  <Border Padding="5">
+    <Grid>
+      <Grid.Resources>
+        <Style TargetType="TextBlock">
+          <Setter Property="Foreground" Value="White" />
+          <Setter Property="Margin" Value="0,5,0,5" />
+        </Style>
 
-                <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Margin" Value="10,0" />
-                </Style>
+        <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+          <Setter Property="Foreground" Value="White" />
+          <Setter Property="Margin" Value="10,0" />
+        </Style>
 
-                <Style BasedOn="{StaticResource {x:Type PasswordBox}}" TargetType="PasswordBox">
-                    <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Margin" Value="10,5" />
-                </Style>
+        <Style BasedOn="{StaticResource {x:Type PasswordBox}}" TargetType="PasswordBox">
+          <Setter Property="Foreground" Value="White" />
+          <Setter Property="Margin" Value="10,5" />
+        </Style>
 
-            </Grid.Resources>
+      </Grid.Resources>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
 
-            <TextBlock HorizontalAlignment="Center"
-                       FontSize="15"
-                       Text="Name" />
+      <TextBlock HorizontalAlignment="Center"
+                 FontSize="15"
+                 Text="Name" />
 
-            <TextBox Grid.Row="1"
-                     FontSize="15"
-                     IsTabStop="True"
-                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBox Grid.Row="1"
+               FontSize="15"
+               IsTabStop="True"
+               Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-            <TextBlock Grid.Row="2"
-                       Margin="0,15,0,5"
-                       HorizontalAlignment="Center"
-                       FontSize="15"
-                       Text="Password" />
+      <TextBlock Grid.Row="2"
+                 Margin="0,15,0,5"
+                 HorizontalAlignment="Center"
+                 FontSize="15"
+                 Text="Password" />
 
-            <controls:VPasswordBox Grid.Row="3" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+      <controls:VPasswordBox Grid.Row="3" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-            <local:GenericPromptFooter Grid.Row="4" VerticalAlignment="Bottom" />
-        </Grid>
-    </Border>
+      <local:GenericPromptFooter Grid.Row="4" VerticalAlignment="Bottom" />
+    </Grid>
+  </Border>
 
 </UserControl>

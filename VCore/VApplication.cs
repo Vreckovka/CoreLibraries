@@ -43,7 +43,7 @@ namespace VCore.WPF
 
     #endregion
 
-    private int numberOfSteps = 15;
+    private int numberOfSteps = 18;
 
     #region Methods
 

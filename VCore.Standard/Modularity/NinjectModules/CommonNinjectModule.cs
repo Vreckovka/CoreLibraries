@@ -2,6 +2,7 @@
 using Ninject.Extensions.Factory;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
+using VCore.Standard.NewFolder;
 
 namespace VCore.Standard.Modularity.NinjectModules
 {
@@ -13,10 +14,16 @@ namespace VCore.Standard.Modularity.NinjectModules
     {
       Kernel.Bind<IViewModelsFactory>().ToFactory();
       Kernel.Bind<IViewFactory>().ToFactory(); 
-
+    
     }
 
-   
+
+    public override void RegisterProviders()
+    {
+      base.RegisterProviders();
+
+      Kernel.Bind<ISettingsProvider>().To<SettingsProvider>().InSingletonScope().WithConstructorArgument("settingsPath","settings.txt"); 
+    }
 
     #endregion Methods
   }
