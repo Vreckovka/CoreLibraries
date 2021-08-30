@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using VPlayer.AudioStorage.InfoDownloader.LRC.Domain;
 
 namespace VPlayer.AudioStorage.InfoDownloader.LRC
@@ -140,10 +141,6 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
           }
 
           return time;
-        }
-        else
-        {
-          throw new NotImplementedException();
         }
       }
 
