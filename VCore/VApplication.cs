@@ -175,6 +175,8 @@ namespace VCore.WPF
 
     #endregion
 
+    #region ConfigureServiceLocator
+
     protected override void ConfigureServiceLocator()
     {
       SplashScreenManager.SetText("Configuring service locator");
@@ -183,6 +185,10 @@ namespace VCore.WPF
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
     }
+
+    #endregion
+
+    #region CreateModuleCatalog
 
     protected override IModuleCatalog CreateModuleCatalog()
     {
@@ -194,6 +200,8 @@ namespace VCore.WPF
 
       return catalog;
     }
+
+    #endregion
 
     #region CreateShell
 
@@ -222,9 +230,7 @@ namespace VCore.WPF
 
       SplashScreenManager.AddProgress(25);
 
-#if !DEBUG
       SetupExceptionHandling();
-#endif
 
       stopWatch.Stop();
 
@@ -237,6 +243,8 @@ namespace VCore.WPF
 
     private void SetupExceptionHandling()
     {
+
+#if !DEBUG
       AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
@@ -245,7 +253,7 @@ namespace VCore.WPF
         LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
         e.Handled = true;
       };
-
+#endif
       TaskScheduler.UnobservedTaskException += (s, e) =>
       {
         LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
@@ -253,9 +261,9 @@ namespace VCore.WPF
       };
     }
 
-    #endregion
+#endregion
 
-    #region LogUnhandledException
+#region LogUnhandledException
 
     private async void LogUnhandledException(Exception exception, string source)
     {
@@ -273,7 +281,6 @@ namespace VCore.WPF
       }
       finally
       {
-        logger.Log(MessageType.Error, message);
         logger.Log(exception);
 
         await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -283,9 +290,9 @@ namespace VCore.WPF
       }
     }
 
-    #endregion
+#endregion
 
-    #region CreateMainWindow
+#region CreateMainWindow
 
     private TMainWindow CreateMainWindow()
     {
@@ -302,9 +309,9 @@ namespace VCore.WPF
       return shell;
     }
 
-    #endregion
+#endregion
 
-    #region MainWindow_Loaded
+#region MainWindow_Loaded
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
@@ -317,9 +324,9 @@ namespace VCore.WPF
       Application.Current.MainWindow.Topmost = false;
     }
 
-    #endregion
+#endregion
 
-    #region OnExit
+#region OnExit
 
     protected override void OnExit(ExitEventArgs e)
     {
@@ -329,8 +336,8 @@ namespace VCore.WPF
       base.OnExit(e);
     }
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
   }
 }
