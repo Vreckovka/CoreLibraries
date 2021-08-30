@@ -236,13 +236,16 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     protected override void OnExpanded(bool isExpandend)
     {
+      bool originalIsLoading = IsLoading;
+
       Task.Run(async () =>
       {
         if (isExpandend && !wasExpandedByFilter)
         {
           try
           {
-            isLoadedSubject.OnNext(true);
+            if (!originalIsLoading)
+              isLoadedSubject.OnNext(true);
 
             if (!WasContentLoaded)
               await LoadFolder();
@@ -252,7 +255,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
           }
           finally
           {
-            isLoadedSubject.OnNext(false);
+            if (!originalIsLoading)
+              isLoadedSubject.OnNext(false);
           }
         }
       });
