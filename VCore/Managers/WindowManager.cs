@@ -147,6 +147,8 @@ namespace VCore.WPF.Managers
 
     private void ShowOverlayWindow()
     {
+      overlayWindow?.Close();
+
       overlayWindow = new Window();
 
       var mainWn = Application.Current.MainWindow;
@@ -163,14 +165,57 @@ namespace VCore.WPF.Managers
         overlayWindow.AllowsTransparency = true;
         overlayWindow.ShowInTaskbar = false;
 
-        overlayWindow.Width = mainWn.ActualWidth;
-        overlayWindow.Height = mainWn.ActualHeight;
-        overlayWindow.Top = mainWn.Top;
-        overlayWindow.Left = mainWn.Left;
-        overlayWindow.WindowState = mainWn.WindowState;
+        CopyWindowSizeAndPosition(overlayWindow, mainWn);
+
+        mainWn.LocationChanged += MainWn_Changed;
+        mainWn.SizeChanged += MainWn_Changed;
+        mainWn.StateChanged += MainWn_Changed;
+        overlayWindow.Closed += OverlayWindow_Closed;
 
         overlayWindow.Show();
       }
+    }
+
+    private void OverlayWindow_Closed(object sender, EventArgs e)
+    {
+      var mainWn = Application.Current.MainWindow;
+
+      if (mainWn != null)
+      {
+        mainWn.LocationChanged -= MainWn_Changed;
+        mainWn.SizeChanged -= MainWn_Changed;
+        mainWn.StateChanged -= MainWn_Changed;
+
+        if (overlayWindow != null)
+          overlayWindow.Closed -= OverlayWindow_Closed;
+      }
+    }
+
+    #endregion
+
+    #region MainWn_Changed
+
+    private void MainWn_Changed(object sender, EventArgs e)
+    {
+      CopyWindowSizeAndPosition(overlayWindow, Application.Current.MainWindow);
+    }
+
+    #endregion
+
+    #region CopyWindowSizeAndPosition
+
+    private void CopyWindowSizeAndPosition(Window myWindow, Window copyFrom)
+    {
+      if (myWindow == null || copyFrom == null)
+      {
+        return;
+      }
+
+      overlayWindow.Width = copyFrom.ActualWidth;
+      overlayWindow.Height = copyFrom.ActualHeight;
+      overlayWindow.Top = copyFrom.Top;
+      overlayWindow.Left = copyFrom.Left;
+      overlayWindow.WindowState = copyFrom.WindowState;
     }
 
     #endregion
@@ -194,7 +239,7 @@ namespace VCore.WPF.Managers
       {
         window.Owner = Application.Current.MainWindow;
       }
-       
+
 
       window.SizeToContent = SizeToContent.WidthAndHeight;
       window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
