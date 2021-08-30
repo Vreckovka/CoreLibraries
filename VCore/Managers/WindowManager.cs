@@ -120,11 +120,10 @@ namespace VCore.WPF.Managers
       {
         window.Loaded -= Window_Loaded;
         window.Closed -= Window_Closed;
-
-        Application.Current?.MainWindow?.Focus();
-
-        overlayWindow?.Close();
       }
+
+      Application.Current?.MainWindow?.Focus();
+      overlayWindow?.Close();
     }
 
     #endregion
