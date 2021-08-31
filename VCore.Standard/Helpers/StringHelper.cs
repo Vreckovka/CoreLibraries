@@ -52,6 +52,11 @@ namespace VCore
 
     public static float Similarity(this string s, string t, bool useAbsoluteString = false, bool ignorCase = true)
     {
+      if (s == null || t == null)
+      {
+        return 0;
+      }
+
       if (useAbsoluteString)
       {
         s = s.ToLower().Replace(" ", string.Empty);
@@ -73,7 +78,9 @@ namespace VCore
 
       float dis = LevenshteinDistance(s, t);
 
-      return 1.0f - dis / maxLen;
+      var sim = 1.0f - dis / maxLen;
+
+      return sim;
     }
 
     #endregion
