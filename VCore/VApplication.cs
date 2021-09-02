@@ -123,6 +123,8 @@ namespace VCore.WPF
 
     #endregion
 
+    #region Configure methods
+
     #region ConfigureModuleCatalog
 
     protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
@@ -200,6 +202,8 @@ namespace VCore.WPF
 
       return catalog;
     }
+
+    #endregion
 
     #endregion
 
