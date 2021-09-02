@@ -19,21 +19,25 @@ namespace VCore.WPF.Managers
   public class WindowManager : IWindowManager
   {
     private Window overlayWindow;
+    private object windowLock = new object();
 
     #region ShowPrompt
 
     public void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new()
     {
-      var window = GetWindowView<TView>(viewModel);
+      lock (windowLock)
+      {
+        var window = GetWindowView<TView>(viewModel);
 
-      window.Loaded += Window_Loaded;
-      window.Closed += Window_Closed;
+        window.Loaded += Window_Loaded;
+        window.Closed += Window_Closed;
 
-      ShowOverlayWindow();
+        ShowOverlayWindow();
 
-      window.Owner = overlayWindow;
+        window.Owner = overlayWindow;
 
-      window.ShowDialog();
+        window.ShowDialog();
+      }
     }
 
     #endregion
@@ -116,14 +120,21 @@ namespace VCore.WPF.Managers
 
     private void Window_Closed(object sender, EventArgs e)
     {
-      if (sender is Window window)
+      lock (windowLock)
       {
-        window.Loaded -= Window_Loaded;
-        window.Closed -= Window_Closed;
-      }
+        if (sender is Window window)
+        {
+          window.Loaded -= Window_Loaded;
+          window.Closed -= Window_Closed;
+        }
 
-      Application.Current?.MainWindow?.Focus();
-      overlayWindow?.Close();
+        Application.Current?.MainWindow?.Focus();
+
+        if (overlayWindow != null && overlayWindow.IsVisible)
+        {
+          overlayWindow?.Close();
+        }
+      }
     }
 
     #endregion
@@ -147,32 +158,35 @@ namespace VCore.WPF.Managers
 
     private void ShowOverlayWindow()
     {
-      overlayWindow?.Close();
-
-      overlayWindow = new Window();
-
-      var mainWn = Application.Current.MainWindow;
-
-      if (mainWn != null)
+      lock (windowLock)
       {
-        overlayWindow.Owner = mainWn;
+        overlayWindow?.Close();
 
-        overlayWindow.Background = Brushes.Black;
-        overlayWindow.Opacity = 0.90;
-        overlayWindow.Style = null;
-        overlayWindow.WindowStyle = WindowStyle.None;
-        overlayWindow.ResizeMode = ResizeMode.NoResize;
-        overlayWindow.AllowsTransparency = true;
-        overlayWindow.ShowInTaskbar = false;
+        overlayWindow = new Window();
 
-        CopyWindowSizeAndPosition(overlayWindow, mainWn);
+        var mainWn = Application.Current.MainWindow;
 
-        mainWn.LocationChanged += MainWn_Changed;
-        mainWn.SizeChanged += MainWn_Changed;
-        mainWn.StateChanged += MainWn_Changed;
-        overlayWindow.Closed += OverlayWindow_Closed;
+        if (mainWn != null)
+        {
+          overlayWindow.Owner = mainWn;
 
-        overlayWindow.Show();
+          overlayWindow.Background = Brushes.Black;
+          overlayWindow.Opacity = 0.90;
+          overlayWindow.Style = null;
+          overlayWindow.WindowStyle = WindowStyle.None;
+          overlayWindow.ResizeMode = ResizeMode.NoResize;
+          overlayWindow.AllowsTransparency = true;
+          overlayWindow.ShowInTaskbar = false;
+
+          CopyWindowSizeAndPosition(overlayWindow, mainWn);
+
+          mainWn.LocationChanged += MainWn_Changed;
+          mainWn.SizeChanged += MainWn_Changed;
+          mainWn.StateChanged += MainWn_Changed;
+          overlayWindow.Closed += OverlayWindow_Closed;
+
+          overlayWindow.Show();
+        }
       }
     }
 
