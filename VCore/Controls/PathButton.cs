@@ -138,7 +138,7 @@ namespace VCore.Controls
 
 
     #endregion
-
+   
     #region IconDefaultColor
 
     public Color IconDefaultColor
@@ -152,7 +152,7 @@ namespace VCore.Controls
         nameof(IconDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.Transparent, (x, y) =>
+        new PropertyMetadata(Colors.Green, (x, y) =>
         {
           if (x is PathButton buttonWithIcon)
           {
@@ -160,7 +160,6 @@ namespace VCore.Controls
             {
               if (solidColorBrush.Color != newColor)
               {
-                buttonWithIcon.IconDefaultColor = newColor;
                 buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
               }
             }
