@@ -261,9 +261,9 @@ namespace VCore.WPF
       };
     }
 
-#endregion
+    #endregion
 
-#region LogUnhandledException
+    #region LogUnhandledException
 
     private async void LogUnhandledException(Exception exception, string source)
     {
@@ -290,9 +290,9 @@ namespace VCore.WPF
       }
     }
 
-#endregion
+    #endregion
 
-#region CreateMainWindow
+    #region CreateMainWindow
 
     private TMainWindow CreateMainWindow()
     {
@@ -309,9 +309,9 @@ namespace VCore.WPF
       return shell;
     }
 
-#endregion
+    #endregion
 
-#region MainWindow_Loaded
+    #region MainWindow_Loaded
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
@@ -324,9 +324,9 @@ namespace VCore.WPF
       Application.Current.MainWindow.Topmost = false;
     }
 
-#endregion
+    #endregion
 
-#region OnExit
+    #region OnExit
 
     protected override void OnExit(ExitEventArgs e)
     {
@@ -336,8 +336,8 @@ namespace VCore.WPF
       base.OnExit(e);
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
   }
 }
