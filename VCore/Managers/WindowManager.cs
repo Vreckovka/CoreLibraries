@@ -133,6 +133,7 @@ namespace VCore.WPF.Managers
         if (overlayWindow != null && overlayWindow.IsVisible)
         {
           overlayWindow?.Close();
+          overlayWindow = null;
         }
       }
     }
@@ -161,6 +162,7 @@ namespace VCore.WPF.Managers
       lock (windowLock)
       {
         overlayWindow?.Close();
+        overlayWindow = null;
 
         overlayWindow = new Window();
 

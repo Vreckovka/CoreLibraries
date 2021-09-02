@@ -35,7 +35,9 @@ namespace VCore.WPF.Behaviors.Popups
         }
 
         if (window != null)
+        {
           window.LocationChanged += Window_LocationChanged;
+        }
       }
     }
 
