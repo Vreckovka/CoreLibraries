@@ -93,11 +93,15 @@ namespace VCore.WPF
       Console.WriteLine("CONSOLE IS READY");
 #endif
 
-      Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
-      DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+      var version = System.Reflection.Assembly.GetExecutingAssembly().GetName();
 
-      BuildVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
+      //Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+
+      //DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
+
+      //BuildVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
+
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
 

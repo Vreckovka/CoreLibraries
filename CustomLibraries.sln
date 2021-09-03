@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{2C6EEF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Custom", "Custom", "{96666A97-D92F-4353-9543-2FC28AC56210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundManagement", "SoundManagement\SoundManagement.csproj", "{1A6B9941-3F1E-4E02-95EE-323BBA50653F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundManagement", "SoundManagement\SoundManagement.csproj", "{1A6B9941-3F1E-4E02-95EE-323BBA50653F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
