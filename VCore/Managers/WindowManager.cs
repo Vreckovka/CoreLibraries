@@ -32,6 +32,13 @@ namespace VCore.WPF.Managers
         window.Loaded += Window_Loaded;
         window.Closed += Window_Closed;
 
+        if (overlayWindow == null)
+        {
+          ShowOverlayWindow();
+
+          window.Owner = overlayWindow;
+        }
+
         window.ShowDialog();
       }
     }
@@ -155,12 +162,7 @@ namespace VCore.WPF.Managers
       {
         if (sender is Window window)
         {
-          if (IsModal(window) && overlayWindow == null)
-          {
-            ShowOverlayWindow();
-
-            window.Owner = overlayWindow;
-          }
+          
         }
       }
     }
