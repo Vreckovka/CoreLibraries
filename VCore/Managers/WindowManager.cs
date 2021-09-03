@@ -144,11 +144,9 @@ namespace VCore.WPF.Managers
 
         Application.Current?.MainWindow?.Focus();
 
-        if (overlayWindow != null)
-        {
-          overlayWindow?.Close();
-          overlayWindow = null;
-        }
+
+        overlayWindow?.Close();
+        overlayWindow = null;
       }
     }
 
@@ -162,7 +160,7 @@ namespace VCore.WPF.Managers
       {
         if (sender is Window window)
         {
-          
+
         }
       }
     }
@@ -175,8 +173,10 @@ namespace VCore.WPF.Managers
     {
       lock (windowLock)
       {
-        overlayWindow?.Close();
-        overlayWindow = null;
+        if (overlayWindow != null)
+        {
+          return;
+        }
 
         overlayWindow = new Window();
 
@@ -205,6 +205,7 @@ namespace VCore.WPF.Managers
         }
       }
     }
+
 
     private void OverlayWindow_Closed(object sender, EventArgs e)
     {
