@@ -57,6 +57,7 @@ namespace VCore.WPF
       SplashScreenManager.ShowSplashScreen<TSplashScreen>(System.Reflection.Assembly.GetEntryAssembly());
 
       Control.IsTabStopProperty.OverrideMetadata(typeof(Control), new FrameworkPropertyMetadata(false));
+      ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
 
       base.OnStartup(e);
     }
