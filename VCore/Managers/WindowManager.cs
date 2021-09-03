@@ -32,10 +32,6 @@ namespace VCore.WPF.Managers
         window.Loaded += Window_Loaded;
         window.Closed += Window_Closed;
 
-        ShowOverlayWindow();
-
-        window.Owner = overlayWindow;
-
         window.ShowDialog();
       }
     }
@@ -114,6 +110,17 @@ namespace VCore.WPF.Managers
       ShowPrompt<ErrorPromptView>(vm);
     }
 
+    public void ShowErrorPrompt(string message)
+    {
+      var vm = new GenericPromptViewModel()
+      {
+        Title = "Error occured",
+        Text = message
+      };
+
+      ShowPrompt<ErrorPromptView>(vm);
+    }
+
     #endregion
 
     #region Window_Closed
@@ -130,7 +137,7 @@ namespace VCore.WPF.Managers
 
         Application.Current?.MainWindow?.Focus();
 
-        if (overlayWindow != null && overlayWindow.IsVisible)
+        if (overlayWindow != null)
         {
           overlayWindow?.Close();
           overlayWindow = null;
@@ -144,11 +151,16 @@ namespace VCore.WPF.Managers
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-      if (sender is Window window)
+      lock (windowLock)
       {
-        if (IsModal(window) && overlayWindow == null)
+        if (sender is Window window)
         {
-          ShowOverlayWindow();
+          if (IsModal(window) && overlayWindow == null)
+          {
+            ShowOverlayWindow();
+
+            window.Owner = overlayWindow;
+          }
         }
       }
     }

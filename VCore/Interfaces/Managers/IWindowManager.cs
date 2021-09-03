@@ -18,6 +18,7 @@ namespace VCore.WPF.Managers
 
     void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new();
     void ShowErrorPrompt(Exception ex);
+    void ShowErrorPrompt(string message);
     Window GetWindowView<TView>(object dataContext, bool setOwner = true) where TView : IView, new();
   }
 }
