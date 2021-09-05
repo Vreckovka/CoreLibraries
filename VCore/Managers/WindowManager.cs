@@ -20,6 +20,7 @@ namespace VCore.WPF.Managers
   {
     private Window overlayWindow;
     private object windowLock = new object();
+    private List<Window> windows = new List<Window>();
 
     #region ShowPrompt
 
@@ -39,6 +40,7 @@ namespace VCore.WPF.Managers
           window.Owner = overlayWindow;
         }
 
+       
         window.ShowDialog();
       }
     }
@@ -140,13 +142,16 @@ namespace VCore.WPF.Managers
         {
           window.Loaded -= Window_Loaded;
           window.Closed -= Window_Closed;
+
+          windows.Remove(window);
         }
 
-        Application.Current?.MainWindow?.Focus();
-
-
-        overlayWindow?.Close();
-        overlayWindow = null;
+        if (windows.Count == 0)
+        {
+          Application.Current?.MainWindow?.Focus();
+          overlayWindow?.Close();
+          overlayWindow = null;
+        }
       }
     }
 
@@ -160,7 +165,7 @@ namespace VCore.WPF.Managers
       {
         if (sender is Window window)
         {
-
+          windows.Add(window);
         }
       }
     }
@@ -207,6 +212,12 @@ namespace VCore.WPF.Managers
     }
 
 
+
+
+    #endregion
+
+    #region OverlayWindow_Closed
+
     private void OverlayWindow_Closed(object sender, EventArgs e)
     {
       var mainWn = Application.Current.MainWindow;
@@ -242,11 +253,11 @@ namespace VCore.WPF.Managers
         return;
       }
 
-      overlayWindow.Width = copyFrom.ActualWidth;
-      overlayWindow.Height = copyFrom.ActualHeight;
-      overlayWindow.Top = copyFrom.Top;
-      overlayWindow.Left = copyFrom.Left;
-      overlayWindow.WindowState = copyFrom.WindowState;
+      myWindow.Width = copyFrom.ActualWidth;
+      myWindow.Height = copyFrom.ActualHeight;
+      myWindow.Top = copyFrom.Top;
+      myWindow.Left = copyFrom.Left;
+      myWindow.WindowState = copyFrom.WindowState;
     }
 
     #endregion
