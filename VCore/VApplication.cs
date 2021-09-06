@@ -16,6 +16,7 @@ using VCore.Other;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.Standard.Modularity.NinjectModules;
+using VCore.Standard.Providers;
 using VCore.ViewModels;
 using VCore.WPF.Managers;
 
@@ -101,7 +102,7 @@ namespace VCore.WPF
 
       //DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
 
-      //BuildVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
+      BuildVersion = Container.Resolve<IBasicInformationProvider>().GetFormattedExecutingAssemblyBuildVersion();
 
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);

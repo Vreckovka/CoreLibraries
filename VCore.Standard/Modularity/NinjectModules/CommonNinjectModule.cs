@@ -2,7 +2,7 @@
 using Ninject.Extensions.Factory;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
-using VCore.Standard.NewFolder;
+using VCore.Standard.Providers;
 
 namespace VCore.Standard.Modularity.NinjectModules
 {

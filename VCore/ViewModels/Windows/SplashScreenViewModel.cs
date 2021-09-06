@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using VCore.Standard.Providers;
 using VCore.ViewModels;
 
 namespace VCore.WPF.ViewModels.Windows
@@ -15,7 +16,7 @@ namespace VCore.WPF.ViewModels.Windows
       ApplicationName = assemblyName.Name;
 
       Version version = assemblyName.Version;
-     
+
       DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
 
       if ((DateTime.Now - buildDate).TotalDays <= 2)
@@ -26,8 +27,6 @@ namespace VCore.WPF.ViewModels.Windows
       {
         ApplicationVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
       }
-
-     
 
       Message = "Loading...";
       progress = 0;

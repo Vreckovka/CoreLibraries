@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace VCore.Standard.NewFolder
+namespace VCore.Standard.Providers
 {
   public interface ISettingsProvider
   {
