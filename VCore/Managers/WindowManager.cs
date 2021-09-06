@@ -40,7 +40,9 @@ namespace VCore.WPF.Managers
           window.Owner = overlayWindow;
         }
 
-       
+        window.ShowInTaskbar = true;
+        window.Title = "VPlayer prompt";
+
         window.ShowDialog();
       }
     }

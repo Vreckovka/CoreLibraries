@@ -296,7 +296,18 @@ namespace VCore.WPF
         {
           windowManager.ShowErrorPrompt(exception);
         });
+
+        OnUnhandledExceptionCaught(exception);
       }
+    }
+
+    #endregion
+
+    #region OnUnhandledExceptionCaught
+
+    protected virtual void OnUnhandledExceptionCaught(Exception exception)
+    {
+
     }
 
     #endregion

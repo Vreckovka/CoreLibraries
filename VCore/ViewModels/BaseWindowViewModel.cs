@@ -51,8 +51,6 @@ namespace VCore.ViewModels
 
     public Window Window { get; set; }
 
-
-
     #region WindowState
 
     private WindowState windowState;
@@ -72,7 +70,6 @@ namespace VCore.ViewModels
     }
 
     #endregion
-
 
     #endregion
 
