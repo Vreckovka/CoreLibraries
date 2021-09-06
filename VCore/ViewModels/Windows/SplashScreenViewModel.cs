@@ -15,18 +15,7 @@ namespace VCore.WPF.ViewModels.Windows
 
       ApplicationName = assemblyName.Name;
 
-      Version version = assemblyName.Version;
-
-      DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
-
-      if ((DateTime.Now - buildDate).TotalDays <= 2)
-      {
-        ApplicationVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")} {buildDate.ToShortTimeString()})";
-      }
-      else
-      {
-        ApplicationVersion = $"{version} ({buildDate.ToString("dd.MM.yyyy")})";
-      }
+      ApplicationVersion = BasicInformationProvider.GetFormattedBuildVersion(assembly);
 
       Message = "Loading...";
       progress = 0;

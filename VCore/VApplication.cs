@@ -102,7 +102,7 @@ namespace VCore.WPF
 
       //DateTime buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
 
-      BuildVersion = Container.Resolve<IBasicInformationProvider>().GetFormattedExecutingAssemblyBuildVersion();
+      //BuildVersion = Container.Resolve<IBasicInformationProvider>().GetFormattedExecutingAssemblyBuildVersion();
 
 
       SplashScreenManager.AddProgress(100.0 / numberOfSteps);
