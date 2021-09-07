@@ -235,6 +235,11 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     protected override void OnExpanded(bool isExpandend)
     {
+      if (IsLoading)
+      {
+        return;
+      }
+
       Task.Run(async () =>
       {
         if (isExpandend && !wasExpandedByFilter)

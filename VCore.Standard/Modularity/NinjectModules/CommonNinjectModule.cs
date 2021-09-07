@@ -22,7 +22,7 @@ namespace VCore.Standard.Modularity.NinjectModules
     {
       base.RegisterProviders();
 
-      Kernel.Bind<ISettingsProvider>().To<SettingsProvider>().InSingletonScope().WithConstructorArgument("settingsPath","settings.txt"); 
+      Kernel.Bind<ISettingsProvider>().To<SettingsProvider>().InSingletonScope().WithConstructorArgument("settingsPath","settings\\settings.txt"); 
     }
 
     #endregion Methods

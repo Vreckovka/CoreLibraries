@@ -73,8 +73,6 @@ namespace VCore.Standard.Providers
 
     #region Save
 
-
-
     public void Save()
     {
       lock (fileLock)
@@ -84,6 +82,8 @@ namespace VCore.Standard.Providers
 
         if (!File.Exists(settingsPath))
         {
+          StringHelper.EnsureDirectoryExists(settingsPath);
+
           stream = File.Create(settingsPath);
         }
 
