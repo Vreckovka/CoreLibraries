@@ -15,7 +15,7 @@ namespace VCore.Standard.Providers
 
       if ((DateTime.Now - buildDate).TotalDays <= 2)
       {
-        return $"{version} ({buildDate.ToString("dd.MM.yyyy")} {buildDate.ToShortTimeString()})";
+        return $"{version} ({buildDate.ToString("dd.MM.yyyy")} {buildDate.ToString("HH:mm")})";
       }
       else
       {
