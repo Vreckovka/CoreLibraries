@@ -31,6 +31,24 @@ namespace VCore.Controls
 
     #endregion
 
+    #region IconMargin
+
+    public Thickness IconMargin
+    {
+      get { return (Thickness)GetValue(IconMarginProperty); }
+      set { SetValue(IconMarginProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconMarginProperty =
+      DependencyProperty.Register(
+        nameof(IconMargin),
+        typeof(Thickness),
+        typeof(PathButton),
+        new PropertyMetadata(new Thickness(0)));
+
+
+    #endregion
+
     #region IconStretch
 
     public Stretch IconStretch

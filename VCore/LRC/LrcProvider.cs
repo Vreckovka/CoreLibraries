@@ -13,7 +13,8 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
     NotIdentified,
     Google,
     Local,
-    MiniLyrics
+    MiniLyrics,
+    PCloud
   }
 
 
@@ -71,7 +72,7 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
       return ilRCFile;
     }
 
-    public abstract void Update(ILRCFile lRCFile);
+    public abstract Task<bool> Update(ILRCFile lRCFile);
 
     #endregion
 
@@ -92,7 +93,7 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
     #endregion
 
     protected abstract Task<KeyValuePair<string[], ILRCFile>> GetLinesLrcFileAsync(string songName, string artistName, string albumName);
-    protected abstract TFileOutput GetFile(string songName, string artistName, string albumName);
+    protected abstract Task<TFileOutput> GetFile(string songName, string artistName, string albumName);
 
     public abstract LRCProviders LRCProvider { get; }
 

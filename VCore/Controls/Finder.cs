@@ -65,8 +65,6 @@ namespace VCore.Controls
 
     #endregion
 
-
-
     #region Text
 
     public string Text
