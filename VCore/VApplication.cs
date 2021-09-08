@@ -124,7 +124,9 @@ namespace VCore.WPF
 
     protected virtual void OnContainerCreated()
     {
+      Kernel.Load<LoggerModule>();
 
+      SplashScreenManager.SetText("Loading settings");
     }
 
     #endregion
