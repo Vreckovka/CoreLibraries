@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 
 namespace VCore.Converters
 {
@@ -44,6 +45,26 @@ namespace VCore.Converters
       }
       else
         return null;
+    }
+  }
+
+  public class CountCharactersAndAddValue : BaseConverter
+  {
+    public double CharacterWidth { get; set; }
+    public override object Convert(
+      object value,
+      Type targetType,
+      object parameter,
+      CultureInfo culture)
+    {
+      var count = value?.ToString()?.Count();
+
+      if (count != null && double.TryParse(parameter?.ToString(), out var doubleParameter))
+      {
+        return doubleParameter + (count * CharacterWidth);
+      }
+
+      return value;
     }
   }
 }

@@ -47,6 +47,7 @@ namespace VCore.WPF.Behaviors
     public Duration Duration { get; set; } = new Duration(TimeSpan.FromSeconds(1));
     public ResizeParameter ResizeParameter { get; set; }
     public bool ChangeVisibility { get; set; }
+    public double? MaxInitialWidth { get; set; }
 
     #region IsHidden
 
@@ -61,6 +62,55 @@ namespace VCore.WPF.Behaviors
     {
       get { return (bool)GetValue(IsHiddenProperty); }
       set { SetValue(IsHiddenProperty, value); }
+    }
+
+    #endregion
+
+    #region InitialWidthValue
+
+    private double? lastWidthValue;
+    public static readonly DependencyProperty InitialWidthValueProperty =
+      DependencyProperty.Register(
+        nameof(InitialWidthValue),
+        typeof(double?),
+        typeof(HideBehavior),
+        new PropertyMetadata((null), (x, y) =>
+        {
+          if (x is HideBehavior hideBehavior)
+          {
+            if (hideBehavior.InitialWidthValue != null)
+            {
+              var value = hideBehavior.InitialWidthValue.Value;
+              if (hideBehavior.gridSplitter != null && hideBehavior.parentGrid != null)
+              {
+                if (value > hideBehavior.initWidthGridSplit)
+                {
+                  if (value < hideBehavior.MaxInitialWidth)
+                  {
+                    if (hideBehavior.lastWidthValue != value)
+                      hideBehavior.parentGrid.ColumnDefinitions[2].Width = new GridLength(value);
+                  }
+                  else if(hideBehavior.MaxInitialWidth != null)
+                  {
+                    hideBehavior.parentGrid.ColumnDefinitions[2].Width = new GridLength(hideBehavior.MaxInitialWidth.Value);
+                  }
+                }
+                else if (hideBehavior.initWidthGridSplit != null)
+                {
+                  hideBehavior.parentGrid.ColumnDefinitions[2].Width = new GridLength(hideBehavior.initWidthGridSplit.Value);
+                }
+              }
+
+
+              hideBehavior.lastWidthValue = value;
+            }
+          }
+        }));
+
+    public double? InitialWidthValue
+    {
+      get { return (double?)GetValue(InitialWidthValueProperty); }
+      set { SetValue(InitialWidthValueProperty, value); }
     }
 
     #endregion
@@ -129,7 +179,6 @@ namespace VCore.WPF.Behaviors
       AssociatedObject.LayoutUpdated += AssociatedObject_LayoutUpdated;
     }
 
-
     #endregion
 
     #region AddWindowHandler
@@ -187,6 +236,7 @@ namespace VCore.WPF.Behaviors
 
     #region AssociatedObject_LayoutUpdated
 
+    double? initWidthGridSplit;
     private void AssociatedObject_LayoutUpdated(object sender, EventArgs e)
     {
       if (!wasInitlized)
@@ -196,6 +246,22 @@ namespace VCore.WPF.Behaviors
         executeButton = (ButtonBase)parentGrid.FindChildByName(ExecuteButtonName);
         gridSplitter = parentGrid.FindChildByName<GridSplitter>(GridSplitterName);
         parentWindow = parentGrid.GetFirstParentOfType<Window>();
+
+        if (InitialWidthValue != null)
+        {
+          if (gridSplitter != null && parentGrid != null)
+          {
+            initWidthGridSplit = parentGrid.ColumnDefinitions[2].Width.Value;
+
+            if (initWidthGridSplit < InitialWidthValue.Value)
+            {
+              if (InitialWidthValue.Value < MaxInitialWidth)
+                parentGrid.ColumnDefinitions[2].Width = new GridLength(InitialWidthValue.Value);
+              else if(MaxInitialWidth != null)
+                parentGrid.ColumnDefinitions[2].Width = new GridLength(MaxInitialWidth.Value);
+            }
+          }
+        }
 
         AddWindowHandler();
 
@@ -230,6 +296,8 @@ namespace VCore.WPF.Behaviors
         }
 
         wasInitlized = true;
+
+
       }
     }
 
