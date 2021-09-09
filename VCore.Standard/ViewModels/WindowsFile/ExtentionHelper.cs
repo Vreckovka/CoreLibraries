@@ -9,36 +9,42 @@
         case ".mp4":
         case ".mkv":
         case ".avi":
-        {
-          return FileType.Video;
-        }
+        case ".ts":
+          {
+            return FileType.Video;
+          }
         case ".flac":
         case ".wav":
         case ".mp3":
-        {
-          return FileType.Sound;
-        }
+        case ".ogg":
+        case ".m4a":
+          {
+            return FileType.Sound;
+          }
         case ".jpg":
-        {
-          return FileType.Image;
-        }
+        case ".gif":
+        case ".png":
+          {
+            return FileType.Image;
+          }
         case ".txt":
-        {
-          return FileType.TextFile;
-        }
+          {
+            return FileType.TextFile;
+          }
         case ".srt":
-        {
-          return FileType.Subtitles;
-        }
+        case ".lrc":
+          {
+            return FileType.Subtitles;
+          }
         case ".zip":
         case ".rar":
-        {
-          return FileType.CompressFile;
-        }
+          {
+            return FileType.CompressFile;
+          }
         default:
-        {
-          return FileType.Other;
-        }
+          {
+            return FileType.Other;
+          }
       }
     }
 
