@@ -21,7 +21,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
   {
     protected readonly IViewModelsFactory viewModelsFactory;
 
-    private Subject<bool> isLoadedSubject = new Subject<bool>();
+    protected Subject<bool> isLoadedSubject = new Subject<bool>();
 
     public FolderViewModel(FolderInfo folderInfo, IViewModelsFactory viewModelsFactory) : base(folderInfo)
     {
