@@ -10,6 +10,7 @@ using VCore.Standard.ViewModels.TreeView;
 using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.ItemsCollections;
 using System;
+using System.Threading;
 using System.Windows;
 
 
@@ -165,6 +166,25 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
 
+    #region LoadingMessage
+
+    private string loadingMessage;
+
+    public string LoadingMessage
+    {
+      get { return loadingMessage; }
+      set
+      {
+        if (value != loadingMessage)
+        {
+          loadingMessage = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
     public virtual int MaxAutomaticFolderLoadLevel { get; } = 2;
     public virtual int MaxAutomaticLoadLevel { get; } = 2;
     #endregion
@@ -287,11 +307,14 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
             var direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
 
+            int index = 1;
+
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
               SubItems.AddRange(direViewModels);
-            });
 
+
+            });
 
             foreach (var dir in direViewModels)
             {
@@ -299,6 +322,11 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
               if (loadLevel < MaxAutomaticLoadLevel)
               {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                  LoadingMessage = $" folders {index}/{direViewModels.Count}";
+                });
+
                 await dir.LoadFolder();
 
                 if (loadLevel < MaxAutomaticFolderLoadLevel)
@@ -306,6 +334,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
                   await dir.LoadFolders(loadLevel + 1);
                 }
               }
+
+              index++;
             }
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -338,8 +368,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadSubFolders
 
-    public async Task LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel)
+    public async Task LoadSubFolders(FolderViewModel<TFileViewModel> folderViewModel, CancellationToken cancellationToken = default)
     {
+      var originalLoading = IsLoading;
+
       try
       {
         isLoadedSubject.OnNext(true);
@@ -350,14 +382,32 @@ namespace VCore.WPF.ViewModels.WindowsFiles
         if (!folderViewModel.WasSubFoldersLoaded)
           await folderViewModel.LoadFolders(shouldSetLoading: false);
 
-        foreach (var directory in folderViewModel.SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>())
+        var items = folderViewModel.SubItems.ViewModels.OfType<FolderViewModel<TFileViewModel>>().ToList();
+        int index = 1;
+
+        foreach (var directory in items)
         {
-          await directory.LoadSubFolders(directory);
+          cancellationToken.ThrowIfCancellationRequested();
+
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            LoadingMessage = $" folders {index}/{items.Count}";
+          });
+
+          await directory.LoadSubFolders(directory, cancellationToken);
+
+          index++;
         }
+
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+          LoadingMessage = $" folders {index - 1}/{items.Count}";
+        });
       }
       finally
       {
-        isLoadedSubject.OnNext(false);
+        if (!originalLoading)
+          isLoadedSubject.OnNext(false);
       }
     }
 
