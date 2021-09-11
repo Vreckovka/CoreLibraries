@@ -46,7 +46,7 @@ namespace VCore.WPF.Controls.StatusMessage
             var newValue = (StatusType)y.NewValue;
             var token = statusMessage.cts?.Token;
 
-            if(token == null)
+            if (token == null)
             {
               statusMessage.cts = new CancellationTokenSource();
               token = statusMessage.cts.Token;
@@ -54,7 +54,7 @@ namespace VCore.WPF.Controls.StatusMessage
 
             if (newValue == StatusType.Done)
             {
-          
+
               statusMessage.HideStatusMessage(2000, token.Value);
             }
             else if (newValue == StatusType.Error)
@@ -155,11 +155,24 @@ namespace VCore.WPF.Controls.StatusMessage
 
     private void StatusMessage_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
-      ShowStatusMessage();
+      if (Status < StatusType.Failed)
+        ShowStatusMessage();
+      else
+      {
+        var token = cts?.Token;
+
+        if (token == null)
+        {
+          cts = new CancellationTokenSource();
+          token = cts.Token;
+        }
+
+        HideStatusMessage(4000, cts.Token);
+      }
+      
     }
 
     #endregion
-
 
     #region HideStatusMessage
 
