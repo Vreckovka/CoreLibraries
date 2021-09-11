@@ -4,35 +4,51 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:VCore.WPF.Prompts"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Padding="20,20,20,0"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <Grid Width="500"
-          Height="280"
-          Margin="5">
-
+    <Grid MaxWidth="700" Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Padding="10"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-            <TextBox Margin="0"
-                     Padding="0"
-                     Background="Transparent"
-                     BorderThickness="0"
-                     Foreground="White"
-                     IsReadOnly="True"
-                     Style="{x:Null}"
-                     Text="{Binding Text}" />
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        </ScrollViewer>
+            <Border Height="45"
+                    Margin="0,0,20,0"
+                    HorizontalAlignment="Left">
+                <Path Fill="#555555"
+                      Opacity="0.95"
+                      Style="{StaticResource circle-info}" />
+            </Border>
 
+            <Grid Grid.Column="1"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center">
 
+                <TextBlock TextWrapping="Wrap">
+                    <Run FontSize="15"
+                         Foreground="#ccffffff"
+                         Text="{Binding Text}" />
 
-        <local:GenericPromptFooter Grid.Row="1" />
+                    <Run FontSize="17"
+                         FontWeight="Bold"
+                         Text="{Binding ItemName}" />
+
+                    <Run FontSize="15"
+                         Foreground="#ccffffff"
+                         Text="{Binding AfterText}" />
+                </TextBlock>
+            </Grid>
+        </Grid>
+
+        <local:GenericPromptFooter Grid.Row="1" Margin="0" />
 
     </Grid>
 </UserControl>

@@ -9,6 +9,8 @@ namespace VCore.Interfaces.ViewModels
   {
     #region Methods
 
+    public IQueryable<TModel> LoadQuery { get; }
+
     Task<ICollection<TViewModel>> GetViewModelsAsync(IQueryable<TModel> optionalQuery = null);
 
     void RecreateCollection();

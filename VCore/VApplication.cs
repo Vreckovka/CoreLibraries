@@ -256,7 +256,7 @@ namespace VCore.WPF
     private void SetupExceptionHandling()
     {
 
-#if !DEBUG
+//#if !DEBUG
       AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
@@ -265,7 +265,7 @@ namespace VCore.WPF
         LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
         e.Handled = true;
       };
-#endif
+//#endif
       TaskScheduler.UnobservedTaskException += (s, e) =>
       {
         LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");

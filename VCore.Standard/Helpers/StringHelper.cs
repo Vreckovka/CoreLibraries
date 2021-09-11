@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace VCore
 {
@@ -104,6 +106,8 @@ namespace VCore
 
     #endregion
 
+    #region SimilarityByTags
+
     public static bool SimilarityByTags(this string original, string predicate)
     {
       var originalSplits = original.ToLower().Split(" ").ToList();
@@ -123,7 +127,7 @@ namespace VCore
 
       int resultCount = 0;
 
-      
+
       foreach (var originalSplit in originalSplits.Where(x => !string.IsNullOrEmpty(x)))
       {
         foreach (var tag in predicateSplits)
@@ -157,6 +161,10 @@ namespace VCore
       return result;
     }
 
+    #endregion
+
+    #region SplitToChunks
+
     public static IEnumerable<string> SplitToChunks(this string str, int chunkSize)
     {
       var list = new List<string>();
@@ -173,6 +181,30 @@ namespace VCore
       }
 
       return list;
+    }
+
+    #endregion
+
+    public static string RemoveDiacritics(this string text)
+    {
+      if (string.IsNullOrEmpty(text))
+      {
+        return text;
+      }
+
+      var normalizedString = text.Normalize(NormalizationForm.FormD);
+      var stringBuilder = new StringBuilder();
+
+      foreach (var c in normalizedString)
+      {
+        var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+        if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+        {
+          stringBuilder.Append(c);
+        }
+      }
+
+      return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
   }
 }

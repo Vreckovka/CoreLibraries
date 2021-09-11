@@ -31,6 +31,43 @@ namespace VCore.Controls
 
     #endregion
 
+    #region HorizontalIconAlignment
+
+    public HorizontalAlignment HorizontalIconAlignment
+    {
+      get { return (HorizontalAlignment)GetValue(HorizontalIconAlignmentProperty); }
+      set { SetValue(HorizontalIconAlignmentProperty, value); }
+    }
+
+    public static readonly DependencyProperty HorizontalIconAlignmentProperty =
+      DependencyProperty.Register(
+        nameof(HorizontalIconAlignment),
+        typeof(HorizontalAlignment),
+        typeof(PathButton),
+        new PropertyMetadata(HorizontalAlignment.Center));
+
+
+    #endregion
+
+    #region VerticalIconAlignment
+
+    public VerticalAlignment VerticalIconAlignment
+    {
+      get { return (VerticalAlignment)GetValue(VerticalIconAlignmentProperty); }
+      set { SetValue(VerticalIconAlignmentProperty, value); }
+    }
+
+    public static readonly DependencyProperty VerticalIconAlignmentProperty =
+      DependencyProperty.Register(
+        nameof(VerticalIconAlignment),
+        typeof(VerticalAlignment),
+        typeof(PathButton),
+        new PropertyMetadata(VerticalAlignment.Center));
+
+
+    #endregion
+
+  
     #region IconMargin
 
     public Thickness IconMargin
@@ -45,6 +82,24 @@ namespace VCore.Controls
         typeof(Thickness),
         typeof(PathButton),
         new PropertyMetadata(new Thickness(0)));
+
+
+    #endregion
+
+    #region CornerRadius
+
+    public CornerRadius CornerRadius
+    {
+      get { return (CornerRadius)GetValue(CornerRadiusProperty); }
+      set { SetValue(CornerRadiusProperty, value); }
+    }
+
+    public static readonly DependencyProperty CornerRadiusProperty =
+      DependencyProperty.Register(
+        nameof(CornerRadius),
+        typeof(CornerRadius),
+        typeof(PathButton),
+        new PropertyMetadata(new CornerRadius(0)));
 
 
     #endregion
@@ -121,15 +176,15 @@ namespace VCore.Controls
 
     #endregion
 
-    #region ForegroundCheckedBrush
+    #region ForegroundCheckedColor
 
     public Color ForegroundCheckedColor
     {
-      get { return (Color)GetValue(ForegroundCheckedBrushProperty); }
-      set { SetValue(ForegroundCheckedBrushProperty, value); }
+      get { return (Color)GetValue(ForegroundCheckedColorProperty); }
+      set { SetValue(ForegroundCheckedColorProperty, value); }
     }
 
-    public static readonly DependencyProperty ForegroundCheckedBrushProperty =
+    public static readonly DependencyProperty ForegroundCheckedColorProperty =
       DependencyProperty.Register(
         nameof(ForegroundCheckedColor),
         typeof(Color),
@@ -217,7 +272,19 @@ namespace VCore.Controls
         nameof(ForegroundDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff")));
+        new PropertyMetadata(Colors.White,(x, y) =>
+        {
+          if (x is PathButton buttonWithIcon)
+          {
+            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
+            {
+              if (solidColorBrush.Color != newColor)
+              {
+                buttonWithIcon.Foreground = new SolidColorBrush(newColor);
+              }
+            }
+          }
+        }));
 
     #endregion
 

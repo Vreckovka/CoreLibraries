@@ -17,7 +17,7 @@
                 Visibility="{Binding CancelVisibility}" />
 
         <Button Width="150"
-                Margin="10"
+                Margin="10,10,0,10"
                 Command="{Binding OkCommand}"
                 Content="OK"
                 Visibility="{Binding OkVibisility}" />
