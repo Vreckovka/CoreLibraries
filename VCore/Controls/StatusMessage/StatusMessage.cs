@@ -167,9 +167,9 @@ namespace VCore.WPF.Controls.StatusMessage
           token = cts.Token;
         }
 
+        ShowStatusMessage();
         HideStatusMessage(4000, cts.Token);
       }
-      
     }
 
     #endregion

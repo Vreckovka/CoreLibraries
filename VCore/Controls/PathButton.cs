@@ -50,6 +50,19 @@ namespace VCore.Controls
   {
     private double animationInSeconds = .15;
 
+    public PathButton()
+    {
+      Checked += PathButton_Checked;
+      Unchecked += PathButton_Unchecked;
+    }
+
+    private void PathButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void PathButton_Checked(object sender, RoutedEventArgs e)
+    {
+    }
 
     #region PathStyle
 
@@ -105,7 +118,6 @@ namespace VCore.Controls
 
     #endregion
 
-  
     #region IconMargin
 
     public Thickness IconMargin
@@ -227,7 +239,17 @@ namespace VCore.Controls
         nameof(ForegroundCheckedColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.White));
+        new PropertyMetadata(Colors.White, (x, y) =>
+        {
+          if(x is PathButton pathButton && pathButton.IsChecked == true)
+          {
+            pathButton.Foreground = pathButton.Foreground.Clone();
+
+            pathButton.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+
+            pathButton.Foreground = pathButton.GetAnimation(pathButton.Foreground, pathButton.ForegroundDefaultColor, (Color)y.NewValue);
+          }
+        }));
 
 
     #endregion
@@ -249,7 +271,7 @@ namespace VCore.Controls
 
 
     #endregion
-   
+
     #region IconDefaultColor
 
     public Color IconDefaultColor
@@ -310,19 +332,19 @@ namespace VCore.Controls
         nameof(ForegroundDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.White,(x, y) =>
-        {
-          if (x is PathButton buttonWithIcon)
-          {
-            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
-            {
-              if (solidColorBrush.Color != newColor)
-              {
-                buttonWithIcon.Foreground = new SolidColorBrush(newColor);
-              }
-            }
-          }
-        }));
+        new PropertyMetadata(Colors.White, (x, y) =>
+         {
+           if (x is PathButton buttonWithIcon)
+           {
+             if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
+             {
+               if (solidColorBrush.Color != newColor)
+               {
+                 buttonWithIcon.Foreground = new SolidColorBrush(newColor);
+               }
+             }
+           }
+         }));
 
     #endregion
 
@@ -435,11 +457,6 @@ namespace VCore.Controls
       {
         base.OnToggle();
       }
-    }
-
-    protected override void OnClick()
-    {
-      base.OnClick();
     }
 
     #region OnChecked
