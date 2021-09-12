@@ -103,7 +103,21 @@ namespace VCore.Standard.Helpers
     public static IEnumerable<T> GetEnummerable<T>(this T item)
     {
       return new List<T>() { item }.AsEnumerable();
-    } 
+    }
+
+    #endregion
+
+    #region SelectManyRecursive
+
+    public static IEnumerable<T> SelectManyRecursive<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> selector)
+    {
+      var result = source.SelectMany(selector);
+      if (!result.Any())
+      {
+        return result;
+      }
+      return result.Concat(result.SelectManyRecursive(selector));
+    }
 
     #endregion
 

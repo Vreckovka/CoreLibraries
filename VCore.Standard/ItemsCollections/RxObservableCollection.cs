@@ -34,6 +34,10 @@ namespace VCore.ItemsCollections
       {
         Add(item);
       }
+
+      OrderedCollection = this.OrderBy(KeySelector);
+
+      CollectionChanged += ObservableItems_CollectionChanged;
     }
 
     #endregion Constructors
@@ -83,6 +87,26 @@ namespace VCore.ItemsCollections
     #endregion
 
     public NotifyCollectionChangedAction? LastAction { get; private set; }
+
+    #region OrderedCollection
+
+    private IEnumerable<TItem> orderedCollection;
+
+    public IEnumerable<TItem> OrderedCollection
+    {
+      get { return orderedCollection; }
+      set
+      {
+        if (value != orderedCollection)
+        {
+          orderedCollection = value;
+          OnPropertyChanged(new PropertyChangedEventArgs(nameof(OrderedCollection)));
+        }
+      }
+    }
+
+    #endregion
+   
 
     #endregion Properties
 
@@ -139,6 +163,8 @@ namespace VCore.ItemsCollections
 
           itemAddedSubject.OnNext(new EventPattern<TItem>(this, newItem));
         }
+
+      
       }
 
       if (e.OldItems != null)
@@ -149,10 +175,16 @@ namespace VCore.ItemsCollections
         }
       }
 
+      OrderedCollection = this.OrderBy(KeySelector);
       LastAction = e.Action;
     }
 
     #endregion
+
+    protected virtual string KeySelector(TItem other)
+    {
+      return default;
+    }
 
     #endregion 
   }

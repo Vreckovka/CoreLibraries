@@ -7,6 +7,44 @@ using System.Windows.Media.Animation;
 
 namespace VCore.Controls
 {
+  public class FontAwesomePathButton : PathButton
+  {
+    #region IconName
+
+    public string IconName
+    {
+      get { return (string)GetValue(IconNameProperty); }
+      set { SetValue(IconNameProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconNameProperty =
+      DependencyProperty.Register(
+        nameof(IconName),
+        typeof(string),
+        typeof(FontAwesomePathButton),
+        new PropertyMetadata(null));
+
+
+    #endregion
+
+    #region IconType
+
+    public string IconType
+    {
+      get { return (string)GetValue(IconTypeProperty); }
+      set { SetValue(IconTypeProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconTypeProperty =
+      DependencyProperty.Register(
+        nameof(IconType),
+        typeof(string),
+        typeof(FontAwesomePathButton),
+        new PropertyMetadata("regular"));
+
+
+    #endregion
+  }
 
   public class PathButton : ToggleButton
   {

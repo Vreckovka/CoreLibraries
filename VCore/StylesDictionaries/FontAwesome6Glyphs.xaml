@@ -1,0 +1,90 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:VCore.Controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/VPlayer.DarkTheme;component/Styles/StylesDictionaries/Button.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+
+
+    <Style x:Key="FontAwesomeGlyphPathButtonStyle"
+           BasedOn="{StaticResource {x:Type controls:PathButton}}"
+           TargetType="{x:Type controls:PathButton}">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="IconHeight" Value="0" />
+        <Setter Property="IconWidth" Value="0" />
+        <Setter Property="IconMargin" Value="0" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="ForegroundDefaultColor" Value="#757575" />
+        <Setter Property="ForegroundCheckedColor" Value="{StaticResource YellowColor}" />
+        <Setter Property="FontFamily" Value="pack://application:,,,/VPlayer;component/Resources/Fonts/FontAwesome/#Font Awesome 6 Pro" />
+    </Style>
+
+    <Style x:Key="bookmark"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🔖︁" />
+    </Style>
+
+    <Style x:Key="book-bookmark"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="folder-open"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="📂︁" />
+    </Style>
+
+    <Style x:Key="bookmark-slash"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="arrow-up-right-from-square"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="arrow-right-to-bracket"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="info"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="circle-question"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="cloud-regular"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="☁︁" />
+    </Style>
+
+    <Style x:Key="play-regular"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="▶︁" />
+    </Style>
+
+    <Style x:Key="layer-plus"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+
+</ResourceDictionary>

@@ -14,6 +14,7 @@ using VCore.WPF.Managers;
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
   public class WindowsFolderViewModel : FolderViewModel<WindowsFileViewModel>
+
   {
     private DirectoryInfo directoryInfo;
 
@@ -55,14 +56,21 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     {
       return Task.Run(() =>
       {
-        var wFileInfos = directoryInfo.GetFiles();
-
-        return wFileInfos.Select(x => new FileInfo(x.FullName, x.FullName)
+        try
         {
-          Indentificator = x.FullName,
-          Name = x.Name,
-          Length = x.Length
-        });
+          var wFileInfos = directoryInfo.GetFiles();
+
+          return wFileInfos.Select(x => new FileInfo(x.FullName, x.FullName)
+          {
+            Indentificator = x.FullName,
+            Name = x.Name,
+            Length = x.Length
+          });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+          return null;
+        }
       });
     }
 
@@ -74,16 +82,24 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     {
       return Task.Run(() =>
       {
-        var wFileInfos = directoryInfo.GetDirectories();
-
-        return wFileInfos.Select(x => new FolderInfo()
+        try
         {
-          Indentificator = x.FullName,
-          Name = x.Name
-        });
+          var wFileInfos = directoryInfo.GetDirectories();
+
+          return wFileInfos.Select(x => new FolderInfo()
+          {
+            Indentificator = x.FullName,
+            Name = x.Name
+          });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+          return null;
+        }
       });
     }
 
     #endregion
+
   }
 }
