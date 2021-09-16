@@ -636,9 +636,9 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
 
-    public virtual Task<FileInfo> GetItemSource(FileInfo fileInfo)
+    public virtual Task<IEnumerable<FileInfo>> GetItemSources(IEnumerable<FileInfo> fileInfo)
     {
-      return Task.FromResult((FileInfo)null);
+      return Task.FromResult((IEnumerable<FileInfo>)null);
     }
 
 
@@ -649,4 +649,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
   }
+
+ 
 }
