@@ -19,6 +19,13 @@ namespace VCore.WPF.Controls.StatusMessage
     Error,
   }
 
+  public enum MessageStatusState
+  {
+    Open,
+    Minimized,
+    Closed
+  }
+
   public class StatusMessage : Control
   {
     public StatusMessage()
@@ -86,6 +93,23 @@ namespace VCore.WPF.Controls.StatusMessage
         typeof(string),
         typeof(StatusMessage),
         new PropertyMetadata(null));
+
+    #endregion
+
+    #region MessageStatusState
+
+    public MessageStatusState MessageState
+    {
+      get { return (MessageStatusState)GetValue(MessageStateProperty); }
+      set { SetValue(MessageStateProperty, value); }
+    }
+
+    public static readonly DependencyProperty MessageStateProperty =
+      DependencyProperty.Register(
+        nameof(MessageState),
+        typeof(MessageStatusState),
+        typeof(StatusMessage),
+        new PropertyMetadata(MessageStatusState.Open));
 
     #endregion
 
