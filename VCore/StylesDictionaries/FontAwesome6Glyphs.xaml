@@ -26,6 +26,36 @@
         <Setter Property="Content" Value="🔖︁" />
     </Style>
 
+    <Style x:Key="person-running"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🏃︁" />
+    </Style>
+
+    <Style x:Key="door-open"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="file-lines"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🖹︁" />
+    </Style>
+
+    <Style x:Key="file-pen"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="📝︁" />
+    </Style>
+
+    <Style x:Key="pencil-glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="✏︁" />
+    </Style>
+
     <Style x:Key="book-bookmark"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
            TargetType="controls:PathButton">
@@ -157,5 +187,18 @@
            TargetType="controls:PathButton">
         <Setter Property="Content" Value="︁" />
     </Style>
+
+    <Style x:Key="check-glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="✓︁" />
+    </Style>
+
+    <Style x:Key="message-plus"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
 
 </ResourceDictionary>

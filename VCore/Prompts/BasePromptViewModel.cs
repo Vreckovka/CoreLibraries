@@ -6,9 +6,9 @@ using VCore.WPF.ViewModels.Prompt;
 
 namespace VCore.WPF.Prompts
 {
-  public class GenericPromptViewModel : PromptViewModel
+  public class BasePromptViewModel : PromptViewModel
   {
-    public GenericPromptViewModel()
+    public BasePromptViewModel()
     {
       CanExecuteOkCommand = () => { return true; };
     }

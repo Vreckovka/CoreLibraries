@@ -13,7 +13,7 @@ namespace VCore.WPF.Managers
     PromptResult ShowDeletePrompt(string itemName, string header = "Delete", string beforeText = "Do you really want to delete item ", string afterText = " ?");
     PromptResult ShowQuestionPrompt<TView, TViewModel>(TViewModel viewModel)
       where TView : IView, new()
-      where TViewModel : GenericPromptViewModel;
+      where TViewModel : BasePromptViewModel;
  
 
     void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new();

@@ -33,6 +33,10 @@ namespace VCore.ItemsCollections
       foreach (var item in items)
       {
         Add(item);
+
+        itemsDisposables.Add(Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+          x => item.PropertyChanged += x,
+          x => item.PropertyChanged -= x).Subscribe(ItemPropertyChanged));
       }
 
       OrderedCollection = this.OrderBy(KeySelector);

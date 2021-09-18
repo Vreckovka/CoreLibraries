@@ -2,7 +2,7 @@
 
 namespace VCore.WPF.Prompts
 {
-  public class LoginPromptViewModel : GenericPromptViewModel
+  public class LoginPromptViewModel : BasePromptViewModel
   {
     public LoginPromptViewModel()
     {
