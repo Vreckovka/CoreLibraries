@@ -14,8 +14,7 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
     Google,
     Local,
     MiniLyrics,
-    PCloud,
-    Created
+    PCloud
   }
 
 

@@ -7,6 +7,18 @@
     <Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Fonts\FontAwesome\fa-brands-400.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\fa-duotone-900.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\fa-light-300.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\fa-regular-400.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\fa-solid-900.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\fa-thin-100.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Brands-Regular-400.otf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Duotone-Solid-900.otf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Light-300.otf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Regular-400.otf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Solid-900.otf" />
+    <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Thin-100.otf" />
     <None Remove="Resources\window_switch.png" />
   </ItemGroup>
   <ItemGroup>
@@ -22,6 +34,18 @@
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Fonts\FontAwesome\fa-brands-400.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\fa-duotone-900.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\fa-light-300.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\fa-regular-400.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\fa-solid-900.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\fa-thin-100.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Brands-Regular-400.otf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Duotone-Solid-900.otf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Light-300.otf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Regular-400.otf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Solid-900.otf" />
+    <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Thin-100.otf" />
     <Resource Include="Resources\window_switch.png" />
   </ItemGroup>
   <ItemGroup>
