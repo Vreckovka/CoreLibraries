@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using VCore.Converters;
 
 namespace VPlayer.Library
 {
@@ -32,6 +33,51 @@ namespace VPlayer.Library
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
       return this;
+    }
+  }
+
+  public class ExtractMilisecondFromTimeSpanConverter : MarkupExtension, IMultiValueConverter
+  {
+    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+      if (values.Length == 2 && 
+          TimeSpan.TryParse(values[0]?.ToString(), out var time) &&
+          double.TryParse(values[1]?.ToString(), out var miliseconds))
+      {
+        var asd = TimeSpan.FromMilliseconds(time.TotalMilliseconds + miliseconds).ToString(@"hh\:mm\:ss");
+
+        return asd;
+      }
+     
+      return "Ahoj";
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+      return null;
+    }
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+      return this;
+    }
+  }
+
+  public class IsGreaterConverter : BaseConverter
+  {
+    public override object Convert(
+      object value,
+      Type targetType,
+      object parameter,
+      CultureInfo culture)
+    {
+      if (double.TryParse(value?.ToString(), out var doubleValue) &&
+          double.TryParse(parameter?.ToString(), out var doubleParameter))
+      {
+        return doubleValue > doubleParameter;
+      }
+
+      return value;
     }
   }
 }
