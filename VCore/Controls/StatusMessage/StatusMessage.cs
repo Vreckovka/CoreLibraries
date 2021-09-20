@@ -155,42 +155,6 @@ namespace VCore.WPF.Controls.StatusMessage
 
     #endregion
 
-    #region IsMinimized
-
-    public bool IsMinimized
-    {
-      get { return (bool)GetValue(IsMinimizedProperty); }
-      set { SetValue(IsMinimizedProperty, value); }
-    }
-
-    public static readonly DependencyProperty IsMinimizedProperty =
-      DependencyProperty.Register(
-        nameof(IsMinimized),
-        typeof(bool),
-        typeof(StatusMessage),
-        new PropertyMetadata(false));
-
-
-    #endregion
-
-    #region IsClosed
-
-    public bool IsClosed
-    {
-      get { return (bool)GetValue(IsMinimizedProperty); }
-      set { SetValue(IsMinimizedProperty, value); }
-    }
-
-    public static readonly DependencyProperty IsClosedProperty =
-      DependencyProperty.Register(
-        nameof(IsClosed),
-        typeof(bool),
-        typeof(StatusMessage),
-        new PropertyMetadata(false));
-
-
-    #endregion
-
     #region AnimationDuration
 
     public Duration AnimationDuration
