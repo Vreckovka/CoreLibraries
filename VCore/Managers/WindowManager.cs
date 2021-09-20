@@ -53,7 +53,7 @@ namespace VCore.WPF.Managers
 
     public PromptResult ShowQuestionPrompt<TView, TViewModel>(TViewModel viewModel)
       where TView : IView, new()
-      where TViewModel : GenericPromptViewModel
+      where TViewModel : BasePromptViewModel
     {
       ShowPrompt<TView>(viewModel);
 
@@ -66,7 +66,7 @@ namespace VCore.WPF.Managers
 
     public PromptResult ShowYesNoPrompt(string text, string header = "")
     {
-      var vm = new GenericPromptViewModel()
+      var vm = new BasePromptViewModel()
       {
         Title = header,
         Text = text
@@ -112,7 +112,7 @@ namespace VCore.WPF.Managers
 
     public void ShowErrorPrompt(Exception ex)
     {
-      var vm = new GenericPromptViewModel()
+      var vm = new BasePromptViewModel()
       {
         Title = "Error occured",
         Text = ex.ToString()
@@ -123,7 +123,7 @@ namespace VCore.WPF.Managers
 
     public void ShowErrorPrompt(string message)
     {
-      var vm = new GenericPromptViewModel()
+      var vm = new BasePromptViewModel()
       {
         Title = "Error occured",
         Text = message

@@ -29,5 +29,7 @@ namespace SoundManagement
     public string Description { get; set; }
     public string Id { get; set; }
     public int Priority { get; set; }
+    public bool DisableAutomaticConnect { get; set; }
+
   }
 }

@@ -49,21 +49,7 @@ namespace VCore.Controls
   public class PathButton : ToggleButton
   {
     private double animationInSeconds = .15;
-
-    public PathButton()
-    {
-      Checked += PathButton_Checked;
-      Unchecked += PathButton_Unchecked;
-    }
-
-    private void PathButton_Unchecked(object sender, RoutedEventArgs e)
-    {
-    }
-
-    private void PathButton_Checked(object sender, RoutedEventArgs e)
-    {
-    }
-
+    
     #region PathStyle
 
     public Style PathStyle
@@ -239,15 +225,15 @@ namespace VCore.Controls
         nameof(ForegroundCheckedColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.White, (x, y) =>
+        new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender,(x, y) =>
         {
           if(x is PathButton pathButton && pathButton.IsChecked == true)
           {
-            pathButton.Foreground = pathButton.Foreground.Clone();
+            var clone = pathButton.Foreground.Clone();
 
-            pathButton.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+            clone = pathButton.GetAnimation(pathButton.Foreground, pathButton.ForegroundDefaultColor, (Color)y.NewValue);
 
-            pathButton.Foreground = pathButton.GetAnimation(pathButton.Foreground, pathButton.ForegroundDefaultColor, (Color)y.NewValue);
+            pathButton.Foreground = clone;
           }
         }));
 
@@ -338,7 +324,9 @@ namespace VCore.Controls
            {
              if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
              {
-               if (solidColorBrush.Color != newColor)
+               if (solidColorBrush.Color != newColor && 
+                   buttonWithIcon.IsChecked == false && 
+                   buttonWithIcon.IsEnabled)
                {
                  buttonWithIcon.Foreground = new SolidColorBrush(newColor);
                }
@@ -470,7 +458,6 @@ namespace VCore.Controls
       Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
 
       Foreground = GetAnimation(Foreground, ForegroundDefaultColor, ForegroundCheckedColor);
-
     }
 
     #endregion
@@ -495,7 +482,7 @@ namespace VCore.Controls
 
     private Brush GetAnimation(Brush rootElementBrush, Color from, Color to)
     {
-      rootElementBrush = new SolidColorBrush(from);
+      rootElementBrush = new SolidColorBrush(to);
 
       var hoverUp = new ColorAnimation();
 

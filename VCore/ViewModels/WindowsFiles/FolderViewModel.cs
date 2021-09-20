@@ -636,11 +636,14 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
 
+    #region GetItemSources
+
     public virtual Task<IEnumerable<FileInfo>> GetItemSources(IEnumerable<FileInfo> fileInfo)
     {
-      return Task.FromResult((IEnumerable<FileInfo>)null);
+      return Task.FromResult(fileInfo);
     }
 
+    #endregion
 
     public void RaiseNotifications(string name)
     {

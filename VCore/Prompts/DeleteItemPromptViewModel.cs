@@ -2,7 +2,7 @@
 
 namespace VCore.WPF.Prompts
 {
-  public class DeleteItemPromptViewModel : GenericPromptViewModel
+  public class DeleteItemPromptViewModel : BasePromptViewModel
   {
     public DeleteItemPromptViewModel()
     {
