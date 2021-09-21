@@ -47,6 +47,18 @@ namespace VCore.ItemsCollections.VirtualList
         _generator = generator;
         _cachedItems = new T[maxItems];
       }
+
+
+      public VirtualList(IEnumerable<T> items, int pageSize = 15)
+      {
+        var generator = new ItemsGenerator<T>(items, pageSize);
+
+        int maxItems = generator.Count;
+
+        _generator = generator;
+        _cachedItems = new T[maxItems];
+      }
+
       #endregion
 
 
