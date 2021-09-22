@@ -55,6 +55,11 @@ namespace VCore.Controls
       DefaultStyleKeyProperty.OverrideMetadata(typeof(PathButton), new FrameworkPropertyMetadata(typeof(PathButton)));
     }
 
+    public PathButton()
+    {
+      Foreground = new SolidColorBrush(ForegroundDefaultColor);
+    }
+
     #region PathStyle
 
     public Style PathStyle
@@ -329,10 +334,8 @@ namespace VCore.Controls
            {
              if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
              {
-               if (solidColorBrush.Color != newColor && 
-                   buttonWithIcon.IsChecked == false && 
-                   buttonWithIcon.IsEnabled)
-               {
+               if (buttonWithIcon.IsChecked == false && 
+                   buttonWithIcon.IsEnabled) {
                  buttonWithIcon.Foreground = new SolidColorBrush(newColor);
                }
              }
