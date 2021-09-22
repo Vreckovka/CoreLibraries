@@ -59,10 +59,15 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC.Domain
       return toString;
     }
 
-    public void Update(LRCFile lRCFile)
+    public void Update(LRCFile other)
     {
-      Id = lRCFile.Id;
-      Lines = lRCFile.Lines;
+      Lines = other.Lines;
+      Id = other.Id;
+      Artist = other.Artist;
+      Title = other.Title;
+      Album = other.Album;
+      By = other.By;
+      Length = other.Length;
     }
   }
 }

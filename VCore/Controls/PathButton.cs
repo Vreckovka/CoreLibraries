@@ -49,7 +49,12 @@ namespace VCore.Controls
   public class PathButton : ToggleButton
   {
     private double animationInSeconds = .15;
-    
+
+    static PathButton()
+    {
+      DefaultStyleKeyProperty.OverrideMetadata(typeof(PathButton), new FrameworkPropertyMetadata(typeof(PathButton)));
+    }
+
     #region PathStyle
 
     public Style PathStyle
