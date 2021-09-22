@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ninject;
 using VCore.Standard;
@@ -43,6 +44,9 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     public string GetFileName(string artistName, string songName)
     {
+      Regex regex = new Regex("[^a-zA-Z0-9]");
+      songName = regex.Replace(songName, "-");
+
       return $"{artistName} - {songName}";
     }
 
