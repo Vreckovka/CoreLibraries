@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,10 +45,14 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     public string GetFileName(string artistName, string songName)
     {
-      Regex regex = new Regex("[^a-zA-Z0-9 . -]");
-      songName = regex.Replace(songName, "-");
+      string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
 
-      return $"{artistName} - {songName}";
+      foreach (char c in invalid)
+      {
+        songName = songName.Replace(c.ToString(), "-"); 
+      }
+
+      return $"{artistName.Trim()} - {songName.Trim()}";
     }
 
     #endregion
