@@ -78,60 +78,6 @@ namespace VCore.Controls
 
     #endregion
 
-    #region HorizontalIconAlignment
-
-    public HorizontalAlignment HorizontalIconAlignment
-    {
-      get { return (HorizontalAlignment)GetValue(HorizontalIconAlignmentProperty); }
-      set { SetValue(HorizontalIconAlignmentProperty, value); }
-    }
-
-    public static readonly DependencyProperty HorizontalIconAlignmentProperty =
-      DependencyProperty.Register(
-        nameof(HorizontalIconAlignment),
-        typeof(HorizontalAlignment),
-        typeof(PathButton),
-        new PropertyMetadata(HorizontalAlignment.Center));
-
-
-    #endregion
-
-    #region VerticalIconAlignment
-
-    public VerticalAlignment VerticalIconAlignment
-    {
-      get { return (VerticalAlignment)GetValue(VerticalIconAlignmentProperty); }
-      set { SetValue(VerticalIconAlignmentProperty, value); }
-    }
-
-    public static readonly DependencyProperty VerticalIconAlignmentProperty =
-      DependencyProperty.Register(
-        nameof(VerticalIconAlignment),
-        typeof(VerticalAlignment),
-        typeof(PathButton),
-        new PropertyMetadata(VerticalAlignment.Center));
-
-
-    #endregion
-
-    #region IconMargin
-
-    public Thickness IconMargin
-    {
-      get { return (Thickness)GetValue(IconMarginProperty); }
-      set { SetValue(IconMarginProperty, value); }
-    }
-
-    public static readonly DependencyProperty IconMarginProperty =
-      DependencyProperty.Register(
-        nameof(IconMargin),
-        typeof(Thickness),
-        typeof(PathButton),
-        new PropertyMetadata(new Thickness(0)));
-
-
-    #endregion
-
     #region CornerRadius
 
     public CornerRadius CornerRadius
@@ -147,6 +93,77 @@ namespace VCore.Controls
         typeof(PathButton),
         new PropertyMetadata(new CornerRadius(0)));
 
+
+    #endregion
+
+    #region Icon properties
+
+    #region Icon colors
+
+    #region IconCheckedColor
+
+    public Color IconCheckedColor
+    {
+      get { return (Color)GetValue(IconCheckedColorProperty); }
+      set { SetValue(IconCheckedColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconCheckedColorProperty =
+      DependencyProperty.Register(
+        nameof(IconCheckedColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata(Colors.Red));
+
+
+    #endregion
+
+    #region IconHoverColor
+
+    public Color IconHoverColor
+    {
+      get { return (Color)GetValue(IconHoverColorProperty); }
+      set { SetValue(IconHoverColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconHoverColorProperty =
+      DependencyProperty.Register(
+        nameof(IconHoverColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff")));
+
+
+    #endregion
+
+    #region IconDefaultColor
+
+    public Color IconDefaultColor
+    {
+      get { return (Color)GetValue(IconDefaultColorProperty); }
+      set { SetValue(IconDefaultColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconDefaultColorProperty =
+      DependencyProperty.Register(
+        nameof(IconDefaultColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#252525"), (x, y) =>
+        {
+          if (x is PathButton buttonWithIcon)
+          {
+            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
+            {
+              if (solidColorBrush.Color != newColor)
+              {
+                buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
+              }
+            }
+          }
+        }));
+
+    #endregion
 
     #endregion
 
@@ -204,23 +221,66 @@ namespace VCore.Controls
 
     #endregion
 
-    #region PathCheckedBrush
+    #region IconMargin
 
-    public Brush PathCheckedBrush
+    public Thickness IconMargin
     {
-      get { return (Brush)GetValue(PathCheckedBrushProperty); }
-      set { SetValue(PathCheckedBrushProperty, value); }
+      get { return (Thickness)GetValue(IconMarginProperty); }
+      set { SetValue(IconMarginProperty, value); }
     }
 
-    public static readonly DependencyProperty PathCheckedBrushProperty =
+    public static readonly DependencyProperty IconMarginProperty =
       DependencyProperty.Register(
-        nameof(PathCheckedBrush),
-        typeof(Brush),
+        nameof(IconMargin),
+        typeof(Thickness),
         typeof(PathButton),
-        new PropertyMetadata(Brushes.Black));
+        new PropertyMetadata(new Thickness(0)));
 
 
     #endregion
+
+    #region HorizontalIconAlignment
+
+    public HorizontalAlignment HorizontalIconAlignment
+    {
+      get { return (HorizontalAlignment)GetValue(HorizontalIconAlignmentProperty); }
+      set { SetValue(HorizontalIconAlignmentProperty, value); }
+    }
+
+    public static readonly DependencyProperty HorizontalIconAlignmentProperty =
+      DependencyProperty.Register(
+        nameof(HorizontalIconAlignment),
+        typeof(HorizontalAlignment),
+        typeof(PathButton),
+        new PropertyMetadata(HorizontalAlignment.Center));
+
+
+    #endregion
+
+    #region VerticalIconAlignment
+
+    public VerticalAlignment VerticalIconAlignment
+    {
+      get { return (VerticalAlignment)GetValue(VerticalIconAlignmentProperty); }
+      set { SetValue(VerticalIconAlignmentProperty, value); }
+    }
+
+    public static readonly DependencyProperty VerticalIconAlignmentProperty =
+      DependencyProperty.Register(
+        nameof(VerticalIconAlignment),
+        typeof(VerticalAlignment),
+        typeof(PathButton),
+        new PropertyMetadata(VerticalAlignment.Center));
+
+
+    #endregion
+
+
+    #endregion
+
+    public bool EnableBorderAnimation { get; set; }
+
+    #region Foreground
 
     #region ForegroundCheckedColor
 
@@ -235,9 +295,9 @@ namespace VCore.Controls
         nameof(ForegroundCheckedColor),
         typeof(Color),
         typeof(PathButton),
-        new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender,(x, y) =>
+        new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender, (x, y) =>
         {
-          if(x is PathButton pathButton && pathButton.IsChecked == true)
+          if (x is PathButton pathButton && pathButton.IsChecked == true)
           {
             var clone = pathButton.Foreground.Clone();
 
@@ -247,53 +307,6 @@ namespace VCore.Controls
           }
         }));
 
-
-    #endregion
-
-    #region IconHoverColor
-
-    public Color IconHoverColor
-    {
-      get { return (Color)GetValue(IconHoverColorProperty); }
-      set { SetValue(IconHoverColorProperty, value); }
-    }
-
-    public static readonly DependencyProperty IconHoverColorProperty =
-      DependencyProperty.Register(
-        nameof(IconHoverColor),
-        typeof(Color),
-        typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff")));
-
-
-    #endregion
-
-    #region IconDefaultColor
-
-    public Color IconDefaultColor
-    {
-      get { return (Color)GetValue(IconDefaultColorProperty); }
-      set { SetValue(IconDefaultColorProperty, value); }
-    }
-
-    public static readonly DependencyProperty IconDefaultColorProperty =
-      DependencyProperty.Register(
-        nameof(IconDefaultColor),
-        typeof(Color),
-        typeof(PathButton),
-        new PropertyMetadata(Colors.Green, (x, y) =>
-        {
-          if (x is PathButton buttonWithIcon)
-          {
-            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
-            {
-              if (solidColorBrush.Color != newColor)
-              {
-                buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
-              }
-            }
-          }
-        }));
 
     #endregion
 
@@ -334,13 +347,96 @@ namespace VCore.Controls
            {
              if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
              {
-               if (buttonWithIcon.IsChecked == false && 
-                   buttonWithIcon.IsEnabled) {
+               if (buttonWithIcon.IsChecked == false &&
+                   buttonWithIcon.IsEnabled)
+               {
                  buttonWithIcon.Foreground = new SolidColorBrush(newColor);
                }
              }
            }
          }));
+
+    #endregion
+
+    #endregion
+
+    #region Border
+
+    #region BorderCheckedColor
+
+    public Color BorderCheckedColor
+    {
+      get { return (Color)GetValue(BorderCheckedColorProperty); }
+      set { SetValue(BorderCheckedColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty BorderCheckedColorProperty =
+      DependencyProperty.Register(
+        nameof(BorderCheckedColor),
+        typeof(Color),
+        typeof(PathButton),
+        new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender, (x, y) =>
+        {
+          if (x is PathButton pathButton && pathButton.IsChecked == true)
+          {
+            var clone = pathButton.BorderBrush.Clone();
+
+            clone = pathButton.GetAnimation(pathButton.BorderBrush, pathButton.BorderDefaultColor, (Color)y.NewValue);
+
+            pathButton.BorderBrush = clone;
+          }
+        }));
+
+
+    #endregion
+
+    #region BorderHoverColor
+
+    public Color BorderHoverColor
+    {
+      get { return (Color)GetValue(BorderHoverColorProperty); }
+      set { SetValue(BorderHoverColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty BorderHoverColorProperty =
+      DependencyProperty.Register(
+        nameof(BorderHoverColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff")));
+
+
+    #endregion
+
+    #region BorderDefaultColor
+
+    public Color BorderDefaultColor
+    {
+      get { return (Color)GetValue(BorderDefaultColorProperty); }
+      set { SetValue(BorderDefaultColorProperty, value); }
+    }
+
+    public static readonly DependencyProperty BorderDefaultColorProperty =
+      DependencyProperty.Register(
+        nameof(BorderDefaultColor),
+        typeof(Color),
+        typeof(PathButton),
+        new PropertyMetadata(Colors.White, (x, y) =>
+        {
+          if (x is PathButton buttonWithIcon)
+          {
+            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
+            {
+              if (buttonWithIcon.IsChecked == false &&
+                  buttonWithIcon.IsEnabled)
+              {
+                buttonWithIcon.BorderBrush = new SolidColorBrush(newColor);
+              }
+            }
+          }
+        }));
+
+    #endregion
 
     #endregion
 
@@ -398,15 +494,29 @@ namespace VCore.Controls
 
     public void OnAnimateHoverColor()
     {
-      Brush iconBrushColone = IconBrush.Clone();
+      if (IsChecked != true)
+      {
+        Brush iconBrushColone = IconBrush.Clone();
 
-      iconBrushColone = GetAnimation(iconBrushColone, IconDefaultColor, IconHoverColor);
+        iconBrushColone = GetAnimation(iconBrushColone, IconDefaultColor, IconHoverColor);
 
-      Brush foregroundBrushColone = Foreground.Clone();
 
-      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundHoverColor);
+        Brush foregroundBrushColone = Foreground.Clone();
 
-      SetBrushes(iconBrushColone, foregroundBrushColone, foregroundBrushColone);
+        foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundHoverColor);
+
+        Brush borderBrushColone = null;
+
+        if (EnableBorderAnimation && BorderBrush != null)
+        {
+          borderBrushColone = BorderBrush.Clone();
+
+          borderBrushColone = GetAnimation(borderBrushColone, BorderDefaultColor, BorderHoverColor);
+        }
+
+
+        SetBrushes(iconBrushColone, foregroundBrushColone, borderBrushColone);
+      }
     }
 
     #endregion
@@ -430,15 +540,30 @@ namespace VCore.Controls
 
     private void AnimateImageDefaultColor(double? durationSeconds = null)
     {
-      Brush iconBrushColone = IconBrush.Clone();
+      if (IsChecked != true)
+      {
+        Brush iconBrushColone = IconBrush.Clone();
 
-      iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconDefaultColor);
+        iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconDefaultColor);
 
-      Brush foregroundBrushColone = Foreground.Clone();
 
-      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundHoverColor, ForegroundDefaultColor);
+        Brush foregroundBrushColone = Foreground.Clone();
 
-      SetBrushes(iconBrushColone, foregroundBrushColone, foregroundBrushColone);
+        foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundHoverColor, ForegroundDefaultColor);
+
+
+        Brush borderBrushColone = null;
+
+        if (EnableBorderAnimation && BorderBrush != null)
+        {
+          borderBrushColone = BorderBrush.Clone();
+
+          borderBrushColone = GetAnimation(borderBrushColone, BorderHoverColor, BorderDefaultColor);
+        }
+
+
+        SetBrushes(iconBrushColone, foregroundBrushColone, borderBrushColone);
+      }
     }
 
     #endregion
@@ -446,6 +571,8 @@ namespace VCore.Controls
     #endregion
 
     #region Methods
+
+    #region OnToggle
 
     protected override void OnToggle()
     {
@@ -455,17 +582,36 @@ namespace VCore.Controls
       }
     }
 
+    #endregion
+
     #region OnChecked
 
     protected override void OnChecked(RoutedEventArgs e)
     {
       base.OnChecked(e);
 
-      Foreground = Foreground.Clone();
 
-      Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+      Brush iconBrushColone = IconBrush.Clone();
 
-      Foreground = GetAnimation(Foreground, ForegroundDefaultColor, ForegroundCheckedColor);
+      iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconCheckedColor);
+
+
+      Brush foregroundBrushColone = Foreground.Clone();
+
+      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundCheckedColor);
+
+
+      Brush borderBrushColone = null;
+
+      if (EnableBorderAnimation && BorderBrush != null)
+      {
+        borderBrushColone = BorderBrush.Clone();
+
+        borderBrushColone = GetAnimation(borderBrushColone, BorderHoverColor, BorderCheckedColor);
+      }
+
+
+      SetBrushes(iconBrushColone, foregroundBrushColone, borderBrushColone);
     }
 
     #endregion
@@ -476,11 +622,27 @@ namespace VCore.Controls
     {
       base.OnUnchecked(e);
 
-      Foreground = Foreground.Clone();
+      Brush iconBrushColone = IconBrush.Clone();
 
-      Foreground.BeginAnimation(SolidColorBrush.ColorProperty, null);
+      iconBrushColone = GetAnimation(iconBrushColone, IconCheckedColor, IconDefaultColor);
 
-      Foreground = GetAnimation(Foreground, ForegroundCheckedColor, ForegroundDefaultColor);
+
+      Brush foregroundBrushColone = Foreground.Clone();
+
+      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundCheckedColor, ForegroundDefaultColor);
+
+
+      Brush borderBrushColone = null;
+
+      if (EnableBorderAnimation && BorderBrush != null)
+      {
+        borderBrushColone = BorderBrush.Clone();
+
+        borderBrushColone = GetAnimation(borderBrushColone, BorderCheckedColor, BorderDefaultColor);
+      }
+
+
+      SetBrushes(iconBrushColone, foregroundBrushColone, borderBrushColone);
 
     }
 
@@ -512,13 +674,15 @@ namespace VCore.Controls
     private void SetBrushes(Brush iconBrush, Brush foregroundBrush, Brush borderBrush)
     {
       IconBrush = iconBrush;
+      Foreground = foregroundBrush;
 
-      if (IsChecked.HasValue && !IsChecked.Value)
-        Foreground = foregroundBrush;
-      //BorderBrush = borderBrush;
+      if (EnableBorderAnimation )
+        BorderBrush = borderBrush;
     }
 
     #endregion
+
+    #region OnMouseLeftButtonDown
 
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
@@ -527,6 +691,8 @@ namespace VCore.Controls
       AnimateImageDefaultColor();
 
     }
+
+    #endregion
 
     #region OnAnimateDefaultColor
 
