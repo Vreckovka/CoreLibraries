@@ -107,8 +107,7 @@ namespace SoundManagement
       {
         if (value != actualVolume)
         {
-          actualVolume = value;
-
+         
           SetVolume(false, value);
         }
       }
@@ -283,6 +282,16 @@ namespace SoundManagement
       if (!fromEvent)
       {
         var scalarVolume = (float)(value / 100.0);
+
+        if (scalarVolume > 1)
+        {
+          scalarVolume = 1;
+        }
+        else if (scalarVolume < 0)
+        {
+          scalarVolume = 0;
+        }
+
         audioEndpoint?.SetMasterVolumeLevelScalar(scalarVolume, Guid.NewGuid());
       }
 
