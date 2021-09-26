@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +30,42 @@ namespace VCore.WPF.Controls.StatusMessage
 
   public class StatusMessage : Control
   {
+    private SerialDisposable hoverDisposable = new SerialDisposable();
+    private MessageStatusState? beforeHoverState = null;
     public StatusMessage()
     {
       DataContextChanged += StatusMessage_DataContextChanged;
+      MouseEnter += StatusMessage_MouseEnter;
+      MouseLeave += StatusMessage_MouseLeave;
+    }
+
+    private void StatusMessage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      if (beforeHoverState != null)
+      {
+        MessageState = beforeHoverState.Value;
+        beforeHoverState = null;
+        OnMessageStateChnaged -= StatusMessage_OnMessageStateChnagedWhenOpenedOnHover;
+      }
+    }
+
+    private void StatusMessage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      if (MessageState != MessageStatusState.Open)
+      {
+        hoverDisposable.Disposable = Observable.Timer(TimeSpan.FromSeconds(0.5)).ObserveOn(Application.Current.Dispatcher).Subscribe(x =>
+        {
+          beforeHoverState = MessageState;
+          MessageState = MessageStatusState.Open;
+
+          OnMessageStateChnaged += StatusMessage_OnMessageStateChnagedWhenOpenedOnHover;
+        });
+      }
+    }
+
+    private void StatusMessage_OnMessageStateChnagedWhenOpenedOnHover(object sender, MessageStatusState e)
+    {
+      beforeHoverState = e;
     }
 
     #region Status
@@ -98,6 +133,13 @@ namespace VCore.WPF.Controls.StatusMessage
 
     #region MessageStatusState
 
+    private event EventHandler<MessageStatusState> OnMessageStateChnaged;
+
+    protected virtual void OnOnMessageStateChnaged(MessageStatusState e)
+    {
+      OnMessageStateChnaged?.Invoke(this, e);
+    }
+
     public MessageStatusState MessageState
     {
       get { return (MessageStatusState)GetValue(MessageStateProperty); }
@@ -109,7 +151,13 @@ namespace VCore.WPF.Controls.StatusMessage
         nameof(MessageState),
         typeof(MessageStatusState),
         typeof(StatusMessage),
-        new PropertyMetadata(MessageStatusState.Open));
+        new PropertyMetadata(MessageStatusState.Open, (x, y) =>
+        {
+          if (x is StatusMessage statusMessage)
+          {
+            statusMessage.OnOnMessageStateChnaged((MessageStatusState) y.NewValue);
+          }
+        }));
 
     #endregion
 
@@ -234,5 +282,7 @@ namespace VCore.WPF.Controls.StatusMessage
     #endregion 
 
     #endregion
+
+  
   }
 }

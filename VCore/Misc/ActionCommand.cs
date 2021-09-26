@@ -8,21 +8,43 @@ namespace VCore
   {
     private readonly Action<TArgument> _action;
     private readonly TArgument baseArgument;
-
+    private readonly Func<TArgument, bool> canExecute;
     public ActionCommand(Action<TArgument> action, TArgument baseArgument)
     {
       _action = action;
       this.baseArgument = baseArgument;
     }
 
-    public ActionCommand(Action<TArgument> action) 
+    public ActionCommand(Action<TArgument> action, Func<TArgument, bool> canExecute)
+    {
+      _action = action ?? throw new ArgumentNullException(nameof(action));
+
+      this.canExecute = canExecute ?? throw new ArgumentNullException(nameof(canExecute));
+    }
+
+    public ActionCommand(Action<TArgument> action)
     {
       _action = action;
     }
 
     public bool CanExecute(object parameter)
     {
+      if (canExecute != null)
+      {
+        if (parameter is TArgument argument)
+        {
+          return canExecute(argument);
+        }
+
+        return false;
+      }
+
       return true;
+    }
+
+    public void RaiseCanExecuteChanged()
+    {
+      CanExecuteChanged?.Invoke(this, new EventArgs());
     }
 
     public void Execute(object parameter)
@@ -38,6 +60,8 @@ namespace VCore
     }
 
     public event EventHandler CanExecuteChanged;
+
+
   }
 
 

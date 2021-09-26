@@ -57,7 +57,7 @@ namespace VCore.Controls
 
     public PathButton()
     {
-      Foreground = new SolidColorBrush(ForegroundDefaultColor);
+
     }
 
     #region PathStyle
@@ -72,6 +72,24 @@ namespace VCore.Controls
       DependencyProperty.Register(
         nameof(PathStyle),
         typeof(Style),
+        typeof(PathButton),
+        new PropertyMetadata(null));
+
+
+    #endregion
+
+    #region Glyph
+
+    public string Glyph
+    {
+      get { return (string)GetValue(GlyphProperty); }
+      set { SetValue(GlyphProperty, value); }
+    }
+
+    public static readonly DependencyProperty GlyphProperty =
+      DependencyProperty.Register(
+        nameof(Glyph),
+        typeof(string),
         typeof(PathButton),
         new PropertyMetadata(null));
 
@@ -113,7 +131,14 @@ namespace VCore.Controls
         nameof(IconCheckedColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.Red));
+        new PropertyMetadata(Colors.Red, (x, y) =>
+        {
+          if (x is PathButton pathButton && pathButton.IsChecked == true)
+          {
+            SetIconBrush(x, y);
+          }
+
+        }));
 
 
     #endregion
@@ -131,7 +156,13 @@ namespace VCore.Controls
         nameof(IconHoverColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff")));
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#f0f8ff"), (x, y) =>
+        {
+          if (x is PathButton pathButton && pathButton.IsMouseOver)
+          {
+            SetIconBrush(x, y);
+          }
+        }));
 
 
     #endregion
@@ -149,19 +180,36 @@ namespace VCore.Controls
         nameof(IconDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#252525"), (x, y) =>
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#252525"), SetIconBrush));
+
+    #endregion
+
+    #region SetIconBrush
+
+    private static void SetIconBrush(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs change)
+    {
+      if (dependencyObject is PathButton buttonWithIcon)
+      {
+        if (change.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
         {
-          if (x is PathButton buttonWithIcon)
+          if (solidColorBrush.Color != newColor)
           {
-            if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
+            if (buttonWithIcon.IsLoaded)
             {
-              if (solidColorBrush.Color != newColor)
-              {
-                buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
-              }
+              Brush brushClone = buttonWithIcon.IconBrush.Clone();
+
+              brushClone = buttonWithIcon.GetAnimation(brushClone, (Color) change.OldValue, newColor);
+
+              buttonWithIcon.IconBrush = brushClone;
+            }
+            else
+            {
+              buttonWithIcon.IconBrush = new SolidColorBrush(newColor);
             }
           }
-        }));
+        }
+      }
+    }
 
     #endregion
 
@@ -295,15 +343,11 @@ namespace VCore.Controls
         nameof(ForegroundCheckedColor),
         typeof(Color),
         typeof(PathButton),
-        new FrameworkPropertyMetadata(Colors.Red, FrameworkPropertyMetadataOptions.AffectsRender, (x, y) =>
+        new FrameworkPropertyMetadata(Colors.Red, (x, y) =>
         {
           if (x is PathButton pathButton && pathButton.IsChecked == true)
           {
-            var clone = pathButton.Foreground.Clone();
-
-            clone = pathButton.GetAnimation(pathButton.Foreground, pathButton.ForegroundDefaultColor, (Color)y.NewValue);
-
-            pathButton.Foreground = clone;
+            SetForeground(x, y);
           }
         }));
 
@@ -323,7 +367,13 @@ namespace VCore.Controls
         nameof(ForegroundHoverColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff")));
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#ffffff"), (x, y) =>
+        {
+          if (x is PathButton pathButton && pathButton.IsMouseOver)
+          {
+            SetForeground(x, y);
+          }
+        }));
 
 
     #endregion
@@ -341,20 +391,40 @@ namespace VCore.Controls
         nameof(ForegroundDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata(Colors.White, (x, y) =>
-         {
-           if (x is PathButton buttonWithIcon)
-           {
-             if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
-             {
-               if (buttonWithIcon.IsChecked == false &&
-                   buttonWithIcon.IsEnabled)
-               {
-                 buttonWithIcon.Foreground = new SolidColorBrush(newColor);
-               }
-             }
-           }
-         }));
+        new PropertyMetadata(Colors.White, SetForeground));
+
+    #endregion
+
+    #region SetForeground
+
+    private static void SetForeground(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs change)
+    {
+      if (dependencyObject is PathButton buttonWithIcon)
+      {
+        if (change.NewValue is Color newColor && buttonWithIcon.Foreground is SolidColorBrush solidColorBrush)
+        {
+          if (solidColorBrush.Color != newColor)
+          {
+            if (buttonWithIcon.IsLoaded)
+            {
+              if (change.OldValue is Color oldColor)
+              {
+                Brush brushClone = buttonWithIcon.Foreground.Clone();
+
+                brushClone = buttonWithIcon.GetAnimation(brushClone, oldColor, newColor);
+
+                buttonWithIcon.Foreground = brushClone;
+              }
+
+            }
+            else
+            {
+              buttonWithIcon.Foreground = new SolidColorBrush(newColor);
+            }
+          }
+        }
+      }
+    }
 
     #endregion
 
@@ -665,6 +735,7 @@ namespace VCore.Controls
       rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverUp);
 
       return rootElementBrush;
+
     }
 
     #endregion
@@ -676,7 +747,7 @@ namespace VCore.Controls
       IconBrush = iconBrush;
       Foreground = foregroundBrush;
 
-      if (EnableBorderAnimation )
+      if (EnableBorderAnimation)
         BorderBrush = borderBrush;
     }
 

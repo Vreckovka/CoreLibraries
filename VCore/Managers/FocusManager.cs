@@ -28,17 +28,18 @@ namespace VCore.WPF.Managers
       FocusedItems.Remove(control);
     }
 
-    public static void SetFocus(DependencyObject dependencyObject)
+    public static void SetFocus(FrameworkElement frameworkElement)
     {
       IInputElement focusedControl = Keyboard.FocusedElement;
+     
 
       if (focusedControl != null)
       {
-        FocusManager.SetFocusedElement(dependencyObject, (IInputElement)dependencyObject);
-
-        focusedControl.ReleaseMouseCapture();
-
         Keyboard.ClearFocus();
+
+        FocusManager.SetFocusedElement(frameworkElement,frameworkElement);
+        focusedControl.ReleaseMouseCapture();
+        frameworkElement.Focus();
       }
     }
   }
