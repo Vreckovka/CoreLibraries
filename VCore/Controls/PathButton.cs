@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -78,6 +80,8 @@ namespace VCore.Controls
 
     #endregion
 
+    #region Glyph Properties
+
     #region Glyph
 
     public string Glyph
@@ -93,6 +97,44 @@ namespace VCore.Controls
         typeof(PathButton),
         new PropertyMetadata(null));
 
+
+    #endregion
+
+    #region GlyphFontFamily
+
+    public FontFamily GlyphFontFamily
+    {
+      get { return (FontFamily)GetValue(GlyphFontFamilyProperty); }
+      set { SetValue(GlyphFontFamilyProperty, value); }
+    }
+
+    public static readonly DependencyProperty GlyphFontFamilyProperty =
+      DependencyProperty.Register(
+        nameof(GlyphFontFamily),
+        typeof(FontFamily),
+        typeof(PathButton),
+        new PropertyMetadata(TextBlock.FontFamilyProperty.DefaultMetadata.DefaultValue));
+
+
+    #endregion
+
+    #region GlyphFontSize
+
+    public double GlyphFontSize
+    {
+      get { return (double)GetValue(GlyphFontSizeProperty); }
+      set { SetValue(GlyphFontSizeProperty, value); }
+    }
+
+    public static readonly DependencyProperty GlyphFontSizeProperty =
+      DependencyProperty.Register(
+        nameof(GlyphFontSize),
+        typeof(double),
+        typeof(PathButton),
+        new PropertyMetadata(12.0));
+
+
+    #endregion
 
     #endregion
 
@@ -235,6 +277,7 @@ namespace VCore.Controls
 
     #region IconWidth
 
+    [TypeConverter(typeof(LengthConverter))]
     public double IconWidth
     {
       get { return (double)GetValue(IconWidthProperty); }
@@ -253,6 +296,7 @@ namespace VCore.Controls
 
     #region IconHeight
 
+    [TypeConverter(typeof(LengthConverter))]
     public double IconHeight
     {
       get { return (double)GetValue(IconHeightProperty); }

@@ -6,6 +6,72 @@
         <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style x:Key="FontAwesomeGlyphStyle"
+           BasedOn="{StaticResource {x:Type controls:PathButton}}"
+           TargetType="{x:Type controls:PathButton}">
+        <Setter Property="GlyphFontSize" Value="17" />
+        <Setter Property="GlyphFontFamily" Value="{StaticResource FontAwesome6Pro_Regular}" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="IconWidth" Value="auto" />
+        <Setter Property="IconHeight" Value="auto" />
+        <Setter Property="IconDefaultColor" Value="#757575" />
+        <Setter Property="IconCheckedColor" Value="{StaticResource YellowColor}" />
+    </Style>
+
+    <Style x:Key="tv-retro"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="plus"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="+" />
+    </Style>
+
+    <Style x:Key="films"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="album-collection"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="user-music"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="compact-disc"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+
+    <Style x:Key="file-check"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="tag"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
+    <Style x:Key="hashtag"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="#" />
+    </Style>
 
 
     <Style x:Key="FontAwesomeGlyphPathButtonStyle"
@@ -27,23 +93,8 @@
         <Setter Property="Content" Value="🔖︁" />
     </Style>
 
-    <Style x:Key="user-music"
-           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-           TargetType="controls:PathButton">
-        <Setter Property="Content" Value="" />
-    </Style>
 
-    <Style x:Key="plus_glyph"
-           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-           TargetType="controls:PathButton">
-        <Setter Property="Content" Value="+" />
-    </Style>
 
-    <Style x:Key="compact-disc"
-           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-           TargetType="controls:PathButton">
-        <Setter Property="Content" Value="" />
-    </Style>
 
     <Style x:Key="tally"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
