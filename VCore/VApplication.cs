@@ -356,6 +356,8 @@ namespace VCore.WPF
       if (isConsoleUp)
         isConsoleUp = !WinConsole.FreeConsole();
 
+      Process.GetCurrentProcess().Kill();
+
       base.OnExit(e);
     }
 
