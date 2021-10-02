@@ -1,7 +1,9 @@
 ﻿using System;
+
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.ViewModels.Windows;
@@ -32,7 +34,7 @@ namespace VCore.WPF.Managers
         splashScreen.ResizeMode = ResizeMode.NoResize;
         splashScreen.ShowInTaskbar = true;
         splashScreen.SizeToContent = SizeToContent.WidthAndHeight;
-
+        splashScreen.Background = Brushes.Transparent;
         splashScreen.Content = new TView();
 
         if (splashScreen != null)

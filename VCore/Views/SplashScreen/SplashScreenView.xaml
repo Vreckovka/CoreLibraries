@@ -34,7 +34,6 @@
                        Text="{Binding ApplicationVersion}" />
         </StackPanel>
 
-
         <TextBlock Grid.Row="2"
                    Foreground="#858585"
                    Text="{Binding Message}" />
