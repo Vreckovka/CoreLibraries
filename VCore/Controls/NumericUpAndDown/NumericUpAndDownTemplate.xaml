@@ -43,7 +43,7 @@
                                               IconMargin="0"
                                               IconWidth="15"
                                               IsReadOnly="True"
-                                              PathStyle="{StaticResource plus}" />
+                                              PathStyle="{StaticResource plus_path}" />
 
                         <controls1:PathButton Grid.Row="1"
                                               Grid.Column="1"

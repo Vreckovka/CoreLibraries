@@ -1,15 +1,27 @@
-﻿using System.Windows;
+﻿
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Listener;
 using Microsoft.Xaml.Behaviors;
+using Ninject;
+using VCore.Standard;
 using VCore.WPF.Managers;
+using VPlayer.WindowsPlayer.Behaviors;
 
 namespace VCore.WPF.Behaviors.Sliders
 {
   public class SliderHookBehavior : Behavior<Slider>
   {
+
     public double Step { get; set; } = 5;
+    public bool HookWhenFullscreen { get; set; }
+    private KeyListener keyListener;
+    private bool isHooked;
+    private bool isFocusFromBehavior;
+    private bool isHookedOnFullScreen;
 
     #region OnAttached
 
@@ -19,100 +31,126 @@ namespace VCore.WPF.Behaviors.Sliders
 
       AssociatedObject.PreviewMouseLeftButtonUp += AssociatedObject_PreviewMouseLeftButtonUp;
       AssociatedObject.PreviewMouseWheel += Slider_PreviewMouseWheel;
+      AssociatedObject.Focusable = true;
       AssociatedObject.GotFocus += AssociatedObject_GotFocus;
-      AssociatedObject.LostFocus += AssociatedObject_LostFocus; ;
+      AssociatedObject.LostFocus += AssociatedObject_LostFocus;
+
+      keyListener = VIoc.Kernel.Get<KeyListener>();
+
+
+      if (HookWhenFullscreen)
+      {
+        if (FullScreenManager.IsFullscreen)
+        {
+          isHookedOnFullScreen = true;
+          HookSlider();
+        }
+
+        FullScreenManager.OnFullScreen.Subscribe((x) =>
+        {
+          if (isHookedOnFullScreen)
+          {
+            UnHookSlider();
+          }
+          if (x && !isHooked)
+          {
+            isHookedOnFullScreen = true;
+            HookSlider();
+          }
+        });
+      }
     }
 
     #endregion
 
     private void AssociatedObject_LostFocus(object sender, RoutedEventArgs e)
     {
-      isFocusFromBehavior = false;
+      UnHookSlider();
     }
 
     private void AssociatedObject_GotFocus(object sender, RoutedEventArgs e)
     {
       if (!isFocusFromBehavior)
       {
-        HookToSlider();
+        HookSlider();
       }
     }
 
     private void AssociatedObject_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
-      HookToSlider();
-    }
+      HookSlider();
 
+      isFocusFromBehavior = true;
+    }
 
     #region Slider_PreviewMouseWheel
 
     private void Slider_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
     {
-      SetSliderValue(sender, e);
+      SetSliderValue(e.Delta);
+
+      e.Handled = true;
     }
 
     #endregion
 
-    #region SetSliderValue
-
-    private void SetSliderValue(object sender, System.Windows.Input.MouseWheelEventArgs e)
+    private void HookSlider()
     {
-      if (sender is Slider slider)
+      if (!isHooked)
       {
-       
-
-        if (e.Delta > 0)
-        {
-          slider.Value += Step;
-        }
-        else
-        {
-          slider.Value -= Step;
-        }
-
-        e.Handled = true;
-      }
-    }
-
-    #endregion
-
-    #region Slider_PreviewMouseUp
-
-    private void Slider_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-      if (sender is Slider slider)
-      {
-        slider.IsMoveToPointEnabled = true;
-
-        if (!IsMouseOver(slider))
-        {
-          slider.ReleaseMouseCapture();
-          VFocusManager.SetFocus(Application.Current.MainWindow);
-          e.Handled = true;
-          slider.PreviewMouseUp -= Slider_PreviewMouseDown;
-        }
-      }
-    }
-
-    #endregion
-
-    #region HookToSlider
-
-    private bool isFocusFromBehavior;
-    private void HookToSlider()
-    {
-      if (Mouse.Captured != AssociatedObject)
-      {
-        AssociatedObject.IsMoveToPointEnabled = false;
+        isHooked = true;
+        isFocusFromBehavior = true;
 
         VFocusManager.SetFocus(AssociatedObject);
         AssociatedObject.Focus();
-        AssociatedObject.CaptureMouse();
 
-        AssociatedObject.PreviewMouseDown += Slider_PreviewMouseDown;
-        AssociatedObject.MouseWheel += Slider_PreviewMouseWheel;
+        keyListener.OnMouseEvent += KeyListener_OnMouseEvent;
+      }
+    }
 
-        isFocusFromBehavior = true;
+    private void UnHookSlider()
+    {
+      isHooked = false;
+      isFocusFromBehavior = false;
+      keyListener.OnMouseEvent -= KeyListener_OnMouseEvent;
+
+      if (isHookedOnFullScreen)
+      {
+        isHookedOnFullScreen = false;
+      }
+    }
+
+    #region SetSliderValue
+
+    private void SetSliderValue(int delta)
+    {
+      Application.Current?.Dispatcher?.Invoke(() =>
+      {
+        if (delta > 0)
+        {
+          if (AssociatedObject.Value + Step <= AssociatedObject.Maximum)
+            AssociatedObject.Value += Step;
+        }
+        else
+        {
+          if (AssociatedObject.Value - Step >= 0)
+            AssociatedObject.Value -= Step;
+        }
+      });
+
+    }
+
+    #endregion
+
+    #region KeyListener_OnMouseEvent
+
+    private void KeyListener_OnMouseEvent(object sender, Listener.MouseEventArgs e)
+    {
+      if (e.Event == MouseMessages.WM_MOUSEWHEEL)
+      {
+        var value = (int)e.EventData;
+
+        SetSliderValue(value);
       }
     }
 

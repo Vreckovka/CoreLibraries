@@ -19,6 +19,18 @@
     <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Regular-400.otf" />
     <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Solid-900.otf" />
     <None Remove="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Thin-100.otf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Black.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-BlackItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Bold.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Italic.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Light.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-LightItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Medium.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-MediumItalic.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Regular.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-Thin.ttf" />
+    <None Remove="Resources\Fonts\Roboto\Roboto-ThinItalic.ttf" />
     <None Remove="Resources\window_switch.png" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +42,7 @@
     <PackageReference Include="Prism.Ninject" Version="7.2.0.1422" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\VPlayer\KeyListener\Listener.csproj" />
     <ProjectReference Include="..\Logger\Logger.csproj" />
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj" />
   </ItemGroup>
@@ -46,6 +59,18 @@
     <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Regular-400.otf" />
     <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Solid-900.otf" />
     <Resource Include="Resources\Fonts\FontAwesome\Font Awesome 6 Pro-Thin-100.otf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Black.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-BlackItalic.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Bold.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-BoldItalic.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Italic.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Light.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-LightItalic.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Medium.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-MediumItalic.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Regular.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-Thin.ttf" />
+    <Resource Include="Resources\Fonts\Roboto\Roboto-ThinItalic.ttf" />
     <Resource Include="Resources\window_switch.png" />
   </ItemGroup>
   <ItemGroup>

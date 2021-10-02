@@ -9,7 +9,7 @@ namespace Logger
     private static object batton = new object();
     private readonly string logFilePath;
 
-    public FileLoggerContainer(string logFilePath)
+    public FileLoggerContainer(string logFilePath = "Loggs\\logs.txt")
     {
       this.logFilePath = string.IsNullOrEmpty(logFilePath) ? throw new ArgumentNullException(nameof(logFilePath)) : logFilePath;
     }

@@ -43,9 +43,8 @@ namespace VCore.WPF.Controls.StatusMessage
     {
       if (beforeHoverState != null)
       {
-        MessageState = beforeHoverState.Value;
+        SetValue(MessageStateProperty, beforeHoverState.Value);
         beforeHoverState = null;
-        OnMessageStateChnaged -= StatusMessage_OnMessageStateChnagedWhenOpenedOnHover;
       }
     }
 
@@ -53,19 +52,18 @@ namespace VCore.WPF.Controls.StatusMessage
     {
       if (MessageState != MessageStatusState.Open)
       {
-        hoverDisposable.Disposable = Observable.Timer(TimeSpan.FromSeconds(0.5)).ObserveOn(Application.Current.Dispatcher).Subscribe(x =>
+        hoverDisposable.Disposable = Observable.Timer(TimeSpan.FromSeconds(1.5))
+          .ObserveOn(Application.Current.Dispatcher)
+          .Subscribe(x =>
         {
-          beforeHoverState = MessageState;
-          MessageState = MessageStatusState.Open;
-
-          OnMessageStateChnaged += StatusMessage_OnMessageStateChnagedWhenOpenedOnHover;
+          if (MessageState != MessageStatusState.Open)
+          {
+            var pState = MessageState;
+            SetValue(MessageStateProperty, MessageStatusState.Open);
+            beforeHoverState = pState;
+          }
         });
       }
-    }
-
-    private void StatusMessage_OnMessageStateChnagedWhenOpenedOnHover(object sender, MessageStatusState e)
-    {
-      beforeHoverState = e;
     }
 
     #region Status
@@ -155,7 +153,14 @@ namespace VCore.WPF.Controls.StatusMessage
         {
           if (x is StatusMessage statusMessage)
           {
-            statusMessage.OnOnMessageStateChnaged((MessageStatusState) y.NewValue);
+            var newValue = (MessageStatusState) y.NewValue;
+
+            if (statusMessage.beforeHoverState != null && newValue == MessageStatusState.Open)
+            {
+              statusMessage.beforeHoverState = null;
+            }
+
+            statusMessage.OnOnMessageStateChnaged(newValue);
           }
         }));
 
@@ -279,10 +284,10 @@ namespace VCore.WPF.Controls.StatusMessage
       this.BeginAnimation(OpacityProperty, doubleAnimation);
     }
 
-    #endregion 
+    #endregion
 
     #endregion
 
-  
+
   }
 }
