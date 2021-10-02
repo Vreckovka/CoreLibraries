@@ -338,13 +338,13 @@ namespace VCore.WPF
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-      //SplashScreenManager.CloseActualSplashScreen();
+      SplashScreenManager.CloseActualSplashScreen();
 
-      //Application.Current.MainWindow.Topmost = true;
+      Application.Current.MainWindow.Topmost = true;
 
-      //await Task.Delay(250);
+      await Task.Delay(250);
 
-      //Application.Current.MainWindow.Topmost = false;
+      Application.Current.MainWindow.Topmost = false;
     }
 
     #endregion
