@@ -5,48 +5,57 @@
              xmlns:local="clr-namespace:VCore.WPF.Views.SplashScreen"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="400"
-             Height="350"
+             Height="250"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+    <Border Width="300"
+            Background="#141414"
+            CornerRadius="30">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
 
-        <Grid.Resources>
-            <Style TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Center" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
-        </Grid.Resources>
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </Grid.Resources>
 
-        <StackPanel Grid.Row="1">
-            <TextBlock FontSize="20"
-                       Foreground="White"
-                       Text="{Binding ApplicationName}" />
+            <StackPanel Grid.Row="0" VerticalAlignment="Center">
+                <TextBlock FontSize="21"
+                           FontWeight="Bold"
+                           Foreground="Snow"
+                           Text="{Binding ApplicationName}" />
 
-            <TextBlock Margin="0,20,0,0"
-                       Foreground="#757575"
-                       Text="{Binding ApplicationVersion}" />
-        </StackPanel>
-
-        <TextBlock Grid.Row="2"
-                   Foreground="#858585"
-                   Text="{Binding Message}" />
-
-        <ProgressBar Grid.Row="3"
-                     Height="5"
-                     Margin="10,25"
-                     Background="#141414"
-                     BorderThickness="0"
-                     Foreground="#fe2754"
-                     Maximum="100"
-                     Value="{Binding Progress}" />
+                <TextBlock Margin="0,10,0,0"
+                           Foreground="#757575"
+                           Text="{Binding ApplicationVersion}" />
+            </StackPanel>
 
 
-    </Grid>
+
+            <TextBlock Grid.Row="1"
+                       Margin="0,15,0,0"
+                       Foreground="#ccffffff"
+                       Text="{Binding Message}" />
+
+            <ProgressBar Grid.Row="2"
+                         Width="230"
+                         Height="3"
+                         Margin="0,10,0,25"
+                         Background="#252525"
+                         BorderThickness="0"
+                         Foreground="#fe2754"
+                         Maximum="100"
+                         Value="{Binding Progress}" />
+
+
+        </Grid>
+
+    </Border>
 </UserControl>
