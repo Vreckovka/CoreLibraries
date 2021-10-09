@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using VCore.Converters;
+using Color = System.Windows.Media.Color;
 
 namespace VCore.WPF.Converters
 {
@@ -16,7 +21,7 @@ namespace VCore.WPF.Converters
     public int? DecodeWidth { get; set; }
   }
 
-  public class CacheImageConverter : MarkupExtension, IValueConverter
+  public class CacheImageConverter : BaseConverter
   {
     public int? DecodeWidth { get; set; }
     public int? DecodeHeight { get; set; }
@@ -25,14 +30,39 @@ namespace VCore.WPF.Converters
     string lastLoadedImagePath;
     BitmapImage lastLoadedImage;
 
-    public CacheImageConverter()
+    #region Convert
+
+    public override object Convert(
+      object value,
+      Type targetType,
+      object parameter,
+      CultureInfo culture)
     {
+      if (value == null)
+      {
+        return null;
+      }
+
+      if (parameter is CacheImageParameters imageParameters)
+      {
+        DecodeHeight = imageParameters.DecodeHeight;
+        DecodeWidth = imageParameters.DecodeWidth;
+      }
+
+      var stringValue = value?.ToString();
+
+      if (stringValue != null && stringValue.Contains("http"))
+      {
+        return stringValue;
+      }
+
+
+      return GetBitmapImage(value, parameter);
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-      return this;
-    }
+    #endregion
+
+    #region GetBitmapImage
 
     protected BitmapImage GetBitmapImage(object value, object parameter)
     {
@@ -43,9 +73,25 @@ namespace VCore.WPF.Converters
 
       string path = "";
 
+      var bitmapImage = new BitmapImage();
+      bitmapImage.BeginInit();
+
       if (value != DependencyProperty.UnsetValue && value != null)
       {
         path = value.ToString()?.Replace("file:///", "");
+      }
+      else
+      {
+        bitmapImage.StreamSource = GetEmptyImage(); 
+      }
+
+      if (File.Exists(path) && path != null)
+      {
+        bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);
+      }
+      else
+      {
+        bitmapImage.StreamSource = GetEmptyImage();
       }
 
       if (lastLoadedImagePath == path)
@@ -53,57 +99,63 @@ namespace VCore.WPF.Converters
         return lastLoadedImage;
       }
 
-      var bitmapImage = new BitmapImage();
 
-      if (path != null)
+
+
+      DecodePixelSize(parameter, bitmapImage);
+
+      bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+      bitmapImage.EndInit();
+      bitmapImage.StreamSource.Dispose();
+
+      lastLoadedImagePath = path;
+      lastLoadedImage = bitmapImage;
+
+      if (!AllConverters.ContainsKey(path))
       {
-        bitmapImage.BeginInit();
-
-        if(File.Exists(path))
+        AllConverters.Add(path, new List<CacheImageConverter>()
         {
-          bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);
-        }
-        else
-        {
-          using (var client = new WebClient())
-          {
-            var data = client.DownloadData(path);
-            bitmapImage.StreamSource = new MemoryStream(data);
-          }
-        }
-      
-        DecodePixelSize(parameter, bitmapImage);
-
-        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-        bitmapImage.EndInit();
-        bitmapImage.StreamSource.Dispose();
-
-        lastLoadedImagePath = path;
-        lastLoadedImage = bitmapImage;
+          this
+        });
       }
+      else
+      {
+        var allConvertes = AllConverters[path];
+
+        if (allConvertes == null)
+        {
+          allConvertes = new List<CacheImageConverter>()
+          {
+            this
+          };
+        }
+        else if (!allConvertes.Contains(this))
+        {
+          allConvertes.Add(this);
+        }
+
+        AllConverters[path] = allConvertes;
+      }
+
 
       return bitmapImage;
     }
 
-    #region Convert
+    #endregion
 
-    public virtual object Convert(
-      object value,
-      Type targetType,
-      object parameter,
-      CultureInfo culture)
+    #region GetEmptyImage
+
+    protected virtual Stream GetEmptyImage()
     {
-      if (parameter is CacheImageParameters imageParameters)
-      {
-        DecodeHeight = imageParameters.DecodeHeight;
-        DecodeWidth = imageParameters.DecodeWidth;
-      }
+      var stream = new MemoryStream();
+      var emptyImage = new Bitmap(10, 10, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+      emptyImage.Save(stream, ImageFormat.Jpeg);
 
-      return GetBitmapImage(value, parameter);
+      return stream;
     }
 
     #endregion
- 
+
     #region RefreshDictionary
 
     public static void RefreshDictionary(string imagePath)
@@ -122,7 +174,9 @@ namespace VCore.WPF.Converters
 
     #endregion
 
-    protected virtual void  DecodePixelSize(object parameter, BitmapImage bitmapImage)
+    #region DecodePixelSize
+
+    protected virtual void DecodePixelSize(object parameter, BitmapImage bitmapImage)
     {
       if (int.TryParse(parameter?.ToString(), out var pixelSize) || DecodeWidth != null || DecodeHeight != null)
       {
@@ -140,18 +194,7 @@ namespace VCore.WPF.Converters
       }
     }
 
-    private void AddConverterToDictionary()
-    {
+    #endregion
 
-    }
-
-    public object ConvertBack(
-      object value,
-      Type targetType,
-      object parameter,
-      CultureInfo culture)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

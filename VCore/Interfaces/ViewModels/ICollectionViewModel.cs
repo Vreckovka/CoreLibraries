@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Prism.Regions;
+using VCore.WPF;
 
 namespace VCore.Interfaces.ViewModels
 {
@@ -16,6 +17,8 @@ namespace VCore.Interfaces.ViewModels
     void RecreateCollection();
 
     IRegionManager RegionManager { get; }
+
+    LoadingStatus LoadingStatus { get; }
 
     #endregion Methods
   }

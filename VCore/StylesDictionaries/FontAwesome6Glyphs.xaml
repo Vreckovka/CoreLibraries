@@ -67,6 +67,12 @@
         <Setter Property="Glyph" Value="" />
     </Style>
 
+    <Style x:Key="music-note"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
     <Style x:Key="hashtag"
            BasedOn="{StaticResource FontAwesomeGlyphStyle}"
            TargetType="controls:PathButton">
@@ -93,7 +99,11 @@
         <Setter Property="Content" Value="🔖︁" />
     </Style>
 
-
+    <Style x:Key="download"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="" />
+    </Style>
 
 
     <Style x:Key="tally"
