@@ -4,7 +4,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Platforms>AnyCPU;x86</Platforms>
+    <Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
   <ItemGroup>
     <None Remove="Resources\Fonts\FontAwesome\fa-brands-400.ttf" />

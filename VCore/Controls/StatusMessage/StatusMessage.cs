@@ -94,10 +94,9 @@ namespace VCore.WPF.Controls.StatusMessage
 
             if (newValue == StatusType.Done)
             {
-
               statusMessage.HideStatusMessage(2000, token.Value);
             }
-            else if (newValue == StatusType.Error)
+            else if (newValue == StatusType.Error || newValue == StatusType.Failed)
             {
               statusMessage.HideStatusMessage(4000, token.Value);
             }

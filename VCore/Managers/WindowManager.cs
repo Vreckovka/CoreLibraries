@@ -41,7 +41,7 @@ namespace VCore.WPF.Managers
         }
 
         window.ShowInTaskbar = true;
-        window.Title = "VPlayer prompt";
+        window.Title = "Custom prompt";
 
         window.ShowDialog();
       }
@@ -176,7 +176,7 @@ namespace VCore.WPF.Managers
 
     #region ShowOverlayWindow
 
-    private void ShowOverlayWindow()
+    protected virtual void ShowOverlayWindow()
     {
       lock (windowLock)
       {

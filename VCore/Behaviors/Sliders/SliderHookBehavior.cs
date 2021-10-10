@@ -16,7 +16,7 @@ namespace VCore.WPF.Behaviors.Sliders
   public class SliderHookBehavior : Behavior<Slider>
   {
 
-    public double Step { get; set; } = 5;
+    public double Step { get; set; } = 2;
     public bool HookWhenFullscreen { get; set; }
     private KeyListener keyListener;
     private bool isHooked;

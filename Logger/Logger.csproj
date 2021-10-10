@@ -2,6 +2,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Platforms>AnyCPU;x86</Platforms>
+    <Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
 </Project>

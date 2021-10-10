@@ -82,7 +82,7 @@ namespace VCore.WPF.Converters
       }
       else
       {
-        bitmapImage.StreamSource = GetEmptyImage(); 
+        bitmapImage.StreamSource = GetEmptyImage();
       }
 
       if (File.Exists(path) && path != null)
@@ -162,13 +162,16 @@ namespace VCore.WPF.Converters
     {
       if (AllConverters.TryGetValue(imagePath, out var converters))
       {
-        foreach (var converter in converters)
+        if (converters != null)
         {
-          converter.lastLoadedImage = null;
-          converter.lastLoadedImagePath = null;
-        }
+          foreach (var converter in converters)
+          {
+            converter.lastLoadedImage = null;
+            converter.lastLoadedImagePath = null;
+          }
 
-        AllConverters[imagePath] = null;
+          AllConverters[imagePath] = null;
+        }
       }
     }
 
