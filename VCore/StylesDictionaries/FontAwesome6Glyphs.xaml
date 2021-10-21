@@ -24,7 +24,13 @@
         <Setter Property="Glyph" Value="" />
     </Style>
 
-    <Style x:Key="plus"
+  <Style x:Key="xmark"
+         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+         TargetType="controls:PathButton">
+    <Setter Property="Glyph" Value="" />
+  </Style>
+
+  <Style x:Key="plus"
            BasedOn="{StaticResource FontAwesomeGlyphStyle}"
            TargetType="controls:PathButton">
         <Setter Property="Glyph" Value="+" />

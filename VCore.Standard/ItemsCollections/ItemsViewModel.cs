@@ -97,9 +97,28 @@ namespace VCore.WPF.ItemsCollections
     {
       ViewModels.Add(item);
 
-      if (CanAddToView())
+      if (CanAddToView(item))
       {
         View.Add(item);
+      }
+    }
+
+    #endregion
+
+    #region Insert
+
+    public void Insert(int index, T item)
+    {
+      ViewModels.Insert(index, item);
+
+      if (actualFilter != null)
+      {
+        if (actualFilter(item))
+          View.Add(item);
+      }
+      else
+      {
+        View.Insert(index, item);
       }
     }
 
@@ -115,6 +134,18 @@ namespace VCore.WPF.ItemsCollections
 
     #endregion
 
+    #region RemoveAt
+
+    public void RemoveAt(int index)
+    {
+      var itemAtIndex = ViewModels[index];
+
+      ViewModels.RemoveAt(index);
+      View.Remove(itemAtIndex);
+    }
+
+    #endregion
+
     #region Clear
 
     public void Clear()
@@ -125,6 +156,8 @@ namespace VCore.WPF.ItemsCollections
 
     #endregion
 
+    #region AddRange
+
     public void AddRange(IEnumerable<T> items)
     {
       foreach (var item in items)
@@ -133,10 +166,17 @@ namespace VCore.WPF.ItemsCollections
       }
     }
 
+    #endregion
+
     #region CanAddToView
 
-    private bool CanAddToView()
+    private bool CanAddToView(T item)
     {
+      if (actualFilter != null)
+      {
+        return actualFilter(item);
+      }
+
       return true;
     }
 
@@ -163,6 +203,8 @@ namespace VCore.WPF.ItemsCollections
 
     #region Filter
 
+    private Func<T, bool>? actualFilter = null;
+
     public void Filter(Func<T, bool> canAddToView)
     {
       View.Clear();
@@ -174,6 +216,8 @@ namespace VCore.WPF.ItemsCollections
           View.Add(item);
         }
       }
+
+      actualFilter = canAddToView;
     }
 
     #endregion
@@ -188,6 +232,8 @@ namespace VCore.WPF.ItemsCollections
       {
         View.Add(item);
       }
+
+      actualFilter = null;
     }
 
     #endregion

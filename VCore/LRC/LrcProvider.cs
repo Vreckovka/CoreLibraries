@@ -41,23 +41,35 @@ namespace VPlayer.AudioStorage.InfoDownloader.LRC
 
     #endregion
 
+    #region GetPathValidName
+
     protected string GetPathValidName(string name)
     {
-      string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
-
-      foreach (char c in invalid)
+      if (!string.IsNullOrEmpty(name))
       {
-        name = name.Replace(c.ToString(), "-");
+        string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+
+        foreach (char c in invalid)
+        {
+          name = name.Replace(c.ToString(), "-");
+        }
+
+        return name.Trim();
       }
 
-      return name.Trim();
+      return null;
     }
+
+    #endregion
 
     #region GetFileName
 
     public string GetFileName(string artistName, string songName)
     {
-      return $"{GetPathValidName(artistName)} - {GetPathValidName(songName)}";
+      if (!string.IsNullOrEmpty(artistName) && !string.IsNullOrEmpty(songName))
+        return $"{GetPathValidName(artistName)} - {GetPathValidName(songName)}";
+
+      return null;
     }
 
     #endregion
