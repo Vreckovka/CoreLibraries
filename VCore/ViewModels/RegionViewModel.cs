@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Prism.Regions;
-using VCore.Modularity.Navigation;
-using VCore.Modularity.RegionProviders;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
-using VCore.ViewModels.Navigation;
+using VCore.WPF.Misc;
+using VCore.WPF.Modularity.RegionProviders;
+using VCore.WPF.ViewModels.Navigation;
 
-namespace VCore.ViewModels
+namespace VCore.WPF.ViewModels
 {
 
   public abstract class RegionViewModel : ViewModel

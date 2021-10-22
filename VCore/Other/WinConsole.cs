@@ -2,9 +2,8 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
-using Microsoft.Win32.SafeHandles;
 
-namespace VCore.Other
+namespace VCore.WPF.Other
 {
   public static class WinConsole
   {

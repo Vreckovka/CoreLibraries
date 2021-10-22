@@ -5,7 +5,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using VCore.Standard.Helpers;
 
-namespace VPlayer.Library
+namespace VCore.WPF.Converters
 {
   [ValueConversion(typeof(Enum), typeof(IEnumerable<EnumHelper.ValueDescription>))]
   public class EnumToCollectionConverter : MarkupExtension, IValueConverter

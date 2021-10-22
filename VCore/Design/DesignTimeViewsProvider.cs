@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using VCore.Standard.Modularity.Interfaces;
 
-namespace VCore.Design
+namespace VCore.WPF.Design
 {
   public abstract class DesignTimeViewsProvider
   {

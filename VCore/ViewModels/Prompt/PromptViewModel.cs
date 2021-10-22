@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using VCore.ViewModels;
+using VCore.WPF.Misc;
 
 namespace VCore.WPF.ViewModels.Prompt
 {

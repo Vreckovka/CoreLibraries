@@ -6,7 +6,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 
-namespace VPlayer.WindowsPlayer.Behaviors
+namespace VCore.WPF.Managers
 {
   public static class FullScreenManager
   {

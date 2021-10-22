@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using VCore.Converters;
 
 namespace VCore.WPF.Converters.FontAwesome
 {

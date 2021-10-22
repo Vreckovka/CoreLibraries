@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace VCore.Controls
+namespace VCore.WPF.Controls
 {
   public class PlayableWrapPanelItem : Control
   {

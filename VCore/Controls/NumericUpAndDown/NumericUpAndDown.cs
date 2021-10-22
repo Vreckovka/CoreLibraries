@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using VCore.Controls;
-using VCore.WPF.Managers;
+using VCore.WPF.Misc;
 
-namespace VCore.WPF.Controls
+namespace VCore.WPF.Controls.NumericUpAndDown
 {
   public class NumericUpAndDown : Control
   {

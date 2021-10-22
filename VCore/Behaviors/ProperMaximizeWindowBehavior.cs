@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using Microsoft.Xaml.Behaviors;
-using VCore.ViewModels;
+using VCore.WPF.ViewModels;
 
 namespace VCore.WPF.Behaviors
 {

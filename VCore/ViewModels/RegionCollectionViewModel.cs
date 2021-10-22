@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ninject;
-using VCore.Modularity.RegionProviders;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
-using VCore.ViewModels.Navigation;
+using VCore.WPF.Modularity.RegionProviders;
+using VCore.WPF.ViewModels.Navigation;
 
-namespace VCore.ViewModels
+namespace VCore.WPF.ViewModels
 {
   public interface IRegionViewModel : IActivable, IInitializable
   {

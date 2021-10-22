@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Markup;
 
-namespace VCore.AttachedProperties
+namespace VCore.WPF.AttachedProperties.Multistyle
 {
   [MarkupExtensionReturnType(typeof(Style))]
   public class MultiStyleExtension : MarkupExtension

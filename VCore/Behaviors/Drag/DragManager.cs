@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
-using VCore.Helpers;
 using VCore.WPF.Behaviors.Listview;
+using VCore.WPF.Controls.Adorner;
+using VCore.WPF.Helpers;
 
 namespace VCore.WPF.Behaviors.Drag
 {
@@ -36,12 +37,12 @@ namespace VCore.WPF.Behaviors.Drag
         if (null == uiElement) return;
 
 
-        AdornedControl.AdornedControl adornerControl = null;
+        AdornedControl adornerControl = null;
 
         uiElement.DragEnter += (sender, args) =>
         {
           if (adornerControl == null)
-            adornerControl = uiElement.GetFirstParentOfType<AdornedControl.AdornedControl>();
+            adornerControl = uiElement.GetFirstParentOfType<AdornedControl>();
 
           if (adornerControl != null)
             adornerControl.IsAdornerVisible = true;
@@ -50,7 +51,7 @@ namespace VCore.WPF.Behaviors.Drag
         uiElement.DragLeave += (sender, args) =>
         {
           if (adornerControl == null)
-            adornerControl = uiElement.GetFirstParentOfType<AdornedControl.AdornedControl>();
+            adornerControl = uiElement.GetFirstParentOfType<AdornedControl>();
 
           if (adornerControl != null)
             adornerControl.IsAdornerVisible = false;
@@ -60,7 +61,7 @@ namespace VCore.WPF.Behaviors.Drag
         uiElement.Drop += (sender, args) =>
         {
           if (adornerControl == null)
-            adornerControl = uiElement.GetFirstParentOfType<AdornedControl.AdornedControl>();
+            adornerControl = uiElement.GetFirstParentOfType<AdornedControl>();
 
           if (adornerControl != null)
             adornerControl.IsAdornerVisible = false;

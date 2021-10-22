@@ -1,8 +1,6 @@
-﻿using System;
-using System.Windows;
-using Ninject;
+﻿using System.Windows;
 
-namespace VCore.ViewModels
+namespace VCore.WPF.ViewModels
 {
   public class BaseMainWindowViewModel : BaseWindowViewModel
   {

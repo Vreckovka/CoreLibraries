@@ -4,10 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using VCore.Helpers;
+using VCore.WPF.Helpers;
 
-namespace VCore.AttachedProperties
+namespace VCore.WPF.AttachedProperties
 {
   public class AttachedProperty
   {

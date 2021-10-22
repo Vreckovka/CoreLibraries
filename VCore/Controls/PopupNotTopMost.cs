@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
-using VPlayer.WindowsPlayer.Behaviors;
+using VCore.WPF.Managers;
 
 namespace VCore.WPF.Controls
 {

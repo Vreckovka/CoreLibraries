@@ -1,8 +1,8 @@
-﻿using Prism.Regions;
-using System.Collections.Generic;
-using VCore.Modularity.RegionProviders;
+﻿using System.Collections.Generic;
+using Prism.Regions;
+using VCore.WPF.Modularity.RegionProviders;
 
-namespace VCore.Modularity.Navigation
+namespace VCore.WPF.Modularity.Navigation
 {
   public interface INavigationProvider
   {

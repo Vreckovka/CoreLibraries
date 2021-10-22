@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 
-namespace VCore.Helpers
+namespace VCore.WPF.Helpers
 {
   public static class RxExtentions
   {

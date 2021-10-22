@@ -1,4 +1,4 @@
-﻿namespace VCore.ViewModels.Events
+﻿namespace VCore.WPF.ViewModels.Events
 {
   public class ItemChanged
   {

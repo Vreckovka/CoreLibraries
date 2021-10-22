@@ -1,4 +1,4 @@
-﻿namespace VCore.Modularity.Events
+﻿namespace VCore.WPF.Modularity.Events
 {
   public enum Changed
   {

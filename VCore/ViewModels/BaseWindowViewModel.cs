@@ -2,8 +2,9 @@
 using System.Windows.Input;
 using VCore.Standard;
 using VCore.Standard.Helpers;
+using VCore.WPF.Misc;
 
-namespace VCore.ViewModels
+namespace VCore.WPF.ViewModels
 {
   public class BaseWindowViewModel : ViewModel
   {

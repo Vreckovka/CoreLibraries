@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Ninject;
-using VCore.Standard;
-using VPlayer.AudioStorage.InfoDownloader.LRC.Domain;
+using VCore.WPF.LRC.Domain;
 
-namespace VPlayer.AudioStorage.InfoDownloader.LRC
+namespace VCore.WPF.LRC
 {
   public enum LRCProviders
   {

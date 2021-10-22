@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Prism.Regions;
-using VCore.WPF;
 
-namespace VCore.Interfaces.ViewModels
+namespace VCore.WPF.Interfaces.ViewModels
 {
   public interface ICollectionViewModel<TViewModel, TModel>
   {

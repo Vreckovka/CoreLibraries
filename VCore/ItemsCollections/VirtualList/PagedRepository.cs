@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
-namespace VCore.ItemsCollections.VirtualList
+namespace VCore.WPF.ItemsCollections.VirtualList
 {
   public class PagedRepository<TItem> where TItem : class
   {

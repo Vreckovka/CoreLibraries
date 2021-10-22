@@ -1,4 +1,4 @@
-﻿namespace VPlayer.AudioStorage.DomainClasses
+﻿namespace VCore.Standard.Modularity.Interfaces
 {
   public interface IUpdateable<TEntity> 
   {

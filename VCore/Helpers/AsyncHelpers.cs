@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VCore.Helpers
+namespace VCore.WPF.Helpers
 {
 
   public static class AsyncHelpers

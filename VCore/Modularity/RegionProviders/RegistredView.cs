@@ -1,19 +1,12 @@
-﻿using Prism.Regions;
-using System;
+﻿using System;
 using System.ComponentModel;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using VCore.Helpers;
+using Prism.Regions;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
 using VCore.Standard.Modularity.Interfaces;
-using VCore.ViewModels;
 
-namespace VCore.Modularity.RegionProviders
+namespace VCore.WPF.Modularity.RegionProviders
 {
   public class RegistredView<TView, TViewModel> : IDisposable, IRegistredView
     where TView : class, IView

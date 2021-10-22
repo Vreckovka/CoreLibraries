@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using VCore.Controls;
+using VCore.WPF.Controls;
 
-namespace VCore.Helpers
+namespace VCore.WPF.Helpers
 {
   public static class VisualTreeExtentions
   {

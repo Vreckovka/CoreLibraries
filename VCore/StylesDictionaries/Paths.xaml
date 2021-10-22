@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:VCore.Controls"
+                    xmlns:controls="clr-namespace:VCore.WPF.Controls"
                     xmlns:fontAwesome="clr-namespace:VCore.WPF.Converters.FontAwesome"
                     xmlns:providers="clr-namespace:VCore.WPF.Providers">
 

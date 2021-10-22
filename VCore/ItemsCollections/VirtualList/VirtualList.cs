@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace VCore.ItemsCollections.VirtualList
+namespace VCore.WPF.ItemsCollections.VirtualList
 {
   namespace VirtualLists
   {

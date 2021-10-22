@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace VCore.ItemsCollections.VirtualList
+namespace VCore.WPF.ItemsCollections.VirtualList
 {
   public class ItemsGenerator<TViewModel> : IObjectGenerator<TViewModel> where TViewModel : class
   {

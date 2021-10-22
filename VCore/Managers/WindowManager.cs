@@ -9,9 +9,10 @@ using System.Windows.Media;
 using Microsoft.Xaml.Behaviors;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
-using VCore.ViewModels;
 using VCore.WPF.Behaviors;
+using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.Prompts;
+using VCore.WPF.ViewModels;
 using VCore.WPF.ViewModels.Prompt;
 
 namespace VCore.WPF.Managers

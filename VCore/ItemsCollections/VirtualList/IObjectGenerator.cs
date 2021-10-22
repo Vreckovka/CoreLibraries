@@ -1,5 +1,5 @@
 ﻿
-namespace VCore.ItemsCollections.VirtualList
+namespace VCore.WPF.ItemsCollections.VirtualList
 {
 	public interface IObjectGenerator<T>
 	{

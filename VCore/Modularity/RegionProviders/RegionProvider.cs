@@ -1,17 +1,17 @@
-﻿using Prism.Regions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
-using VCore.Helpers;
-using VCore.Modularity.Navigation;
+using Prism.Regions;
 using VCore.Standard.Factories.ViewModels;
 using VCore.Standard.Factories.Views;
 using VCore.Standard.Modularity.Interfaces;
+using VCore.WPF.Helpers;
+using VCore.WPF.Modularity.Navigation;
 
-namespace VCore.Modularity.RegionProviders
+namespace VCore.WPF.Modularity.RegionProviders
 {
   public class RegionProvider : IRegionProvider
   {

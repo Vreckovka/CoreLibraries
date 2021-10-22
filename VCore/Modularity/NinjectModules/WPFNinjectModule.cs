@@ -1,16 +1,11 @@
-﻿using Ninject;
-using Ninject.Activation;
-using Ninject.Activation.Strategies;
-using VCore.Modularity.Navigation;
-using VCore.Modularity.RegionProviders;
-using VCore.Standard;
-using VCore.Standard.Modularity.NinjectModules;
-using VCore.ViewModels.Navigation;
+﻿using VCore.Standard.Modularity.NinjectModules;
 using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.Managers;
+using VCore.WPF.Modularity.Navigation;
+using VCore.WPF.Modularity.RegionProviders;
 using VCore.WPF.ViewModels.Navigation;
 
-namespace VCore.Modularity.NinjectModules
+namespace VCore.WPF.Modularity.NinjectModules
 {
   public class WPFNinjectModule : BaseNinjectModule
   {

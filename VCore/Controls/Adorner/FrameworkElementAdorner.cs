@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Documents;
+using System.Collections;
 using System.Windows;
 using System.Windows.Media;
-using System.Collections;
 
 //
 // This code based on code available here:
 //
 //  http://www.codeproject.com/KB/WPF/WPFJoshSmith.aspx
 //
-namespace AdornedControl
+namespace VCore.WPF.Controls.Adorner
 {
     //
     // This class is an adorner that allows a FrameworkElement derived class to adorn another FrameworkElement.
     //
-    public class FrameworkElementAdorner : Adorner
+    public class FrameworkElementAdorner : System.Windows.Documents.Adorner
     {
         //
         // The framework element that is the adorner. 

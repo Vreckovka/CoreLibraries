@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Ninject;
-using VCore.Helpers;
 using VCore.Standard;
 using VCore.Standard.Factories.ViewModels;
 using VCore.WPF.Managers;

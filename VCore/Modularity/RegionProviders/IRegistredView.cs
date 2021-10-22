@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Reactive.Subjects;
 using Prism.Regions;
 
-namespace VCore.Modularity.RegionProviders
+namespace VCore.WPF.Modularity.RegionProviders
 {
   public interface IRegistredView
   {

@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using VCore.Standard.Common;
 
-namespace VCore
+namespace VCore.WPF.Misc
 {
   public class ActionCommand<TArgument> : VDisposableObject, ICommand
   {

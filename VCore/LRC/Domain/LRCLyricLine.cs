@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VPlayer.AudioStorage.InfoDownloader.LRC.Domain
+namespace VCore.WPF.LRC.Domain
 {
   public class LRCLyricLine
   {

@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Microsoft.Xaml.Behaviors;
-using VCore.Helpers;
+using VCore.WPF.Helpers;
 
 namespace VCore.WPF.Behaviors
 {

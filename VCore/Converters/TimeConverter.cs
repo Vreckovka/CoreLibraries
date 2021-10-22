@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Linq;
 
-namespace VCore.Converters
+namespace VCore.WPF.Converters
 {
   public enum TimeType
   {

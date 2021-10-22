@@ -3,9 +3,8 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using VCore.Converters;
 
-namespace VPlayer.Library
+namespace VCore.WPF.Converters
 {
   public class IsBiggerConverter : MarkupExtension, IMultiValueConverter
   {

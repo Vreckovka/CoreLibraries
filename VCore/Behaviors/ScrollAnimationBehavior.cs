@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using VCore.Helpers;
+using VCore.WPF.Helpers;
 
 namespace VCore.WPF.Behaviors
 {

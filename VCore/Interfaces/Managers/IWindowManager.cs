@@ -5,7 +5,7 @@ using VCore.Standard.Modularity.Interfaces;
 using VCore.WPF.Prompts;
 using VCore.WPF.ViewModels.Prompt;
 
-namespace VCore.WPF.Managers
+namespace VCore.WPF.Interfaces.Managers
 {
   public interface IWindowManager
   {

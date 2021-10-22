@@ -11,14 +11,15 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Ninject;
 using Prism.Regions;
-using VCore.Modularity.NinjectModules;
-using VCore.Other;
 using VCore.Standard;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.Standard.Modularity.NinjectModules;
 using VCore.Standard.Providers;
-using VCore.ViewModels;
+using VCore.WPF.Interfaces.Managers;
 using VCore.WPF.Managers;
+using VCore.WPF.Modularity.NinjectModules;
+using VCore.WPF.Other;
+using VCore.WPF.ViewModels;
 
 namespace VCore.WPF
 {
@@ -236,13 +237,13 @@ namespace VCore.WPF
 
     protected override void OnInitialized()
     {
+      SetupExceptionHandling();
+
       SplashScreenManager.SetText("Initilizing");
 
       base.OnInitialized();
 
       SplashScreenManager.AddProgress(25);
-
-      SetupExceptionHandling();
 
       stopWatch.Stop();
 

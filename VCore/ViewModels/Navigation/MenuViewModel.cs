@@ -1,5 +1,4 @@
 ﻿using VCore.Standard;
-using VCore.ViewModels.Navigation;
 
 namespace VCore.WPF.ViewModels.Navigation
 {

@@ -2,7 +2,7 @@
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
-namespace VCore.Helpers
+namespace VCore.WPF.Helpers
 {
   public static class ImageHelper
   {

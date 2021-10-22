@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VPlayer.AudioStorage.InfoDownloader.LRC.Domain
+namespace VCore.WPF.LRC.Domain
 {
   public class GoogleLRCFile : LRCFile
   {

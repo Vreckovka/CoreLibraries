@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Prism.Regions;
 using VCore.Standard.Modularity.Interfaces;
 
-namespace VCore.Modularity.RegionProviders
+namespace VCore.WPF.Modularity.RegionProviders
 {
   public interface IRegionProvider
   {

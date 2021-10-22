@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace VCore.Helpers
+namespace VCore.WPF.Helpers
 {
   public static class ObjectExtentions
   {

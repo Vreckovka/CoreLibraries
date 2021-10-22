@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Collections;
 
-namespace AdornedControl
+namespace VCore.WPF.Controls.Adorner
 {
     /// <summary>
     /// A content control that allows an adorner for the content to

@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Input;
 using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.Managers;
+using VCore.WPF.Misc;
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {

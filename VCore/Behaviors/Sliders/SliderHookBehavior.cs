@@ -9,7 +9,6 @@ using Microsoft.Xaml.Behaviors;
 using Ninject;
 using VCore.Standard;
 using VCore.WPF.Managers;
-using VPlayer.WindowsPlayer.Behaviors;
 
 namespace VCore.WPF.Behaviors.Sliders
 {

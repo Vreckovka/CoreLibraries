@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VCore.Modularity.Events
+namespace VCore.WPF.Modularity.Events
 {
   public interface IItemChanged
   {

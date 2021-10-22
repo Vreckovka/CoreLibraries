@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using VCore.Helpers;
 using VCore.Standard;
-using VCore.ViewModels.Navigation;
+using VCore.WPF.Helpers;
 
 namespace VCore.WPF.ViewModels.Navigation
 {

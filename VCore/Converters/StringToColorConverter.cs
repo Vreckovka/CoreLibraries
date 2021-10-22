@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
-using VCore.Converters;
 using Color = System.Windows.Media.Color;
 
 namespace VCore.WPF.Converters

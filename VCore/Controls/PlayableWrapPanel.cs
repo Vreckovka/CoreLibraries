@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace VCore.Controls
+namespace VCore.WPF.Controls
 {
   [StyleTypedProperty(Property = "ItemContainerStyle", StyleTargetType = typeof(PlayableWrapPanelItem))]
   public class PlayableWrapPanel : ItemsControl

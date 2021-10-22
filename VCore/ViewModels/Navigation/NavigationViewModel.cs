@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Reactive.Linq;
 using VCore.ItemsCollections;
 using VCore.Standard;
-using VCore.WPF.ViewModels.Navigation;
 
-namespace VCore.ViewModels.Navigation
+namespace VCore.WPF.ViewModels.Navigation
 {
   public class NavigationViewModel : ViewModel
   {

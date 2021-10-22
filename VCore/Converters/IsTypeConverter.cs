@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using VCore.WPF.Interfaces;
 
-namespace VCore.Converters
+namespace VCore.WPF.Converters
 {
   public class IsTypeConverter : BaseConverter
   {

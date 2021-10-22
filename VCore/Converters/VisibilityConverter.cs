@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 
-namespace VCore.Converters
+namespace VCore.WPF.Converters
 {
   public class VisibilityConverter : BaseConverter
   {

@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
-using VCore.Helpers;
+using VCore.WPF.Helpers;
 using VCore.WPF.Managers;
 
 namespace VCore.WPF.Behaviors.Buttons

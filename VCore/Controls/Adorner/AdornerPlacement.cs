@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AdornedControl
+﻿namespace VCore.WPF.Controls.Adorner
 {
     /// <summary>
     /// Specifies the placement of the adorner in related to the adorned control.

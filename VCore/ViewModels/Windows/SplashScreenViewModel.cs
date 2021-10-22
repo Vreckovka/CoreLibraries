@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using VCore.Standard.Providers;
-using VCore.ViewModels;
 
 namespace VCore.WPF.ViewModels.Windows
 {

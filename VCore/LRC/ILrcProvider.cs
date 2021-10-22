@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using VPlayer.AudioStorage.InfoDownloader.LRC.Domain;
+using VCore.WPF.LRC.Domain;
 
-namespace VPlayer.AudioStorage.InfoDownloader.LRC
+namespace VCore.WPF.LRC
 {
   public interface ILrcProvider
   {

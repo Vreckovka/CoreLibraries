@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Prism.Regions;
 
-namespace VCore.Design
+namespace VCore.WPF.Design
 {
   public class DesignTimeRegionProvider
   {

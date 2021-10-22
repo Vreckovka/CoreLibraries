@@ -1,5 +1,5 @@
-﻿using VCore.Standard.ViewModels.WindowsFile;
-using VPlayer.AudioStorage.DomainClasses;
+﻿using VCore.Standard.Modularity.Interfaces;
+using VCore.Standard.ViewModels.WindowsFile;
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
