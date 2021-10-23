@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using Logger;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Safari;
 using OpenQA.Selenium.Support.UI;
 
 namespace ChromeDriverScrapper
@@ -28,7 +32,7 @@ namespace ChromeDriverScrapper
         if (!wasInitilized)
         {
           var chromeOptions = new ChromeOptions();
-
+          
           chromeOptions.AddArguments(new List<string>() {
             "--headless",
             "--disable-gpu",
@@ -42,9 +46,11 @@ namespace ChromeDriverScrapper
             "--enable-precise-memory-info",
             "--test-type",
             "--test-type=browser",
-            "--ignore-certificate-errors"
+            "--ignore-certificate-errors",
+            "--ignore-certificate-errors",
           });
 
+          chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
           chromeOptions.Proxy = null;
 
           var dir = Directory.GetCurrentDirectory();
@@ -53,6 +59,8 @@ namespace ChromeDriverScrapper
           chromeDriverService.HideCommandPromptWindow = true;
 
           ChromeDriver = new ChromeDriver(chromeDriverService, chromeOptions);
+
+          //var userAgent = ChromeDriver.ExecuteScript("return navigator.userAgent;");
 
           wasInitilized = true;
         }

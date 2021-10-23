@@ -1,346 +1,352 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:VCore.WPF.Controls">
-  <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="pack://application:,,,/VPlayer.DarkTheme;component/Styles/StylesDictionaries/Button.xaml" />
-    <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Fonts.xaml" />
-  </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/VPlayer.DarkTheme;component/Styles/StylesDictionaries/Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Fonts.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
-  <Style x:Key="FontAwesomeGlyphStyle"
-         BasedOn="{StaticResource {x:Type controls:PathButton}}"
-         TargetType="{x:Type controls:PathButton}">
-    <Setter Property="GlyphFontSize" Value="17" />
-    <Setter Property="GlyphFontFamily" Value="{StaticResource FontAwesome6Pro_Regular}" />
-    <Setter Property="IsReadOnly" Value="True" />
-    <Setter Property="IconWidth" Value="auto" />
-    <Setter Property="IconHeight" Value="auto" />
-    <Setter Property="IconDefaultColor" Value="#757575" />
-    <Setter Property="IconCheckedColor" Value="{StaticResource YellowColor}" />
-  </Style>
+    <Style x:Key="FontAwesomeGlyphStyle"
+           BasedOn="{StaticResource {x:Type controls:PathButton}}"
+           TargetType="{x:Type controls:PathButton}">
+        <Setter Property="GlyphFontSize" Value="17" />
+        <Setter Property="GlyphFontFamily" Value="{StaticResource FontAwesome6Pro_Regular}" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="IconWidth" Value="auto" />
+        <Setter Property="IconHeight" Value="auto" />
+        <Setter Property="IconDefaultColor" Value="#757575" />
+        <Setter Property="IconCheckedColor" Value="{StaticResource YellowColor}" />
+    </Style>
 
-  <Style x:Key="tv-retro"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="tv-retro"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="xmark"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="arrows-rotate"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="plus"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="+" />
-  </Style>
+    <Style x:Key="xmark"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="films"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="plus"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="+" />
+    </Style>
 
-  <Style x:Key="album-collection"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="films"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="user-music"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="album-collection"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="compact-disc"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
+    <Style x:Key="user-music"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-
-  <Style x:Key="file-check"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
-
-  <Style x:Key="tag"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
-
-  <Style x:Key="music-note"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="" />
-  </Style>
-
-  <Style x:Key="hashtag"
-         BasedOn="{StaticResource FontAwesomeGlyphStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Glyph" Value="#" />
-  </Style>
+    <Style x:Key="compact-disc"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
 
-  <Style x:Key="FontAwesomeGlyphPathButtonStyle"
-         BasedOn="{StaticResource {x:Type controls:PathButton}}"
-         TargetType="{x:Type controls:PathButton}">
-    <Setter Property="FontSize" Value="15" />
-    <Setter Property="IconHeight" Value="0" />
-    <Setter Property="IconWidth" Value="0" />
-    <Setter Property="IconMargin" Value="0" />
-    <Setter Property="IsReadOnly" Value="True" />
-    <Setter Property="ForegroundDefaultColor" Value="#757575" />
-    <Setter Property="ForegroundCheckedColor" Value="{StaticResource YellowColor}" />
-    <Setter Property="FontFamily" Value="{StaticResource FontAwesome6Pro_Regular}" />
-  </Style>
+    <Style x:Key="file-check"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="bookmark"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="🔖︁" />
-  </Style>
+    <Style x:Key="tag"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-  <Style x:Key="download"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="" />
-  </Style>
+    <Style x:Key="music-note"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
 
-
-  <Style x:Key="tally"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="timer_glyph"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="hourglass"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="⏳︁" />
-  </Style>
-
-  <Style x:Key="stopwatch"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="⏱︁" />
-  </Style>
-
-  <Style x:Key="person-running"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="🏃︁" />
-  </Style>
-
-  <Style x:Key="door-open"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="file-lines"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="🖹︁" />
-  </Style>
-
-  <Style x:Key="file-pen"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="📝︁" />
-  </Style>
-
-  <Style x:Key="pencil-glyph"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="✏︁" />
-  </Style>
-
-  <Style x:Key="book-bookmark"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
+    <Style x:Key="hashtag"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="#" />
+    </Style>
 
 
-  <Style x:Key="folder-open"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="📂︁" />
-  </Style>
+    <Style x:Key="FontAwesomeGlyphPathButtonStyle"
+           BasedOn="{StaticResource {x:Type controls:PathButton}}"
+           TargetType="{x:Type controls:PathButton}">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="IconHeight" Value="0" />
+        <Setter Property="IconWidth" Value="0" />
+        <Setter Property="IconMargin" Value="0" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="ForegroundDefaultColor" Value="#757575" />
+        <Setter Property="ForegroundCheckedColor" Value="{StaticResource YellowColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesome6Pro_Regular}" />
+    </Style>
 
-  <Style x:Key="bookmark-slash"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
+    <Style x:Key="bookmark"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🔖︁" />
+    </Style>
 
-  <Style x:Key="floppy-disk-glyph"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="💾︁" />
-  </Style>
-
-  <Style x:Key="play-pause"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="arrow-up-right-from-square"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="arrow-right-to-bracket"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="circle-pause"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="pause"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="⏸︁" />
-  </Style>
-
-  <Style x:Key="stop"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="⏹︁" />
-  </Style>
-
-  <Style x:Key="circle-stop"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="info"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="circle-question"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="cloud-regular"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="☁︁" />
-  </Style>
-
-  <Style x:Key="cloud-arrow-down-regular"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="play-regular"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="▶︁" />
-  </Style>
-
-  <Style x:Key="layer-plus"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="right-to-bracket"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="up-right"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="window"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="browser"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="🗔︁" />
-  </Style>
-
-  <Style x:Key="square-rss"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="rss"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="browsers"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="window-maximize"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="🗖︁" />
-  </Style>
-
-  <Style x:Key="circle-check"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
-
-  <Style x:Key="check-glyph"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="✓︁" />
-  </Style>
-
-  <Style x:Key="message-plus"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
+    <Style x:Key="download"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="" />
+    </Style>
 
 
-  <Style x:Key="link-horizontal-slash"
-         BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-         TargetType="controls:PathButton">
-    <Setter Property="Content" Value="︁" />
-  </Style>
+    <Style x:Key="tally"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="timer_glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="hourglass"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="⏳︁" />
+    </Style>
+
+    <Style x:Key="stopwatch"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="⏱︁" />
+    </Style>
+
+    <Style x:Key="person-running"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🏃︁" />
+    </Style>
+
+    <Style x:Key="door-open"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="file-lines"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🖹︁" />
+    </Style>
+
+    <Style x:Key="file-pen"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="📝︁" />
+    </Style>
+
+    <Style x:Key="pencil-glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="✏︁" />
+    </Style>
+
+    <Style x:Key="book-bookmark"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+
+    <Style x:Key="folder-open"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="📂︁" />
+    </Style>
+
+    <Style x:Key="bookmark-slash"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="floppy-disk-glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="💾︁" />
+    </Style>
+
+    <Style x:Key="play-pause"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="arrow-up-right-from-square"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="arrow-right-to-bracket"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="circle-pause"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="pause"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="⏸︁" />
+    </Style>
+
+    <Style x:Key="stop"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="⏹︁" />
+    </Style>
+
+    <Style x:Key="circle-stop"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="info"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="circle-question"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="cloud-regular"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="☁︁" />
+    </Style>
+
+    <Style x:Key="cloud-arrow-down-regular"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="play-regular"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="▶︁" />
+    </Style>
+
+    <Style x:Key="layer-plus"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="right-to-bracket"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="up-right"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="window"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="browser"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🗔︁" />
+    </Style>
+
+    <Style x:Key="square-rss"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="rss"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="browsers"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="window-maximize"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="🗖︁" />
+    </Style>
+
+    <Style x:Key="circle-check"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+    <Style x:Key="check-glyph"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="✓︁" />
+    </Style>
+
+    <Style x:Key="message-plus"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
+
+
+    <Style x:Key="link-horizontal-slash"
+           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Content" Value="︁" />
+    </Style>
 
 </ResourceDictionary>
