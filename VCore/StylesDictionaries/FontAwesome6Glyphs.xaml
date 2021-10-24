@@ -92,6 +92,28 @@
     </Style>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <Style x:Key="FontAwesomeGlyphPathButtonStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"
            TargetType="{x:Type controls:PathButton}">

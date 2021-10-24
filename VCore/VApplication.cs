@@ -43,6 +43,8 @@ namespace VCore.WPF
 
     public static string BuildVersion { get; set; }
 
+    protected virtual bool IsConsoleVisible { get; set; }
+
     #endregion
 
     private int numberOfSteps = 18;
@@ -53,6 +55,10 @@ namespace VCore.WPF
 
     protected override void OnStartup(StartupEventArgs e)
     {
+#if DEBUG
+      IsConsoleVisible = true;
+#endif
+
       stopWatch = new Stopwatch();
       stopWatch.Start();
 
@@ -87,14 +93,8 @@ namespace VCore.WPF
       logger = Container.Resolve<ILogger>();
       windowManager = Container.Resolve<IWindowManager>();
 
-#if DEBUG
 
-      isConsoleUp = WinConsole.CreateConsole();
-
-      Console.ForegroundColor = ConsoleColor.Green;
-
-      Console.WriteLine("CONSOLE IS READY");
-#endif
+      ShowConsole();
 
 
       var version = System.Reflection.Assembly.GetExecutingAssembly().GetName();
@@ -111,6 +111,18 @@ namespace VCore.WPF
     }
 
     #endregion
+
+    protected virtual void ShowConsole()
+    {
+      if (IsConsoleVisible)
+      {
+        isConsoleUp = WinConsole.CreateConsole();
+
+        Console.ForegroundColor = ConsoleColor.Green;
+
+        Console.WriteLine("CONSOLE IS READY");
+      }
+    }
 
     #region LoadModules
 
@@ -257,7 +269,7 @@ namespace VCore.WPF
     private void SetupExceptionHandling()
     {
 
-//#if !DEBUG
+      //#if !DEBUG
       AppDomain.CurrentDomain.UnhandledException += (s, e) =>
         LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
@@ -266,7 +278,7 @@ namespace VCore.WPF
         LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
         e.Handled = true;
       };
-//#endif
+      //#endif
       TaskScheduler.UnobservedTaskException += (s, e) =>
       {
         LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");

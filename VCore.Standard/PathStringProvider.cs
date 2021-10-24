@@ -25,6 +25,11 @@ namespace VCore.Standard
 
     public static string GetPathValidName(string name)
     {
+      if (string.IsNullOrEmpty(name))
+      {
+        return null;
+      }
+
       string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
 
       foreach (char c in invalid)

@@ -25,7 +25,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     {
       FullName = fullName;
       Source = source;
-      Extension = System.IO.Path.GetExtension(fullName);
+      Extension = System.IO.Path.GetExtension(fullName.ToLower());
     }
 
     public void Update(FileInfo other)

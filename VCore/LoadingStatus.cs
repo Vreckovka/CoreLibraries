@@ -23,6 +23,25 @@ namespace VCore.WPF
 
     #endregion
 
+    #region ShowProcessCount
+
+    private bool showProcessCount = true;
+
+    public bool ShowProcessCount
+    {
+      get { return showProcessCount; }
+      set
+      {
+        if (value != showProcessCount)
+        {
+          showProcessCount = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
     #region NumberOfProcesses
 
     private int numberOfProcesses;
