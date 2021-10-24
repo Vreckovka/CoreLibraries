@@ -29,6 +29,12 @@ namespace VCore.WPF.Converters
 
           var seconds = Math.Round((minutes - onlyMinutes) * 60);
 
+          if (seconds == 60)
+          {
+            seconds = 0;
+            onlyMinutes++;
+          }
+
           return $"{string.Format(StringNumberFormat, onlyHours)}:{string.Format(StringNumberFormat, onlyMinutes)}:{string.Format(StringNumberFormat, seconds)}";
         }
         else if (parameterStr == "minutes")
@@ -37,6 +43,12 @@ namespace VCore.WPF.Converters
           var onlyMinutes = Math.Truncate(minutes);
 
           var seconds = Math.Round((minutes - onlyMinutes) * 60);
+
+          if (seconds == 60)
+          {
+            seconds = 0;
+            onlyMinutes++;
+          }
 
           return $"{string.Format(StringNumberFormat, onlyMinutes)}:{string.Format(StringNumberFormat, seconds)}";
         }
