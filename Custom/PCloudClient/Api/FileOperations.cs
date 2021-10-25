@@ -351,6 +351,36 @@ namespace PCloudClient.Api
       return conn.send(req);
     }
 
+    #region ListTokens
+
+    public static Task<Response> ListTokens(this Connection conn)
+    {
+      var req = conn.newRequest("listtokens");
+      req.unixTimestamps();
+
+      var asd = conn.send(req);
+
+      return asd;
+    }
+
+    #endregion
+
+    #region CreateUploadLink
+
+    public static Task<Response> CreateUploadLink(this Connection conn, long folderId, string comment)
+    {
+      var req = conn.newRequest("createuploadlink");
+      req.add("folderid", folderId);
+      req.add("comment", comment);
+      req.unixTimestamps();
+
+      var asd = conn.send(req);
+
+      return asd;
+    }
+
+    #endregion
+
     #region DeleteFile
 
     public static Task DeleteFile(this Connection conn, long fileId)

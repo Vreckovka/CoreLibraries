@@ -486,6 +486,52 @@ namespace PCloudClient
 
     #endregion
 
+    public async Task<bool> CreateUploadLink(long folderId, string comment)
+    {
+      if (credentials != null)
+      {
+        using (var conn = await Connection.open(ssl, host))
+        {
+          try
+          {
+            await conn.login(credentials.Email, credentials.Password);
+
+            var fd = await conn.CreateUploadLink(folderId, comment);
+
+            return true;
+          }
+          catch (Exception ex)
+          {
+
+          }
+          finally
+          {
+            await Logout(conn);
+          }
+        }
+      }
+
+      return false;
+    }
+
+    #region Uploadtolink
+
+    public async Task<bool> Uploadtolink(string code, string fileName, byte[] data)
+    {
+      using (var conn = await Connection.open(ssl, host))
+      {
+        var memoryStream = new MemoryStream(data);
+
+        await conn.uploadToLink(fileName, memoryStream, code, Authentication.GetDeviceInfo());
+
+
+        return true;
+      }
+
+    }
+
+    #endregion
+
     #region CreateFolder
 
     public async Task<FolderInfo> CreateFolder(string name, long? parentId)

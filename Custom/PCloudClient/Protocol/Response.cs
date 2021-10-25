@@ -8,7 +8,7 @@ using Hash = System.Collections.Generic.Dictionary<string, object>;
 namespace PCloudClient.Protocol
 {
   /// <summary>Parsed response from pCloud's server.</summary>
-  class Response
+  public class Response
   {
     /// <summary>Payload object of the response.</summary>
     public struct Data

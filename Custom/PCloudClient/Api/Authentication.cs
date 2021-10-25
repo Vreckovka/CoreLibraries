@@ -9,14 +9,19 @@ namespace PCloudClient.Api
 	public static class Authentication
 	{
 		static Authentication()
-		{
-			Assembly ass = Assembly.GetEntryAssembly();
-			var apa = ass.GetCustomAttribute<AssemblyProductAttribute>();
-			if( null != apa )
-				deviceInfoString = $"{ apa.Product }, { ass.GetName().Version }";
-			else
-				deviceInfoString = ass.FullName;
-		}
+    {
+      deviceInfoString = GetDeviceInfo();
+    }
+
+    public static string GetDeviceInfo()
+    {
+      Assembly ass = Assembly.GetEntryAssembly();
+      var apa = ass.GetCustomAttribute<AssemblyProductAttribute>();
+      if( null != apa )
+        return $"{ apa.Product }, { ass.GetName().Version }";
+      else
+        return ass.FullName;
+    }
 
 		/// <summary>Apparently, their web interface shows that data for live sessions. Good idea to set into something more descriptive before using the library.</summary>
 		public static string deviceInfoString;

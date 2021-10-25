@@ -29,5 +29,9 @@ namespace PCloudClient
 
     AsyncProcess<List<KeyValuePair<long, PublicLink>>> GetAudioLinks(IEnumerable<long> ids, CancellationToken cancellationToken);
     AsyncProcess<List<KeyValuePair<long, PublicLink>>> GetFileLinks(IEnumerable<long> ids, CancellationToken cancellationToken = default);
+
+
+    Task<bool> CreateUploadLink(long folderId,string comment);
+    Task<bool> Uploadtolink(string code, string fileName, byte[] data);
   }
 }

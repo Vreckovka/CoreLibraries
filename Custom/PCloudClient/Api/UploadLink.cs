@@ -14,7 +14,7 @@ namespace PCloudClient.Api
 		/// <para>Works without authentication, you need upload link code to use this API.</para>
 		/// <para>The API documentation is silent about that, but "names" request parameter appears to be mandatory for this RPC.</para>
 		/// </remarks>
-		public static Task uploadToLink( this Connection conn, string fileName, Stream payload, string uploadLinkCode, string from, bool nopartial = true )
+		public static Task uploadToLink( this Connection conn, string fileName, Stream payload, string uploadLinkCode, string from, bool nopartial = true,bool renameifexists = true )
 		{
 			if( string.IsNullOrWhiteSpace( fileName ) )
 				throw new ArgumentException( "File name can't be empty", "fileName" );
@@ -26,6 +26,7 @@ namespace PCloudClient.Api
 			req.add( "filename", fileName );
 			req.add( "code", uploadLinkCode );
 			req.add( "nopartial", nopartial );
+      req.add( "renameifexists", renameifexists );
 
 			payload.rewind();
 			return conn.upload( req, payload );
