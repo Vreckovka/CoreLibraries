@@ -18,7 +18,7 @@ namespace PCloudClient
     Task<MemoryStream> ReadFile(long id);
     Task<PublicLink> GetFileLink(long id);
    
-    Task<string> GetAudioLink(long id);
+    Task<PublicLink> GetAudioLink(long id);
     Task<PCloudResponse<Stats>> GetFileStats(long id);
     Task<FolderInfo> CreateFolder(string name, long? parentId);
     Task<long?> CreateFile(string name, long id);

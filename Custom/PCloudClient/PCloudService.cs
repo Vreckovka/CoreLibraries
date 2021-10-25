@@ -68,7 +68,7 @@ namespace PCloudClient
 
     #region GetAudioLink
 
-    public async Task<string> GetAudioLink(long id)
+    public async Task<PublicLink> GetAudioLink(long id)
     {
       if (credentials != null)
       {
@@ -78,7 +78,7 @@ namespace PCloudClient
           {
             await conn.login(credentials.Email, credentials.Password);
 
-            return (await conn.GetAudioLink(id))?.Link;
+            return await conn.GetAudioLink(id);
           }
           finally
           {
