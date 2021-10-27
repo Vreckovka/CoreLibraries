@@ -27,12 +27,26 @@ namespace ChromeDriverScrapper
 
     public bool Initialize()
     {
+      var result = InitializeWithExceptionReturn();
+
+      return result == null;
+    }
+
+
+    #endregion
+
+    #region InitializeWithExceptionReturn
+
+    public Exception InitializeWithExceptionReturn()
+    {
+      ChromeDriverService chromeDriverService = null;
+
       try
       {
         if (!wasInitilized)
         {
           var chromeOptions = new ChromeOptions();
-          
+
           chromeOptions.AddArguments(new List<string>() {
             "--headless",
             "--disable-gpu",
@@ -54,28 +68,46 @@ namespace ChromeDriverScrapper
           chromeOptions.Proxy = null;
 
           var dir = Directory.GetCurrentDirectory();
-          var chromeDriverService = ChromeDriverService.CreateDefaultService(dir, "chromedriver.exe");
+          chromeDriverService = ChromeDriverService.CreateDefaultService(dir, "chromedriver.exe");
 
           chromeDriverService.HideCommandPromptWindow = true;
 
           ChromeDriver = new ChromeDriver(chromeDriverService, chromeOptions);
 
-          //var userAgent = ChromeDriver.ExecuteScript("return navigator.userAgent;");
-
           wasInitilized = true;
         }
 
-        return wasInitilized;
+        return null;
       }
       catch (Exception ex)
       {
+        if (chromeDriverService != null)
+        {
+          chromeDriverService.Dispose();
+        }
+
+        if (ChromeDriver != null)
+        {
+          ChromeDriver.Dispose();
+        }
+     
         logger.Log(ex);
 
-        return false;
+        return ex;
       }
     }
 
     #endregion
+
+    public bool IsVersionExeception(Exception ex)
+    {
+      if (ex.Message.Contains("This version of ChromeDriver only supports Chrome version"))
+      {
+        return true;
+      }
+
+      return false;
+    }
 
     #region SafeNavigate
 

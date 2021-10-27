@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using System;
+using OpenQA.Selenium.Chrome;
 
 namespace ChromeDriverScrapper
 {
@@ -6,6 +7,8 @@ namespace ChromeDriverScrapper
   {
     ChromeDriver ChromeDriver { get; set; }
     bool Initialize();
+    Exception InitializeWithExceptionReturn();
+    bool IsVersionExeception(Exception ex);
     object ExecuteScript(string script, double secondsToWait = 10);
     void ExecuteScriptVoid(string script, double secondsToWait);
     void Dispose();
