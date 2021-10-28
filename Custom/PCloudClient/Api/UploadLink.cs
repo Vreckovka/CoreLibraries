@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
+using PCloudClient.JsonResponses;
 using PCloudClient.Protocol;
 using PCloudClient.Utils;
 
@@ -31,5 +34,7 @@ namespace PCloudClient.Api
 			payload.rewind();
 			return conn.upload( req, payload );
 		}
+
+    
 	}
 }

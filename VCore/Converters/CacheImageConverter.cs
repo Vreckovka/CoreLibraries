@@ -55,7 +55,6 @@ namespace VCore.WPF.Converters
         return stringValue;
       }
 
-
       return GetBitmapImage(value, parameter);
     }
 
@@ -65,79 +64,84 @@ namespace VCore.WPF.Converters
 
     protected BitmapImage GetBitmapImage(object value, object parameter)
     {
-      if (value is BitmapImage bitmapImage1)
+      try
       {
-        return bitmapImage1;
-      }
+        if (value is BitmapImage bitmapImage1)
+        {
+          return bitmapImage1;
+        }
 
-      string path = "";
+        string path = "";
 
-      var bitmapImage = new BitmapImage();
-      bitmapImage.BeginInit();
+        var bitmapImage = new BitmapImage();
+        bitmapImage.BeginInit();
 
-      if (value != DependencyProperty.UnsetValue && value != null)
-      {
-        path = value.ToString()?.Replace("file:///", "");
-      }
-      else
-      {
-        bitmapImage.StreamSource = GetEmptyImage();
-      }
+        if (value != DependencyProperty.UnsetValue && value != null)
+        {
+          path = value.ToString()?.Replace("file:///", "");
+        }
+        else
+        {
+          bitmapImage.StreamSource = GetEmptyImage();
+        }
 
-      if (File.Exists(path) && path != null)
-      {
-        bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);
-      }
-      else
-      {
-        bitmapImage.StreamSource = GetEmptyImage();
-      }
+        if (File.Exists(path) && path != null)
+        {
+          bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);
+        }
+        else
+        {
+          bitmapImage.StreamSource = GetEmptyImage();
+        }
 
-      if (lastLoadedImagePath == path)
-      {
-        return lastLoadedImage;
-      }
-
-
+        if (lastLoadedImagePath == path)
+        {
+          return lastLoadedImage;
+        }
 
 
-      DecodePixelSize(parameter, bitmapImage);
+        DecodePixelSize(parameter, bitmapImage);
 
-      bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-      bitmapImage.EndInit();
-      bitmapImage.StreamSource.Dispose();
+        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        bitmapImage.EndInit();
+        bitmapImage.StreamSource.Dispose();
 
-      lastLoadedImagePath = path;
-      lastLoadedImage = bitmapImage;
+        lastLoadedImagePath = path;
+        lastLoadedImage = bitmapImage;
 
-      if (!AllConverters.ContainsKey(path))
-      {
-        AllConverters.Add(path, new List<CacheImageConverter>()
+        if (!AllConverters.ContainsKey(path))
+        {
+          AllConverters.Add(path, new List<CacheImageConverter>()
         {
           this
         });
-      }
-      else
-      {
-        var allConvertes = AllConverters[path];
-
-        if (allConvertes == null)
+        }
+        else
         {
-          allConvertes = new List<CacheImageConverter>()
+          var allConvertes = AllConverters[path];
+
+          if (allConvertes == null)
+          {
+            allConvertes = new List<CacheImageConverter>()
           {
             this
           };
-        }
-        else if (!allConvertes.Contains(this))
-        {
-          allConvertes.Add(this);
+          }
+          else if (!allConvertes.Contains(this))
+          {
+            allConvertes.Add(this);
+          }
+
+          AllConverters[path] = allConvertes;
         }
 
-        AllConverters[path] = allConvertes;
+
+        return bitmapImage;
       }
-
-
-      return bitmapImage;
+      catch (Exception)
+      {
+        return null;
+      }
     }
 
     #endregion

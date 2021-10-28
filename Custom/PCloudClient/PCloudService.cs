@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -117,7 +118,7 @@ namespace PCloudClient
     }
 
     #endregion
-
+    
     #region GetFilePublicLink
 
     private async Task<GetFilePublicLinkResponse> GetFilePublicLink(Connection conn, long id)
@@ -486,6 +487,8 @@ namespace PCloudClient
 
     #endregion
 
+    #region CreateUploadLink
+
     public async Task<bool> CreateUploadLink(long folderId, string comment)
     {
       if (credentials != null)
@@ -514,6 +517,8 @@ namespace PCloudClient
       return false;
     }
 
+    #endregion
+
     #region Uploadtolink
 
     public async Task<bool> Uploadtolink(string code, string fileName, byte[] data)
@@ -528,6 +533,45 @@ namespace PCloudClient
         return true;
       }
 
+    }
+
+    #endregion
+
+    #region UploadToLinkHttp
+    public async Task UploadToLinkHttp(string code, string fileName, byte[] data)
+    {
+      if (string.IsNullOrWhiteSpace(fileName))
+        throw new ArgumentException("File name can't be empty", "fileName");
+
+      var methodName = "uploadtolink";
+      var request = $"https://{host}/{methodName}?names=NamesParameter&code={code}&file={fileName}";
+
+      HttpClient client = new HttpClient();
+      HttpContent httpContent = new StreamContent(new MemoryStream(data));
+      HttpResponseMessage responseMessage = await client.PostAsync(request, httpContent);
+
+      string responseBody = await responseMessage.Content.ReadAsStringAsync();
+    }
+
+
+    #endregion
+
+    #region ScrapePublicFolderItems
+
+    public Task<PublicFolderLinkContentScrappedItem> ScrapePublicFolderItems(string folderLink)
+    {
+      return Task.Run(() =>
+      {
+        WebClient client = new WebClient();
+
+        string downloadString = client.DownloadString(folderLink);
+        var stringEnd = "      if (obLength(";
+
+        var asd = downloadString.Split("publinkData")[1].Substring(3).Replace("if (obLength(", null).Trim()
+          .Replace("};", "}");
+
+        return JsonSerializer.Deserialize<PublicFolderLinkContentScrappedItem>(asd);
+      });
     }
 
     #endregion

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using PCloudClient.Domain;
+using PCloudClient.JsonResponses;
 using VCore.Standard;
 using FileInfo = PCloudClient.Domain.FileInfo;
 
@@ -17,7 +18,7 @@ namespace PCloudClient
     Task<bool> ExistsFolderAsync(long id);
     Task<MemoryStream> ReadFile(long id);
     Task<PublicLink> GetFileLink(long id);
-   
+
     Task<PublicLink> GetAudioLink(long id);
     Task<PCloudResponse<Stats>> GetFileStats(long id);
     Task<FolderInfo> CreateFolder(string name, long? parentId);
@@ -31,7 +32,12 @@ namespace PCloudClient
     AsyncProcess<List<KeyValuePair<long, PublicLink>>> GetFileLinks(IEnumerable<long> ids, CancellationToken cancellationToken = default);
 
 
-    Task<bool> CreateUploadLink(long folderId,string comment);
+    Task<bool> CreateUploadLink(long folderId, string comment);
     Task<bool> Uploadtolink(string code, string fileName, byte[] data);
+
+    Task UploadToLinkHttp(string code, string fileName, byte[] data);
+
+    Task<PublicFolderLinkContentScrappedItem> ScrapePublicFolderItems(string folderLink);
+
   }
 }
