@@ -16,7 +16,7 @@ namespace PCloudClient.JsonResponses
       public bool canread { get; set; }
       public bool isfolder { get; set; }
       public long fileid { get; set; }
-      public long hash { get; set; }
+      public ulong hash { get; set; }
       public int category { get; set; }
       public bool candelete { get; set; }
       public string id { get; set; }

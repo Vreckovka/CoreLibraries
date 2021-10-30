@@ -6,8 +6,8 @@ namespace ChromeDriverScrapper
   public interface IChromeDriverProvider
   {
     ChromeDriver ChromeDriver { get; set; }
-    bool Initialize();
-    Exception InitializeWithExceptionReturn();
+    bool Initialize(string proxyServer = null);
+    Exception InitializeWithExceptionReturn(string proxyServer = null);
     bool IsVersionExeception(Exception ex);
     object ExecuteScript(string script, double secondsToWait = 10);
     void ExecuteScriptVoid(string script, double secondsToWait);

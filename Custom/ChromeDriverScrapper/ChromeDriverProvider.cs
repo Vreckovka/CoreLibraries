@@ -25,9 +25,9 @@ namespace ChromeDriverScrapper
 
     #region Initialize
 
-    public bool Initialize()
+    public bool Initialize(string proxyServer = null)
     {
-      var result = InitializeWithExceptionReturn();
+      var result = InitializeWithExceptionReturn(proxyServer);
 
       return result == null;
     }
@@ -37,7 +37,7 @@ namespace ChromeDriverScrapper
 
     #region InitializeWithExceptionReturn
 
-    public Exception InitializeWithExceptionReturn()
+    public Exception InitializeWithExceptionReturn(string proxyServer = null)
     {
       ChromeDriverService chromeDriverService = null;
 
@@ -61,11 +61,15 @@ namespace ChromeDriverScrapper
             "--test-type",
             "--test-type=browser",
             "--ignore-certificate-errors",
-            "--ignore-certificate-errors",
+
           });
 
           chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
-          chromeOptions.Proxy = null;
+
+          if (proxyServer != null)
+          {
+            chromeOptions.AddArgument($"--proxy-server={proxyServer}");
+          }
 
           var dir = Directory.GetCurrentDirectory();
           chromeDriverService = ChromeDriverService.CreateDefaultService(dir, "chromedriver.exe");
