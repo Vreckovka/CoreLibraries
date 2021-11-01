@@ -65,7 +65,7 @@ namespace VCore.WPF.Misc
   }
 
 
-  public class ActionCommand : ICommand
+  public class ActionCommand : ICommand, IDisposable
   {
     private readonly Action _action;
     private readonly Func<bool> canExecute;
@@ -102,5 +102,9 @@ namespace VCore.WPF.Misc
     }
 
     public event EventHandler CanExecuteChanged;
+
+    public void Dispose()
+    {
+    }
   }
 }
