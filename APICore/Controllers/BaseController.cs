@@ -36,12 +36,17 @@ namespace APICore.Controllers
 
     [AllowAnonymous]
     [HttpGet]
-    public virtual IEnumerable<TEntity> Get()
+    public IEnumerable<TEntity> Get()
     {
-      return Repository.Entities.ToList();
+      return OnGet();
     }
 
     #endregion
+
+    protected virtual IEnumerable<TEntity> OnGet()
+    {
+      return Repository.Entities.ToList();
+    }
 
     #region Post
 
