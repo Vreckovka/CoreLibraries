@@ -36,6 +36,7 @@ namespace APICore.Controllers
 
     [AllowAnonymous]
     [HttpGet]
+   
     public IEnumerable<TEntity> Get()
     {
       return OnGet();

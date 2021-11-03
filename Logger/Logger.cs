@@ -80,6 +80,11 @@ namespace Logger
 
     public void Log(Exception ex, bool logToFile = true)
     {
+
+#if DEBUG
+      logToFile = false;
+#endif
+
       Log(MessageType.Error, ex.ToString(), logToFile);
     }
 

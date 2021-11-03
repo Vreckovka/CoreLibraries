@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Listener;
 using Logger;
 using Ninject;
 using Prism.Ioc;
@@ -370,6 +371,8 @@ namespace VCore.WPF
         isConsoleUp = !WinConsole.FreeConsole();
 
       Process.GetCurrentProcess().Kill();
+
+      Kernel.Get<KeyListener>().Dispose();
 
       base.OnExit(e);
     }
