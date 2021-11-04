@@ -309,10 +309,14 @@ namespace VCore.WPF
       {
         logger.Log(exception);
 
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        if(Application.Current?.Dispatcher != null)
         {
-          windowManager.ShowErrorPrompt(exception);
-        });
+          await Application.Current.Dispatcher.InvokeAsync(() =>
+          {
+            windowManager.ShowErrorPrompt(exception);
+          });
+        }
+     
 
         OnUnhandledExceptionCaught(exception);
       }
@@ -367,14 +371,20 @@ namespace VCore.WPF
 
     protected override void OnExit(ExitEventArgs e)
     {
+      Task.Run(async () =>
+      {
+        await Task.Delay(TimeSpan.FromSeconds(10));
+
+        Process.GetCurrentProcess().Kill();
+      });
+
+
       base.OnExit(e);
 
       if (isConsoleUp)
         isConsoleUp = !WinConsole.FreeConsole();
 
       Kernel.Dispose();
-
-     // Process.GetCurrentProcess().Kill();
     }
 
     #endregion
