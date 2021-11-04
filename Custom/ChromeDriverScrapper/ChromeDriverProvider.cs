@@ -12,7 +12,7 @@ using OpenQA.Selenium.Support.UI;
 namespace ChromeDriverScrapper
 {
 
-  public class ChromeDriverProvider : IChromeDriverProvider
+  public class ChromeDriverProvider : IChromeDriverProvider, IDisposable
   {
     private readonly ILogger logger;
     private bool wasInitilized;
@@ -94,7 +94,7 @@ namespace ChromeDriverScrapper
         {
           ChromeDriver.Dispose();
         }
-     
+
         logger.Log(ex);
 
         return ex;
@@ -102,6 +102,8 @@ namespace ChromeDriverScrapper
     }
 
     #endregion
+
+    #region IsVersionExeception
 
     public bool IsVersionExeception(Exception ex)
     {
@@ -113,8 +115,11 @@ namespace ChromeDriverScrapper
       return false;
     }
 
+    #endregion
+
     #region SafeNavigate
 
+    private WebDriverWait wait;
     public string SafeNavigate(string url, double secondsToWait)
     {
       if (!Initialize())
@@ -122,13 +127,22 @@ namespace ChromeDriverScrapper
         return null;
       }
 
-      WebDriverWait wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
+      wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
 
       return wait.Until((x) =>
       {
-        ChromeDriver.Navigate().GoToUrl(url);
+        try
+        {
+          var navigation = ChromeDriver.Navigate();
 
-        return ChromeDriver.PageSource;
+          navigation.GoToUrl(url);
+
+          return ChromeDriver?.PageSource;
+        }
+        catch (WebDriverException ex)
+        {
+          return null;
+        }
       });
     }
 

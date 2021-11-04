@@ -367,14 +367,14 @@ namespace VCore.WPF
 
     protected override void OnExit(ExitEventArgs e)
     {
+      base.OnExit(e);
+
       if (isConsoleUp)
         isConsoleUp = !WinConsole.FreeConsole();
 
-      Process.GetCurrentProcess().Kill();
+      Kernel.Dispose();
 
-      Kernel.Get<KeyListener>().Dispose();
-
-      base.OnExit(e);
+     // Process.GetCurrentProcess().Kill();
     }
 
     #endregion
