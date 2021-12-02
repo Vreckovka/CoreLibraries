@@ -18,7 +18,7 @@ namespace VCore.WPF.Managers
 
     static FullScreenManager()
     {
-      cursorTimer = new Timer(2500);
+      cursorTimer = new Timer(1500);
       cursorTimer.AutoReset = false;
 
       hideCursorDelegate = (s, e) =>

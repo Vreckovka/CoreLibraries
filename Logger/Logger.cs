@@ -49,6 +49,7 @@ namespace Logger
       MessageType type,
       string message, 
       bool logToFile = false,
+      bool logErrorToFile = true,
       [CallerFilePath]string callerFilePath = null, 
       [CallerMemberName]string methodName = "")
     {
@@ -65,7 +66,7 @@ namespace Logger
 
         Logs.Add(log);
 
-        if (logToFile || type == MessageType.Error)
+        if (logToFile || (type == MessageType.Error && logErrorToFile))
         {
           await fileLoggerContainer.Log(type, message);
         }
@@ -78,14 +79,15 @@ namespace Logger
       }
     }
 
-    public void Log(Exception ex, bool logToFile = true)
+    public void Log(Exception ex, bool logToFile = true, bool logErrorToFile = true)
     {
 
 #if DEBUG
       logToFile = false;
+      logErrorToFile = false;
 #endif
 
-      Log(MessageType.Error, ex.ToString(), logToFile);
+      Log(MessageType.Error, ex.ToString(), logToFile, logErrorToFile);
     }
 
     #endregion

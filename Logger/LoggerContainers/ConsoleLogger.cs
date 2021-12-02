@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Logger
@@ -7,47 +8,54 @@ namespace Logger
   {
     #region Methods
 
+    private static object batton = new object();
     public Task Log(MessageType messageType, string message)
     {
-      lock (Console.Out)
+      lock (batton)
       {
-        //… makes beep sound
         return Task.Run(() =>
-      {
-        try
         {
-          Console.ForegroundColor = ConsoleColor.White;
-
-          switch (messageType)
+          try
           {
-            case MessageType.Error:
-              Console.ForegroundColor = ConsoleColor.Red;
-              break;
+            Console.Write("");
 
-            case MessageType.Warning:
-              Console.ForegroundColor = ConsoleColor.Yellow;
-              break;
+            switch (messageType)
+            {
+              case MessageType.Error:
+                Console.ForegroundColor = ConsoleColor.Red;
+                break;
 
-            case MessageType.Success:
-              Console.ForegroundColor = ConsoleColor.Green;
-              break;
+              case MessageType.Warning:
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                break;
 
-            default:
-              throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
+              case MessageType.Success:
+                Console.ForegroundColor = ConsoleColor.Green;
+                break;
+
+              case MessageType.Inform:
+                Console.ForegroundColor = ConsoleColor.Gray;
+                break;
+            }
+
+            //… makes beep sound
+            var fixedMessage = message.Replace("…", "");
+
+            Console.Write("");
+            Console.Write("");
+            Console.Write("");
+
+            Console.WriteLine(fixedMessage);
+
+            Console.Write("");
+            Console.Write("");
+            Console.Write("");
           }
-
-          var fixedMessage = message.Replace("…", "");
-
-          Console.WriteLine(fixedMessage);
-        }
-        catch (Exception ex)
-        {
-        }
-        finally
-        {
-          Console.ForegroundColor = ConsoleColor.White;
-        }
-      });
+          finally
+          {
+            Console.ResetColor();
+          }
+        });
       }
     }
 

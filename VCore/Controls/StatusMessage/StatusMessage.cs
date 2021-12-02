@@ -38,32 +38,7 @@ namespace VCore.WPF.Controls.StatusMessage
       MouseLeave += StatusMessage_MouseLeave;
     }
 
-    private void StatusMessage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-      if (beforeHoverState != null)
-      {
-        SetValue(MessageStateProperty, beforeHoverState.Value);
-        beforeHoverState = null;
-      }
-    }
-
-    private void StatusMessage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-      if (MessageState != MessageStatusState.Open)
-      {
-        hoverDisposable.Disposable = Observable.Timer(TimeSpan.FromSeconds(1.5))
-          .ObserveOn(Application.Current.Dispatcher)
-          .Subscribe(x =>
-        {
-          if (MessageState != MessageStatusState.Open)
-          {
-            var pState = MessageState;
-            SetValue(MessageStateProperty, MessageStatusState.Open);
-            beforeHoverState = pState;
-          }
-        });
-      }
-    }
+    #region Properties
 
     #region Status
 
@@ -91,7 +66,7 @@ namespace VCore.WPF.Controls.StatusMessage
               token = statusMessage.cts.Token;
             }
 
-            if (newValue == StatusType.Done)
+            if (newValue == StatusType.Done && statusMessage.ParentMessageId != null)
             {
               statusMessage.HideStatusMessage(2000, token.Value);
             }
@@ -102,7 +77,8 @@ namespace VCore.WPF.Controls.StatusMessage
             else if (newValue == StatusType.Processing ||
                      newValue == StatusType.Starting)
             {
-              statusMessage.ShowStatusMessage();
+              if (statusMessage.ParentMessageId != null)
+                statusMessage.ShowStatusMessage();
             }
           }
         }));
@@ -129,13 +105,6 @@ namespace VCore.WPF.Controls.StatusMessage
 
     #region MessageStatusState
 
-    private event EventHandler<MessageStatusState> OnMessageStateChnaged;
-
-    protected virtual void OnOnMessageStateChnaged(MessageStatusState e)
-    {
-      OnMessageStateChnaged?.Invoke(this, e);
-    }
-
     public MessageStatusState MessageState
     {
       get { return (MessageStatusState)GetValue(MessageStateProperty); }
@@ -151,14 +120,12 @@ namespace VCore.WPF.Controls.StatusMessage
         {
           if (x is StatusMessage statusMessage)
           {
-            var newValue = (MessageStatusState) y.NewValue;
+            var newValue = (MessageStatusState)y.NewValue;
 
             if (statusMessage.beforeHoverState != null && newValue == MessageStatusState.Open)
             {
               statusMessage.beforeHoverState = null;
             }
-
-            statusMessage.OnOnMessageStateChnaged(newValue);
           }
         }));
 
@@ -224,6 +191,26 @@ namespace VCore.WPF.Controls.StatusMessage
 
     #endregion
 
+    #region ParentMessageId
+
+    public Guid? ParentMessageId
+    {
+      get { return (Guid?)GetValue(ParentMessageIdProperty); }
+      set { SetValue(ParentMessageIdProperty, value); }
+    }
+
+    public static readonly DependencyProperty ParentMessageIdProperty =
+      DependencyProperty.Register(
+        nameof(ParentMessageId),
+        typeof(Guid?),
+        typeof(StatusMessage),
+        new PropertyMetadata(null));
+
+
+    #endregion 
+
+    #endregion
+
     #region Methods
 
     #region StatusMessage_DataContextChanged
@@ -280,6 +267,41 @@ namespace VCore.WPF.Controls.StatusMessage
 
       var doubleAnimation = new DoubleAnimation(1, AnimationDuration);
       this.BeginAnimation(OpacityProperty, doubleAnimation);
+    }
+
+    #endregion
+
+    #region StatusMessage_MouseLeave
+
+    private void StatusMessage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      if (beforeHoverState != null)
+      {
+        SetValue(MessageStateProperty, beforeHoverState.Value);
+        beforeHoverState = null;
+      }
+    }
+
+    #endregion
+
+    #region StatusMessage_MouseEnter
+
+    private void StatusMessage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      if (MessageState != MessageStatusState.Open)
+      {
+        hoverDisposable.Disposable = Observable.Timer(TimeSpan.FromSeconds(1.5))
+          .ObserveOn(Application.Current.Dispatcher)
+          .Subscribe(x =>
+          {
+            if (MessageState != MessageStatusState.Open)
+            {
+              var pState = MessageState;
+              SetValue(MessageStateProperty, MessageStatusState.Open);
+              beforeHoverState = pState;
+            }
+          });
+      }
     }
 
     #endregion

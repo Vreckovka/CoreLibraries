@@ -133,11 +133,11 @@ namespace ChromeDriverScrapper
       {
         try
         {
-          var navigation = ChromeDriver.Navigate();
+          var navigation = x.Navigate();
 
           navigation.GoToUrl(url);
 
-          return ChromeDriver?.PageSource;
+          return x.PageSource;
         }
         catch (WebDriverException ex)
         {

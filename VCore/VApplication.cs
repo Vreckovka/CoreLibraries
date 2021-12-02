@@ -297,7 +297,7 @@ namespace VCore.WPF
 
       try
       {
-        System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+        AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
 
         message = string.Format("Unhandled exception in {0} v{1}", assemblyName.Name, assemblyName.Version);
       }
@@ -309,14 +309,13 @@ namespace VCore.WPF
       {
         logger.Log(exception);
 
-        if(Application.Current?.Dispatcher != null)
+        if (Current?.Dispatcher != null  && !(exception is ResourceReferenceKeyNotFoundException))
         {
-          await Application.Current.Dispatcher.InvokeAsync(() =>
+          await Current.Dispatcher.InvokeAsync(() =>
           {
             windowManager.ShowErrorPrompt(exception);
           });
         }
-     
 
         OnUnhandledExceptionCaught(exception);
       }
