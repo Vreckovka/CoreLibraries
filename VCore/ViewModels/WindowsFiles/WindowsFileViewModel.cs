@@ -9,7 +9,6 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     {
     }
 
-   
-
+  
   }
 }

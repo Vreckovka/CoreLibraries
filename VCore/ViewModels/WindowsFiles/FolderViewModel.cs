@@ -243,8 +243,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
                 await Application.Current.Dispatcher.InvokeAsync(() => { CanExpand = false; });
               }
 
-              await Application.Current.Dispatcher.InvokeAsync(() => { SubItems.AddRange(directories.Select(CreateNewFolderItem)); });
 
+              await Application.Current.Dispatcher.InvokeAsync(() => { SubItems.AddRange(directories.Select(CreateNewFolderItem)); });
 
               await Application.Current.Dispatcher.InvokeAsync(() =>
               {
@@ -653,5 +653,5 @@ namespace VCore.WPF.ViewModels.WindowsFiles
     #endregion
   }
 
- 
+
 }
