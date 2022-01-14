@@ -380,6 +380,8 @@ namespace VCore.WPF
 
       base.OnExit(e);
 
+      logger.Dispose();
+
       if (isConsoleUp)
         isConsoleUp = !WinConsole.FreeConsole();
 

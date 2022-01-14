@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Logger;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -16,20 +20,23 @@ namespace ChromeDriverScrapper
   {
     private readonly ILogger logger;
     private bool wasInitilized;
+    private string chromeDriverDirectory;
+    private string chromeDriverFileName;
     public ChromeDriver ChromeDriver { get; set; }
 
     public ChromeDriverProvider(ILogger logger)
     {
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+      chromeDriverDirectory = Directory.GetCurrentDirectory();
+      chromeDriverFileName = "chromedriver.exe";
     }
 
     #region Initialize
 
     public bool Initialize(string proxyServer = null)
     {
-      var result = InitializeWithExceptionReturn(proxyServer);
-
-      return result == null;
+      return InitializeWithExceptionReturn() == null;
     }
 
 
@@ -38,6 +45,36 @@ namespace ChromeDriverScrapper
     #region InitializeWithExceptionReturn
 
     public Exception InitializeWithExceptionReturn(string proxyServer = null)
+    {
+      if (!File.Exists(Path.Combine(chromeDriverDirectory,chromeDriverFileName)))
+      {
+        DownloadChromeDriverAsync(new WebClient().DownloadString("https://chromedriver.storage.googleapis.com/LATEST_RELEASE"), chromeDriverDirectory).GetAwaiter().GetResult();
+      }
+
+      var result = InitializeChromeDriver(proxyServer);
+
+      if (result != null)
+      {
+        var versionData = GetVersionExeception(result);
+
+        if (versionData != null &&
+            versionData.Value.Item1 != null
+            & versionData.Value.Item2 != null)
+        {
+          DownloadChromeDriverAsync(versionData.Value.Item2, chromeDriverDirectory).GetAwaiter().GetResult();
+        }
+
+        return InitializeChromeDriver(proxyServer);
+      }
+
+      return result;
+    }
+
+    #endregion
+
+    #region InitializeChromeDriver
+
+    public Exception InitializeChromeDriver(string proxyServer = null)
     {
       ChromeDriverService chromeDriverService = null;
 
@@ -61,7 +98,6 @@ namespace ChromeDriverScrapper
             "--test-type",
             "--test-type=browser",
             "--ignore-certificate-errors",
-
           });
 
           chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
@@ -71,8 +107,7 @@ namespace ChromeDriverScrapper
             chromeOptions.AddArgument($"--proxy-server={proxyServer}");
           }
 
-          var dir = Directory.GetCurrentDirectory();
-          chromeDriverService = ChromeDriverService.CreateDefaultService(dir, "chromedriver.exe");
+          chromeDriverService = ChromeDriverService.CreateDefaultService(chromeDriverDirectory, chromeDriverFileName);
 
           chromeDriverService.HideCommandPromptWindow = true;
 
@@ -94,6 +129,7 @@ namespace ChromeDriverScrapper
         {
           ChromeDriver.Dispose();
         }
+        
 
         logger.Log(ex);
 
@@ -103,16 +139,56 @@ namespace ChromeDriverScrapper
 
     #endregion
 
-    #region IsVersionExeception
+    #region DownloadChromeDriver
 
-    public bool IsVersionExeception(Exception ex)
+    private Task DownloadChromeDriverAsync(string version, string chromeDriverLocation)
     {
-      if (ex.Message.Contains("This version of ChromeDriver only supports Chrome version"))
+      var downloadPage = $"https://chromedriver.storage.googleapis.com/{version}/chromedriver_win32.zip";
+      var fileName = "chromedriver_win32.zip";
+
+      TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
+      using (var wc = new WebClient())
       {
-        return true;
+        wc.DownloadFileCompleted += (x, y) =>
+        {
+          File.Delete("chromedriver.exe");
+
+          ZipFile.ExtractToDirectory(fileName, chromeDriverLocation);
+
+          File.Delete(fileName);
+
+          tcs.SetResult(false);
+        };
+
+        wc.DownloadFileAsync(new Uri(downloadPage), fileName);
       }
 
-      return false;
+      return tcs.Task;
+    }
+
+    #endregion
+
+    #region GetVersionExeception
+
+    public (string, string)? GetVersionExeception(Exception ex)
+    {
+      var message = ex.Message;
+      if (message.Contains("This version of ChromeDriver only supports Chrome version"))
+      {
+        var actualVersionRegex = new Regex(@"supports Chrome version.?(\d+)");
+        var requiredVersionRegex = new Regex(@"Current browser version is ((\d+|\.)+)");
+
+        var actualVersionMatch = actualVersionRegex.Match(message);
+        var requiredVersionMatch = requiredVersionRegex.Match(message);
+
+        var actualVersionString = actualVersionMatch?.Groups[1].Value;
+        var requiredVersionString = requiredVersionMatch?.Groups[1].Value;
+
+        return (actualVersionString, requiredVersionString);
+      }
+
+      return null;
     }
 
     #endregion

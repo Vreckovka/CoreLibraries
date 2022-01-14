@@ -47,6 +47,12 @@
         <Setter Property="Glyph" Value="" />
     </Style>
 
+    <Style x:Key="calendar-day"
+           BasedOn="{StaticResource FontAwesomeGlyphStyle}"
+           TargetType="controls:PathButton">
+        <Setter Property="Glyph" Value="" />
+    </Style>
+
     <Style x:Key="xmark"
            BasedOn="{StaticResource FontAwesomeGlyphStyle}"
            TargetType="controls:PathButton">

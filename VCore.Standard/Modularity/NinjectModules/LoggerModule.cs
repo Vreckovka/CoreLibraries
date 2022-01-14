@@ -11,7 +11,7 @@ namespace VCore.Standard.Modularity.NinjectModules
       base.RegisterProviders();
 
       Kernel.Bind<FileLoggerContainer>().ToSelf().WithConstructorArgument("logFilePath", logFilePath);
-      Kernel.Bind<ILogger>().To<Logger.Logger>();
+      Kernel.Bind<ILogger>().To<Logger.Logger>().InSingletonScope();
       Kernel.Bind<ILoggerContainer>().To<Logger.ConsoleLogger>();
     }
 

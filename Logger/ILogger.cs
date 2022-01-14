@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Logger
 {
-    public interface ILogger
+    public interface ILogger : IDisposable
     {
       void Log(
         MessageType type,

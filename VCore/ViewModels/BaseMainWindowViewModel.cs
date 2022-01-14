@@ -18,7 +18,7 @@ namespace VCore.WPF.ViewModels
 
     public IViewModelsFactory ViewModelsFactory { get; set; }
     public NavigationViewModel NavigationViewModel { get; set; } = new NavigationViewModel();
-
+  
 
     private void MainWindow_Closed(object sender, System.EventArgs e)
     {

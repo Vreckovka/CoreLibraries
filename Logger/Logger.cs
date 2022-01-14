@@ -53,6 +53,9 @@ namespace Logger
       [CallerFilePath]string callerFilePath = null, 
       [CallerMemberName]string methodName = "")
     {
+      if (isDisposed)
+        return;
+
       try
       {
         var className = Path.GetFileNameWithoutExtension(callerFilePath);
@@ -92,5 +95,13 @@ namespace Logger
 
     #endregion
 
+    private bool isDisposed;
+    public void Dispose()
+    {
+      loggerContainer.Dispose();
+      fileLoggerContainer.Dispose();
+
+      isDisposed = true;
+    }
   }
 }

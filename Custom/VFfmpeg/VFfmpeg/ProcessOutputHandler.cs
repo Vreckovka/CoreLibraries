@@ -40,32 +40,35 @@ namespace VFfmpeg
     private TaskCompletionSource<IEnumerable<string>> outputTask = new TaskCompletionSource<IEnumerable<string>>();
     public int? ExitCode { get; set; }
 
-    public Task<IEnumerable<string>> StartProcessAndWaitForExit()
+    public async Task<IEnumerable<string>> StartProcessAndWaitForExit()
     {
-      try
+      await Task.Run(() =>
       {
-        process.OutputDataReceived += new DataReceivedEventHandler(OnNewOutputMessage);
-        process.ErrorDataReceived += new DataReceivedEventHandler(OnNewOutputMessage);
+        try
+        {
+          process.OutputDataReceived += new DataReceivedEventHandler(OnNewOutputMessage);
+          process.ErrorDataReceived += new DataReceivedEventHandler(OnNewOutputMessage);
 
-        process.Start();
-        process.BeginOutputReadLine();
-        process.BeginErrorReadLine();
+          process.Start();
+          process.BeginOutputReadLine();
+          process.BeginErrorReadLine();
 
-        process.WaitForExit();
+          process.WaitForExit();
 
-        ExitCode = process.ExitCode;
+          ExitCode = process.ExitCode;
 
-      }
-      catch (Exception ex)
-      {
+        }
+        catch (Exception ex)
+        {
 
-      }
-      finally 
-      {
-        outputTask.SetResult(outputs);
-      }
+        }
+        finally
+        {
+          outputTask.SetResult(outputs);
+        }
+      });
 
-      return outputTask.Task;
+      return await outputTask.Task;
     }
    
 

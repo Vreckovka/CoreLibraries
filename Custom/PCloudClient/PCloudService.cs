@@ -17,14 +17,86 @@ using FileInfo = PCloudClient.Domain.FileInfo;
 
 namespace PCloudClient
 {
+  public class PCouldContext : IDisposable
+  {
+    private readonly ILogger logger;
+
+    public PCouldContext(bool isSsl, string host, ILogger logger)
+    {
+      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+      IsSsl = isSsl;
+      Host = host;
+    }
+
+    public bool IsLoggedIn { get; private set; }
+    public bool IsSsl { get; }
+    public string Host { get; }
+    public Connection Connection { get; private set; }
+
+    #region LoginAsync
+
+    public async Task<bool> LoginAsync(LoginInfo credentials)
+    {
+      if (credentials != null && Connection == null)
+      {
+        try
+        {
+          Connection = await Connection.open(IsSsl, Host);
+
+          await Connection.login(credentials.Email, credentials.Password);
+
+          IsLoggedIn = true;
+        }
+        catch (Exception ex)
+        {
+          logger.Log(ex);
+
+          Connection = null;
+          IsLoggedIn = false;
+        }
+      }
+
+      return IsLoggedIn;
+    }
+
+    #endregion
+
+    #region Logout
+
+    public async Task<bool> Logout()
+    {
+      if (Connection != null)
+      {
+        if (Connection.isDesynced)
+          return false;
+
+        await Connection.logout();
+        Connection.Dispose();
+      }
+
+      Connection = null;
+      IsLoggedIn = false;
+
+      return true;
+    }
+
+    #endregion
+
+    public async void Dispose()
+    {
+      await Logout();
+    }
+  }
+
+
   public class PCloudService : IPCloudService
   {
     #region Fields
 
     private readonly string filePath;
     private readonly ILogger logger;
-    private readonly string host;
-    private readonly bool ssl;
+    private bool ssl;
+    private string host;
 
     private LoginInfo credentials;
 
@@ -67,28 +139,52 @@ namespace PCloudClient
 
     #endregion
 
-    #region GetAudioLink
+    #region ExecuteAction
 
-    public async Task<PublicLink> GetAudioLink(long id)
+    private async Task<TResult> ExecuteAction<TResult>(Func<Connection, TResult> action)
     {
-      if (credentials != null)
+      using (var connection = new PCouldContext(ssl, host, logger))
       {
-        using (var conn = await Connection.open(ssl, host))
+        await connection.LoginAsync(credentials);
+
+        var conn = connection.Connection;
+
+        if (connection.IsLoggedIn)
         {
           try
           {
-            await conn.login(credentials.Email, credentials.Password);
+           
+            var result = action.Invoke(conn);
 
-            return await conn.GetAudioLink(id);
+            if (result is Task task)
+            {
+              await task;
+            }
+
+            return result;
           }
-          finally
+          catch (Exception ex)
           {
-            await Logout(conn);
+            logger.Log(ex);
           }
         }
       }
 
-      return null;
+      return default(TResult);
+    }
+
+    #endregion
+
+    #region GetAudioLink
+
+    public async Task<PublicLink> GetAudioLink(long id)
+    {
+      var task = await ExecuteAction(async (conn) =>
+      {
+        return await conn.GetAudioLink(id);
+      });
+
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -97,54 +193,12 @@ namespace PCloudClient
 
     public async Task<PCloudResponse<Stats>> GetFileStats(long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.GetFileStats(id);
+      });
 
-            return await conn.GetFileStats(id);
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
-    }
-
-    #endregion
-    
-    #region GetFilePublicLink
-
-    private async Task<GetFilePublicLinkResponse> GetFilePublicLink(Connection conn, long id)
-    {
-      try
-      {
-        var token = conn.authToken;
-        var methodName = "getfilepublink";
-        var expires = ((DateTimeOffset)new DateTime(2022, 1, 1)).ToUnixTimeSeconds();
-        var request = $"https://{host}/{methodName}?auth={token}&fileid={id}&expires={expires}";
-
-        HttpClient client = new HttpClient();
-        HttpResponseMessage responseMessage = await client.GetAsync(request);
-        string responseBody = await responseMessage.Content.ReadAsStringAsync();
-
-        var link = JsonSerializer.Deserialize<GetFilePublicLinkResponse>(responseBody);
-
-        return link;
-      }
-      catch (Exception ex)
-      {
-
-      }
-
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -153,30 +207,12 @@ namespace PCloudClient
 
     public async Task<PublicLink> GetFileLink(long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.GetFileLink(id);
+      });
 
-            var link = await conn.GetFileLink(id);
-
-            return link;
-          }
-          catch (Exception ex)
-          {
-            logger.Log(ex);
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -191,41 +227,30 @@ namespace PCloudClient
 
       process.Process = Task.Run(async () =>
       {
-        if (credentials != null)
+        var task = await ExecuteAction(async (conn) =>
         {
-          using (var conn = await Connection.open(ssl, host))
+          var links = new List<KeyValuePair<long, PublicLink>>();
+
+          try
           {
-            try
+            foreach (var id in idsList)
             {
-              await conn.login(credentials.Email, credentials.Password);
+              cancellationToken.ThrowIfCancellationRequested();
+              var link = await conn.GetPublicLink(actionName, id);
 
-              var links = new List<KeyValuePair<long, PublicLink>>();
+              process.ProcessedCount++;
 
-              foreach (var id in idsList)
-              {
-                cancellationToken.ThrowIfCancellationRequested();
-                var link = await conn.GetPublicLink(actionName, id);
-
-                process.ProcessedCount++;
-                links.Add(new KeyValuePair<long, PublicLink>(id, link));
-              }
-
-              return links;
-            }
-            catch (OperationCanceledException ex) { }
-            catch (Exception ex)
-            {
-              logger.Log(ex);
-            }
-            finally
-            {
-              await Logout(conn);
+              links.Add(new KeyValuePair<long, PublicLink>(id, link));
             }
           }
-        }
+          catch (OperationCanceledException ex)
+          {
+          }
 
-        return null;
+          return links;
+        });
 
+        return task == null ? null : await task;
       });
 
       return process;
@@ -264,25 +289,12 @@ namespace PCloudClient
 
     public async Task<IEnumerable<FileInfo>> GetFilesAsync(long folderId)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.getFiles(folderId);
+      });
 
-            return await conn.getFiles(folderId);
-
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -291,25 +303,12 @@ namespace PCloudClient
 
     public async Task<IEnumerable<FolderInfo>> GetFoldersAsync(long folderId)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.getFolders(folderId);
+      });
 
-            return await conn.getFolders(folderId);
-
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -340,25 +339,12 @@ namespace PCloudClient
 
     public async Task<FolderInfo> GetFolderInfo(long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.listFolder(id);
+      });
 
-            return await conn.listFolder(id);
-
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -367,25 +353,12 @@ namespace PCloudClient
 
     public async Task<bool> ExistsFolderAsync(long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(true, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return (await conn.listFolder(id)) != null;
+      });
 
-            return (await conn.listFolder(id)) != null;
-
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return false;
+      return task == null ? false : await task;
     }
 
     #endregion
@@ -394,29 +367,20 @@ namespace PCloudClient
 
     public async Task<long?> CreateFile(string name, long parenId)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
+        var file = await conn.createFile(parenId, name, FileMode.Create, FileAccess.Write);
+        long? result = null;
+
+        if (file.fileId > 0)
         {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
-
-            var file = await conn.createFile(parenId, name, FileMode.Create, FileAccess.Write);
-
-            if (file.fileId > 0)
-            {
-              return file.fileId;
-            }
-          }
-          finally
-          {
-            await Logout(conn);
-          }
+          result = file.fileId;
         }
-      }
 
-      return null;
+        return result;
+      });
+
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -425,31 +389,20 @@ namespace PCloudClient
 
     public async Task<bool> WriteToFile(byte[] data, long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        MemoryStream ms = new MemoryStream(data, false);
 
-            MemoryStream ms = new MemoryStream(data, false);
+        var fd = await conn.createFile(id, FileMode.Open, FileAccess.Write);
 
-            var fd = await conn.createFile(id, FileMode.Open, FileAccess.Write);
+        await conn.writeFile(fd, ms, ms.Length);
+        await conn.closeFile(fd);
 
-            await conn.writeFile(fd, ms, ms.Length);
-            await conn.closeFile(fd);
+        return true;
+      });
 
-            return true;
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
+      return task == null ? false : await task;
 
-      return false;
     }
 
     #endregion
@@ -458,31 +411,19 @@ namespace PCloudClient
 
     public async Task<bool> CreateFileAndWrite(string name, byte[] data, long folderId)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        MemoryStream ms = new MemoryStream(data, false);
 
-            MemoryStream ms = new MemoryStream(data, false);
+        var fd = await conn.createFile(folderId, name, FileMode.Create, FileAccess.Write);
 
-            var fd = await conn.createFile(folderId, name, FileMode.Create, FileAccess.Write);
+        await conn.writeFile(fd, ms, ms.Length);
+        await conn.closeFile(fd);
 
-            await conn.writeFile(fd, ms, ms.Length);
-            await conn.closeFile(fd);
+        return true;
+      });
 
-            return true;
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return false;
+      return task == null ? false : await task;
     }
 
     #endregion
@@ -491,30 +432,14 @@ namespace PCloudClient
 
     public async Task<bool> CreateUploadLink(long folderId, string comment)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        await conn.CreateUploadLink(folderId, comment);
 
-            var fd = await conn.CreateUploadLink(folderId, comment);
+        return true;
+      });
 
-            return true;
-          }
-          catch (Exception ex)
-          {
-
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return false;
+      return task == null ? false : await task;
     }
 
     #endregion
@@ -523,16 +448,16 @@ namespace PCloudClient
 
     public async Task<bool> Uploadtolink(string code, string fileName, byte[] data)
     {
-      using (var conn = await Connection.open(ssl, host))
+      var task = await ExecuteAction(async (conn) =>
       {
         var memoryStream = new MemoryStream(data);
 
         await conn.uploadToLink(fileName, memoryStream, code, Authentication.GetDeviceInfo());
 
-
         return true;
-      }
+      });
 
+      return task == null ? false : await task;
     }
 
     #endregion
@@ -580,24 +505,12 @@ namespace PCloudClient
 
     public async Task<FolderInfo> CreateFolder(string name, long? parentId)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        return await conn.createFolder(name, parentId);
+      });
 
-            return await conn.createFolder(name, parentId);
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
-
-      return null;
+      return task == null ? null : await task;
     }
 
     #endregion
@@ -606,44 +519,20 @@ namespace PCloudClient
 
     public async Task<MemoryStream> ReadFile(long id)
     {
-      if (credentials != null)
+      var task = await ExecuteAction(async (conn) =>
       {
-        using (var conn = await Connection.open(ssl, host))
-        {
-          try
-          {
-            await conn.login(credentials.Email, credentials.Password);
+        var fd = await conn.createFile(id, FileMode.Open, FileAccess.Read);
 
-            var fd = await conn.createFile(id, FileMode.Open, FileAccess.Read);
-            var fileSize = await conn.getFileSize(fd);
-            MemoryStream msRead = new MemoryStream();
+        var fileSize = await conn.getFileSize(fd);
 
-            await conn.readFile(fd, msRead, fileSize.length);
+        MemoryStream msRead = new MemoryStream();
 
-            return msRead;
-          }
-          finally
-          {
-            await Logout(conn);
-          }
-        }
-      }
+        await conn.readFile(fd, msRead, fileSize.length);
 
-      return null;
-    }
+        return msRead;
+      });
 
-    #endregion
-
-    #region Logout
-
-    private async Task<bool> Logout(Connection conn)
-    {
-      if (conn.isDesynced)
-        return false;
-
-      await conn.logout();
-
-      return true;
+      return task == null ? null : await task;
     }
 
     #endregion

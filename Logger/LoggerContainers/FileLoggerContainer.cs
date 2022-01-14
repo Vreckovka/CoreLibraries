@@ -47,6 +47,8 @@ namespace Logger
     }
 
 
-
+    public void Dispose()
+    {
+    }
   }
 }

@@ -6,15 +6,26 @@ namespace Logger
 {
   public class ConsoleLogger : ILoggerContainer
   {
+    public ConsoleLogger()
+    {
+      
+    }
+
     #region Methods
 
     private static object batton = new object();
+    private bool isDisposed;
     public Task Log(MessageType messageType, string message)
     {
       lock (batton)
       {
         return Task.Run(() =>
         {
+          if (isDisposed)
+          {
+            return;
+          }
+
           try
           {
             Console.Write("");
@@ -59,6 +70,14 @@ namespace Logger
       }
     }
 
-    #endregion Methods
+    #endregion 
+
+    public void Dispose()
+    {
+      lock (batton)
+      {
+        isDisposed = true;
+      }
+    }
   }
 }
