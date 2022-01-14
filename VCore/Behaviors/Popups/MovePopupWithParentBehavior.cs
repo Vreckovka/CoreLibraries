@@ -16,9 +16,12 @@ namespace VCore.WPF.Behaviors.Popups
     {
       base.OnAttached();
 
-      AssociatedObject.LayoutUpdated += AssociatedObject_LayoutUpdated; 
-     
+      AssociatedObject.LayoutUpdated += AssociatedObject_LayoutUpdated;
+
     }
+
+    private EventHandler locationChangedHandler;
+    private SizeChangedEventHandler sizeChangedEventHandler;
 
     private void AssociatedObject_LayoutUpdated(object sender, EventArgs e)
     {
@@ -36,12 +39,16 @@ namespace VCore.WPF.Behaviors.Popups
 
         if (window != null)
         {
-          window.LocationChanged += Window_LocationChanged;
+          locationChangedHandler = (x, y) => { ChangePosition(); };
+          sizeChangedEventHandler = (x, y) => { ChangePosition(); };
+
+          window.LocationChanged += locationChangedHandler;
+          window.SizeChanged += sizeChangedEventHandler;
         }
       }
     }
 
-    private void Window_LocationChanged(object sender, EventArgs e)
+    private void ChangePosition()
     {
       var offset = AssociatedObject.HorizontalOffset;
       AssociatedObject.HorizontalOffset = offset + 1;
@@ -52,7 +59,8 @@ namespace VCore.WPF.Behaviors.Popups
     protected override void OnDetaching()
     {
       AssociatedObject.LayoutUpdated -= AssociatedObject_LayoutUpdated;
-      window.LocationChanged -= Window_LocationChanged;
+      window.LocationChanged -= locationChangedHandler;
+      window.SizeChanged -= sizeChangedEventHandler;
     }
   }
 }
