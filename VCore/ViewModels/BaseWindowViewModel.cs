@@ -72,6 +72,25 @@ namespace VCore.WPF.ViewModels
 
     #endregion
 
+    #region ShowInTaskBar
+
+    private bool showInTaskBar = true;
+
+    public bool ShowInTaskBar
+    {
+      get { return showInTaskBar; }
+      set
+      {
+        if (value != showInTaskBar)
+        {
+          showInTaskBar = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
     #endregion
 
     #region Commands
@@ -137,22 +156,27 @@ namespace VCore.WPF.ViewModels
 
     private ActionCommand<Window> minimizeCommand;
 
+
     public ICommand MinimizeCommand
     {
       get
       {
 
-        return minimizeCommand ??= new ActionCommand<Window>((o) => o.WindowState = WindowState.Minimized).DisposeWith(this);
+        return minimizeCommand ??= new ActionCommand<Window>(OnMinimize).DisposeWith(this);
       }
     }
 
     #endregion
 
+    protected virtual void OnMinimize(Window window)
+    {
+      window.WindowState = WindowState.Minimized;
+    }
+
     #endregion
 
     protected virtual void OnWindowStateChanged(WindowState windowState)
     {
-
     }
   }
 }

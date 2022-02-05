@@ -113,6 +113,8 @@ namespace VCore.WPF
 
     #endregion
 
+    #region ShowConsole
+
     protected virtual void ShowConsole()
     {
       if (IsConsoleVisible)
@@ -124,6 +126,8 @@ namespace VCore.WPF
         Console.WriteLine("CONSOLE IS READY");
       }
     }
+
+    #endregion
 
     #region LoadModules
 
@@ -309,11 +313,12 @@ namespace VCore.WPF
       {
         logger.Log(exception);
 
-        if (Current?.Dispatcher != null  && !(exception is ResourceReferenceKeyNotFoundException))
+        if (Current?.Dispatcher != null && !(exception is ResourceReferenceKeyNotFoundException))
         {
           await Current.Dispatcher.InvokeAsync(() =>
           {
-            windowManager.ShowErrorPrompt(exception);
+            if (!FullScreenManager.IsFullscreen)
+              windowManager.ShowErrorPrompt(exception);
           });
         }
 

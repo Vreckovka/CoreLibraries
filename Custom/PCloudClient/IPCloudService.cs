@@ -33,7 +33,7 @@ namespace PCloudClient
 
 
     Task<bool> CreateUploadLink(long folderId, string comment);
-    Task<bool> Uploadtolink(string code, string fileName, byte[] data);
+    Task<bool> Uploadtolink(string code, string fileName, byte[] data, bool permissionless = false);
 
     Task UploadToLinkHttp(string code, string fileName, byte[] data);
 

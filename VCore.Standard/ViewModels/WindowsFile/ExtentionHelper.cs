@@ -10,6 +10,7 @@
         case ".mkv":
         case ".avi":
         case ".ts":
+        case ".wmv":
           {
             return FileType.Video;
           }

@@ -23,10 +23,10 @@ namespace PCloudClient.JsonResponses
       public bool isshared { get; set; }
       public bool canmodify { get; set; }
       public string contenttype { get; set; }
-      public int parentfolderid { get; set; }
+      public long parentfolderid { get; set; }
       public int size { get; set; }
       public int icon { get; set; }
-      public int folderid { get; set; }
+      public long folderid { get; set; }
       public List<Content> contents { get; set; }
     }
 

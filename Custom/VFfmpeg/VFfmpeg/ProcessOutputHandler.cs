@@ -76,7 +76,7 @@ namespace VFfmpeg
 
     protected virtual void OnNewOutputMessage(object sendingProcess, DataReceivedEventArgs outLine)
     {
-      Debug.WriteLine(outLine.Data);
+      //Debug.WriteLine(outLine.Data);
       outputs.Add(outLine.Data);
     }
 

@@ -17,78 +17,6 @@ using FileInfo = PCloudClient.Domain.FileInfo;
 
 namespace PCloudClient
 {
-  public class PCouldContext : IDisposable
-  {
-    private readonly ILogger logger;
-
-    public PCouldContext(bool isSsl, string host, ILogger logger)
-    {
-      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-      IsSsl = isSsl;
-      Host = host;
-    }
-
-    public bool IsLoggedIn { get; private set; }
-    public bool IsSsl { get; }
-    public string Host { get; }
-    public Connection Connection { get; private set; }
-
-    #region LoginAsync
-
-    public async Task<bool> LoginAsync(LoginInfo credentials)
-    {
-      if (credentials != null && Connection == null)
-      {
-        try
-        {
-          Connection = await Connection.open(IsSsl, Host);
-
-          await Connection.login(credentials.Email, credentials.Password);
-
-          IsLoggedIn = true;
-        }
-        catch (Exception ex)
-        {
-          logger.Log(ex);
-
-          Connection = null;
-          IsLoggedIn = false;
-        }
-      }
-
-      return IsLoggedIn;
-    }
-
-    #endregion
-
-    #region Logout
-
-    public async Task<bool> Logout()
-    {
-      if (Connection != null)
-      {
-        if (Connection.isDesynced)
-          return false;
-
-        await Connection.logout();
-        Connection.Dispose();
-      }
-
-      Connection = null;
-      IsLoggedIn = false;
-
-      return true;
-    }
-
-    #endregion
-
-    public async void Dispose()
-    {
-      await Logout();
-    }
-  }
-
-
   public class PCloudService : IPCloudService
   {
     #region Fields
@@ -141,19 +69,26 @@ namespace PCloudClient
 
     #region ExecuteAction
 
-    private async Task<TResult> ExecuteAction<TResult>(Func<Connection, TResult> action)
+    private async Task<TResult> ExecuteAction<TResult>(Func<Connection, TResult> action, bool permisionless = false)
     {
-      using (var connection = new PCouldContext(ssl, host, logger))
+      using (var context = new PCouldContext(ssl, host, logger))
       {
-        await connection.LoginAsync(credentials);
+        if (!permisionless)
+        {
+          await context.LoginAsync(credentials);
+        }
+        else
+        {
+          await context.OpenConnection();
+        }
 
-        var conn = connection.Connection;
+        var conn = context.Connection;
 
-        if (connection.IsLoggedIn)
+        if (context.IsLoggedIn || permisionless)
         {
           try
           {
-           
+
             var result = action.Invoke(conn);
 
             if (result is Task task)
@@ -446,7 +381,7 @@ namespace PCloudClient
 
     #region Uploadtolink
 
-    public async Task<bool> Uploadtolink(string code, string fileName, byte[] data)
+    public async Task<bool> Uploadtolink(string code, string fileName, byte[] data, bool permissionless = false)
     {
       var task = await ExecuteAction(async (conn) =>
       {
@@ -455,7 +390,7 @@ namespace PCloudClient
         await conn.uploadToLink(fileName, memoryStream, code, Authentication.GetDeviceInfo());
 
         return true;
-      });
+      }, permissionless);
 
       return task == null ? false : await task;
     }
