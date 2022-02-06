@@ -167,8 +167,6 @@ namespace VCore.ItemsCollections
 
           itemAddedSubject.OnNext(new EventPattern<TItem>(this, newItem));
         }
-
-      
       }
 
       if (e.OldItems != null)
@@ -184,6 +182,11 @@ namespace VCore.ItemsCollections
     }
 
     #endregion
+
+    public void AddRange()
+    {
+
+    }
 
     protected virtual string KeySelector(TItem other)
     {

@@ -52,6 +52,23 @@ namespace VCore.Standard.Helpers
 
     #endregion
 
+    #region AddRangeBatched
+
+    public static void AddRangeBatched<TItem>(this ObservableCollection<TItem> o, IEnumerable<TItem> items, int batchSize = 20)
+    {
+      var lists = items.SplitList(batchSize);
+
+      foreach (var list in lists)
+      {
+        foreach (var item in list)
+        {
+          o.Add(item);
+        }
+      }
+    }
+
+    #endregion
+
     #region Sort
 
     public static void Sort<T>(this ObservableCollection<T> collection, Comparison<T> comparison)

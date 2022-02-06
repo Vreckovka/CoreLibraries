@@ -218,68 +218,61 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadFolder
 
-    public Task LoadFolder(bool shouldSetLoading = true)
+    public async Task LoadFolder(bool shouldSetLoading = true)
     {
-      return Task.Run(async () =>
+      try
       {
-        try
+        if (shouldSetLoading)
+          isLoadedSubject.OnNext(true);
+
+        var allFiles = (await GetFiles())?.ToList();
+        var directories = (await GetFolders())?.ToList();
+
+        Application.Current.Dispatcher.Invoke(() =>
         {
-          if (shouldSetLoading)
-            isLoadedSubject.OnNext(true);
-
-
-          var allFiles = (await GetFiles())?.ToList();
-
           if (allFiles != null)
           {
-            await Application.Current.Dispatcher.InvokeAsync(() => { SubItems.AddRange(allFiles.Select(CreateNewFileItem)); });
-
-            var directories = (await GetFolders())?.ToList();
+            SubItems.AddRange(allFiles.Select(CreateNewFileItem));
 
             if (directories != null)
             {
               if (allFiles.Count == 0 && directories.Count == 0)
               {
-                await Application.Current.Dispatcher.InvokeAsync(() => { CanExpand = false; });
+                CanExpand = false;
               }
 
+              SubItems.AddRange(directories.Select(CreateNewFolderItem));
 
-              await Application.Current.Dispatcher.InvokeAsync(() => { SubItems.AddRange(directories.Select(CreateNewFolderItem)); });
-
-              await Application.Current.Dispatcher.InvokeAsync(() =>
+              if (SubItems.ViewModels.Count > maxItemsCount)
               {
-                if (SubItems.ViewModels.Count > maxItemsCount)
-                {
-                  CanExpand = false;
-                  WasContentLoaded = true;
-                  isLoadedSubject.OnNext(true);
-                  LoadingMessage = $"Too many items in folder ({SubItems.ViewModels.Count})";
-                }
+                CanExpand = false;
+                WasContentLoaded = true;
+                isLoadedSubject.OnNext(true);
+                LoadingMessage = $"Too many items in folder ({SubItems.ViewModels.Count})";
+              }
 
-                RefreshType();
-                RaisePropertyChanged(nameof(SubItems));
-                OnGetFolderInfo();
-              });
+              RefreshType();
+              RaisePropertyChanged(nameof(SubItems));
+              OnGetFolderInfo();
             }
             else
             {
-              await Application.Current.Dispatcher.InvokeAsync(() => { CanExpand = false; });
+              CanExpand = false;
             }
+
           }
           else
           {
-            await Application.Current.Dispatcher.InvokeAsync(() => { CanExpand = false; });
+            CanExpand = false;
           }
-
-
-          await Application.Current.Dispatcher.InvokeAsync(() => { WasContentLoaded = true; });
-        }
-        finally
-        {
-          if (shouldSetLoading && SubItems.ViewModels.Count < maxItemsCount)
-            isLoadedSubject.OnNext(false);
-        }
-      });
+          WasContentLoaded = true;
+        });
+      }
+      finally
+      {
+        if (shouldSetLoading && SubItems.ViewModels.Count < maxItemsCount)
+          isLoadedSubject.OnNext(false);
+      }
     }
 
     #endregion
@@ -317,6 +310,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
             if (!WasContentLoaded)
               await LoadFolder(false);
+
 
             if (!WasSubFoldersLoaded)
               await LoadFolders(shouldSetLoading: false);
@@ -367,7 +361,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
             {
               direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
 
-              await Application.Current.Dispatcher.InvokeAsync(() => { SubItems.AddRange(direViewModels); });
+              await Application.Current.Dispatcher.InvokeAsync(() =>
+              {
+                SubItems.AddRange(direViewModels);
+              });
             }
             else
             {
@@ -385,7 +382,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
               if (loadLevel < MaxAutomaticLoadLevel)
               {
-                await Application.Current.Dispatcher.InvokeAsync(() => { LoadingMessage = $" folders {index}/{direViewModels.Count}"; });
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                  LoadingMessage = $" folders {index}/{direViewModels.Count}";
+                });
 
                 await dir.LoadFolder();
 
@@ -437,7 +437,9 @@ namespace VCore.WPF.ViewModels.WindowsFiles
         isLoadedSubject.OnNext(true);
 
         if (!folderViewModel.WasContentLoaded)
+        {
           await folderViewModel.LoadFolder(false);
+        }
 
         if (!folderViewModel.WasSubFoldersLoaded)
           await folderViewModel.LoadFolders(shouldSetLoading: false);

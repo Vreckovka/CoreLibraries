@@ -14,7 +14,6 @@ namespace VCore.WPF.Behaviors.Sliders
 {
   public class SliderHookBehavior : Behavior<Slider>
   {
-
     public double Step { get; set; } = 2;
     public bool HookWhenFullscreen { get; set; }
     private KeyListener keyListener;
@@ -33,6 +32,10 @@ namespace VCore.WPF.Behaviors.Sliders
       AssociatedObject.Focusable = true;
       AssociatedObject.GotFocus += AssociatedObject_GotFocus;
       AssociatedObject.LostFocus += AssociatedObject_LostFocus;
+
+
+
+      Application.Current.MainWindow.Deactivated += MainWindow_Deactivated;
 
       keyListener = VIoc.Kernel.Get<KeyListener>();
 
@@ -59,6 +62,12 @@ namespace VCore.WPF.Behaviors.Sliders
         });
       }
     }
+
+    private void MainWindow_Deactivated(object sender, EventArgs e)
+    {
+      UnHookSlider();
+    }
+
 
     #endregion
 

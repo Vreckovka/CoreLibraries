@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using VCore.ItemsCollections;
 using VCore.Standard;
+using VCore.Standard.Helpers;
 using VCore.Standard.ViewModels.TreeView;
 
 namespace VCore.WPF.ItemsCollections
@@ -168,6 +169,7 @@ namespace VCore.WPF.ItemsCollections
 
     #endregion
 
+  
     #region CanAddToView
 
     private bool CanAddToView(T item)

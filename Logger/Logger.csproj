@@ -5,6 +5,9 @@
     <Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DomainCore\DomainCore.csproj" />
   </ItemGroup>
 </Project>
