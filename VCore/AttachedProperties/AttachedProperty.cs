@@ -160,8 +160,8 @@ namespace VCore.WPF.AttachedProperties
 
     #endregion
 
-    private static EventHandler listviewEventHandler;
-    private static MouseWheelEventHandler scrollViewerEventHandler;
+    private static Dictionary<FrameworkElement, EventHandler> listviewEventHandlers = new Dictionary<FrameworkElement, EventHandler>();
+    private static Dictionary<FrameworkElement, MouseWheelEventHandler> scrollViewerEventHandlers = new Dictionary<FrameworkElement, MouseWheelEventHandler>();
 
     public static void OnFixScrollingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -177,9 +177,10 @@ namespace VCore.WPF.AttachedProperties
 
       if (viewer == null)
       {
-        if (listviewEventHandler == null)
+        if (!listviewEventHandlers.TryGetValue(dependencySender, out var listviewEventHandler))
         {
-          listviewEventHandler = new EventHandler((x, y) => ListView_LayoutUpdated(dependencySender, new EventArgs(), (bool)e.NewValue));
+          listviewEventHandler = new EventHandler((x, y) => ListView_LayoutUpdated(dependencySender, new EventArgs(), (bool) e.NewValue));
+          listviewEventHandlers.Add(dependencySender, listviewEventHandler);
         }
 
         dependencySender.LayoutUpdated += listviewEventHandler;
@@ -195,23 +196,27 @@ namespace VCore.WPF.AttachedProperties
 
     private static void ListView_LayoutUpdated(object sender, EventArgs e, bool hook)
     {
-      var listview = (FrameworkElement)sender;
+      var dependencySender = ((FrameworkElement)sender);
 
-      listview.LayoutUpdated -= listviewEventHandler;
+      if(listviewEventHandlers.TryGetValue(dependencySender, out var listviewEventHandler))
+      {
+        dependencySender.LayoutUpdated -= listviewEventHandler;
 
-      var viewer = listview.GetFirstChildOfType<ScrollViewer>();
+        var viewer = dependencySender.GetFirstChildOfType<ScrollViewer>();
 
-      if (viewer != null)
-        HookToScrollViewer(viewer, hook, listview);
-
+        if (viewer != null)
+          HookToScrollViewer(viewer, hook, dependencySender);
+      }
     }
 
     private static void HookToScrollViewer(ScrollViewer viewer, bool hook, UIElement owner)
     {
-      if (scrollViewerEventHandler == null)
+      if (!scrollViewerEventHandlers.TryGetValue(viewer, out var scrollViewerEventHandler))
       {
         scrollViewerEventHandler = new MouseWheelEventHandler((x, y) => HandlePreviewMouseWheel(viewer, y, owner));
+        scrollViewerEventHandlers.Add(viewer, scrollViewerEventHandler);
       }
+    
 
       if (hook)
         viewer.PreviewMouseWheel += scrollViewerEventHandler;

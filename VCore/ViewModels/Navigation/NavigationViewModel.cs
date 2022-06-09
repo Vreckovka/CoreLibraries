@@ -9,19 +9,19 @@ namespace VCore.WPF.ViewModels.Navigation
   {
     public NavigationViewModel()
     {
-      Items.ItemUpdated.Where(x => x.EventArgs.PropertyName == nameof(NavigationItem.IsActive) && ((NavigationItem)x.Sender).IsActive).ObserveOnDispatcher().Subscribe(x =>
+      Items.ItemUpdated.Where(x => x.EventArgs.PropertyName == nameof(INavigationItem.IsActive) && ((INavigationItem)x.Sender).IsActive).ObserveOnDispatcher().Subscribe(x =>
       {
-        Actual = (NavigationItem)x.Sender;
+        Actual = (INavigationItem)x.Sender;
       });
     }
 
-    public RxObservableCollection<NavigationItem> Items { get; set; } = new RxObservableCollection<NavigationItem>();
+    public RxObservableCollection<INavigationItem> Items { get; set; } = new RxObservableCollection<INavigationItem>();
 
     #region Actual
 
-    private NavigationItem actual;
+    private INavigationItem actual;
 
-    public NavigationItem Actual
+    public INavigationItem Actual
     {
       get { return actual; }
       set

@@ -7,6 +7,10 @@
     <Platforms>AnyCPU;x86;x64</Platforms>
 	</PropertyGroup>
   <ItemGroup>
+    <None Remove="Resources\Fonts\FontAwesome6.1\fa-brands-400.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome6.1\fa-regular-400.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome6.1\fa-solid-900.ttf" />
+    <None Remove="Resources\Fonts\FontAwesome6.1\fa-v4compatibility.ttf" />
     <None Remove="Resources\Fonts\FontAwesome\fa-brands-400.ttf" />
     <None Remove="Resources\Fonts\FontAwesome\fa-duotone-900.ttf" />
     <None Remove="Resources\Fonts\FontAwesome\fa-light-300.ttf" />
@@ -48,6 +52,10 @@
     <ProjectReference Include="..\VCore.Standard\VCore.Standard.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Fonts\FontAwesome6.1\fa-brands-400.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome6.1\fa-regular-400.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome6.1\fa-solid-900.ttf" />
+    <Resource Include="Resources\Fonts\FontAwesome6.1\fa-v4compatibility.ttf" />
     <Resource Include="Resources\Fonts\FontAwesome\fa-brands-400.ttf" />
     <Resource Include="Resources\Fonts\FontAwesome\fa-duotone-900.ttf" />
     <Resource Include="Resources\Fonts\FontAwesome\fa-light-300.ttf" />

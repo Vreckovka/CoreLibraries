@@ -6,7 +6,81 @@ using VCore.WPF.Helpers;
 
 namespace VCore.WPF.ViewModels.Navigation
 {
-  public class NavigationItem : ViewModel, INavigationItem
+  public class BaseNavigationItem<TModel> : BaseNavigationItem where TModel : class
+  {
+    public BaseNavigationItem(TModel model)
+    {
+      Model = model ?? throw new ArgumentNullException(nameof(model));
+    }
+
+    #region Model
+
+    private TModel model;
+
+    public TModel Model
+    {
+      get { return model; }
+      set
+      {
+        if (value != model)
+        {
+          model = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+  }
+
+  public class BaseNavigationItem : ViewModel, INavigationItem
+  {
+    #region IsActive
+
+    private bool isActive;
+    public bool IsActive
+    {
+      get { return isActive; }
+      set
+      {
+        if (value != isActive)
+        {
+          isActive = value;
+
+          OnActivationChanged();
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    #region Header
+
+    private string hader;
+
+    public string Header
+    {
+      get { return hader; }
+      set
+      {
+        if (value != hader)
+        {
+          hader = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
+
+    protected virtual void OnActivationChanged()
+    {
+
+    }
+  }
+
+  public class NavigationItem : BaseNavigationItem
   {
     public NavigationItem(INavigationItem navigationItem)
     {
@@ -19,7 +93,7 @@ namespace VCore.WPF.ViewModels.Navigation
 
 
     public INavigationItem Model { get; }
-    public string Header => Model.Header;
+    public new string Header => Model.Header;
     public ObservableCollection<INavigationItem> SubItems { get; set; } = new ObservableCollection<INavigationItem>();
     public string IconPathData { get; set; }
     public string ImagePath { get; set; }
@@ -46,7 +120,7 @@ namespace VCore.WPF.ViewModels.Navigation
     #region IsActive
 
     private bool isActive;
-    public bool IsActive
+    public new bool IsActive
     {
       get { return isActive; }
       set
@@ -69,17 +143,6 @@ namespace VCore.WPF.ViewModels.Navigation
     #endregion
 
     #region Methods
-
-    #region Initialize
-
-    public override void Initialize()
-    {
-      base.Initialize();
-
-    
-    }
-
-    #endregion
 
     #region SubItems_CollectionChanged
 

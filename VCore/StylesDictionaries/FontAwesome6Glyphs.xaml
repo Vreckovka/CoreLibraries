@@ -10,6 +10,19 @@
     <system:String x:Key="cloud-regular_glyph">☁︁</system:String>
     <system:String x:Key="angle-down_glyph"></system:String>
     <system:String x:Key="down-to-line_glyph"></system:String>
+    <system:String x:Key="xmark-glyph"></system:String>
+    <system:String x:Key="arrows-rotate-glyph"></system:String>
+    <system:String x:Key="arrow-rotate-right-glyph"></system:String>
+    <system:String x:Key="trash-list-glyph"></system:String>
+    <system:String x:Key="filter-list-glyph"></system:String>
+    <system:String x:Key="floppy-disk-glyph">💾︁</system:String>
+    <system:String x:Key="popcorn-glyph"></system:String>
+    <system:String x:Key="cookie-glyph"></system:String>
+    <system:String x:Key="cookie-bite-glyph"></system:String>
+    <system:String x:Key="minus-glyph"></system:String>
+    <system:String x:Key="plus-glyph">+</system:String>
+    <system:String x:Key="coins-glyph"></system:String>
+    <system:String x:Key="coin-glyph"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"
@@ -44,7 +57,7 @@
     <Style x:Key="arrows-rotate"
            BasedOn="{StaticResource FontAwesomeGlyphStyle}"
            TargetType="controls:PathButton">
-        <Setter Property="Glyph" Value="" />
+        <Setter Property="Glyph" Value="{StaticResource arrows-rotate-glyph}" />
     </Style>
 
     <Style x:Key="calendar-day"
@@ -56,7 +69,7 @@
     <Style x:Key="xmark"
            BasedOn="{StaticResource FontAwesomeGlyphStyle}"
            TargetType="controls:PathButton">
-        <Setter Property="Glyph" Value="" />
+        <Setter Property="Glyph" Value="{StaticResource xmark-glyph}" />
     </Style>
 
     <Style x:Key="plus"
@@ -236,10 +249,10 @@
         <Setter Property="Content" Value="︁" />
     </Style>
 
-    <Style x:Key="floppy-disk-glyph"
+    <Style x:Key="floppy-disk-glyph-style"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
            TargetType="controls:PathButton">
-        <Setter Property="Content" Value="💾︁" />
+        <Setter Property="Glyph" Value="{StaticResource floppy-disk-glyph}" />
     </Style>
 
     <Style x:Key="play-pause"

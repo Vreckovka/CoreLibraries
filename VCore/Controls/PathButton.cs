@@ -63,6 +63,42 @@ namespace VCore.WPF.Controls
 
     }
 
+    #region IconGridColumn
+
+    public int IconGridColumn
+    {
+      get { return (int)GetValue(IconGridColumnProperty); }
+      set { SetValue(IconGridColumnProperty, value); }
+    }
+
+    public static readonly DependencyProperty IconGridColumnProperty =
+      DependencyProperty.Register(
+        nameof(IconGridColumn),
+        typeof(int),
+        typeof(PathButton),
+        new PropertyMetadata(0));
+
+
+    #endregion
+
+    #region ContentGridColumn
+
+    public int ContentGridColumn
+    {
+      get { return (int)GetValue(ContentGridColumnProperty); }
+      set { SetValue(ContentGridColumnProperty, value); }
+    }
+
+    public static readonly DependencyProperty ContentGridColumnProperty =
+      DependencyProperty.Register(
+        nameof(ContentGridColumn),
+        typeof(int),
+        typeof(PathButton),
+        new PropertyMetadata(1));
+
+
+    #endregion
+
     #region PathStyle
 
     public Style PathStyle
@@ -180,7 +216,6 @@ namespace VCore.WPF.Controls
           {
             SetIconBrush(x, y);
           }
-
         }));
 
 
@@ -223,7 +258,13 @@ namespace VCore.WPF.Controls
         nameof(IconDefaultColor),
         typeof(Color),
         typeof(PathButton),
-        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#252525"), SetIconBrush));
+        new PropertyMetadata((Color)ColorConverter.ConvertFromString("#252525"), (x, y) =>
+        {
+          if (x is PathButton pathButton && pathButton.IsChecked != true)
+          {
+            SetIconBrush(x, y);
+          }
+        }));
 
     #endregion
 
@@ -239,9 +280,7 @@ namespace VCore.WPF.Controls
           {
             if (buttonWithIcon.IsLoaded)
             {
-              Brush brushClone = buttonWithIcon.IconBrush.Clone();
-
-              brushClone = buttonWithIcon.GetAnimation(brushClone, (Color) change.OldValue, newColor);
+              var brushClone = buttonWithIcon.GetAnimation((Color) change.OldValue, newColor);
 
               buttonWithIcon.IconBrush = brushClone;
             }
@@ -371,7 +410,23 @@ namespace VCore.WPF.Controls
 
     #endregion
 
-    public bool EnableBorderAnimation { get; set; }
+    #region EnableBorderAnimation
+
+    public bool EnableBorderAnimation
+    {
+      get { return (bool)GetValue(EnableBorderAnimationProperty); }
+      set { SetValue(EnableBorderAnimationProperty, value); }
+    }
+
+    public static readonly DependencyProperty EnableBorderAnimationProperty =
+      DependencyProperty.Register(
+        nameof(EnableBorderAnimation),
+        typeof(bool),
+        typeof(PathButton),
+        new PropertyMetadata(false));
+
+
+    #endregion
 
     #region Foreground
 
@@ -454,9 +509,7 @@ namespace VCore.WPF.Controls
             {
               if (change.OldValue is Color oldColor)
               {
-                Brush brushClone = buttonWithIcon.Foreground.Clone();
-
-                brushClone = buttonWithIcon.GetAnimation(brushClone, oldColor, newColor);
+                var brushClone = buttonWithIcon.GetAnimation(oldColor, newColor);
 
                 buttonWithIcon.Foreground = brushClone;
               }
@@ -494,9 +547,7 @@ namespace VCore.WPF.Controls
         {
           if (x is PathButton pathButton && pathButton.IsChecked == true)
           {
-            var clone = pathButton.BorderBrush.Clone();
-
-            clone = pathButton.GetAnimation(pathButton.BorderBrush, pathButton.BorderDefaultColor, (Color)y.NewValue);
+            var clone = pathButton.GetAnimation(pathButton.BorderCheckedColor, (Color)y.NewValue);
 
             pathButton.BorderBrush = clone;
           }
@@ -611,22 +662,14 @@ namespace VCore.WPF.Controls
     {
       if (IsChecked != true)
       {
-        Brush iconBrushColone = IconBrush.Clone();
-
-        iconBrushColone = GetAnimation(iconBrushColone, IconDefaultColor, IconHoverColor);
-
-
-        Brush foregroundBrushColone = Foreground.Clone();
-
-        foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundHoverColor);
+        var iconBrushColone = GetAnimation(IconDefaultColor, IconHoverColor);
+        var foregroundBrushColone = GetAnimation(ForegroundDefaultColor, ForegroundHoverColor);
 
         Brush borderBrushColone = null;
 
         if (EnableBorderAnimation && BorderBrush != null)
         {
-          borderBrushColone = BorderBrush.Clone();
-
-          borderBrushColone = GetAnimation(borderBrushColone, BorderDefaultColor, BorderHoverColor);
+          borderBrushColone = GetAnimation(BorderDefaultColor, BorderHoverColor);
         }
 
 
@@ -657,23 +700,15 @@ namespace VCore.WPF.Controls
     {
       if (IsChecked != true)
       {
-        Brush iconBrushColone = IconBrush.Clone();
-
-        iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconDefaultColor);
-
-
-        Brush foregroundBrushColone = Foreground.Clone();
-
-        foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundHoverColor, ForegroundDefaultColor);
+        var iconBrushColone = GetAnimation(IconHoverColor, IconDefaultColor);
+        var foregroundBrushColone = GetAnimation(ForegroundHoverColor, ForegroundDefaultColor);
 
 
         Brush borderBrushColone = null;
 
         if (EnableBorderAnimation && BorderBrush != null)
         {
-          borderBrushColone = BorderBrush.Clone();
-
-          borderBrushColone = GetAnimation(borderBrushColone, BorderHoverColor, BorderDefaultColor);
+          borderBrushColone = GetAnimation( BorderHoverColor, BorderDefaultColor);
         }
 
 
@@ -705,28 +740,28 @@ namespace VCore.WPF.Controls
     {
       base.OnChecked(e);
 
+      Brush iconColor = null;
 
-      Brush iconBrushColone = IconBrush.Clone();
+      if (IsMouseOver)
+      {
+        iconColor = GetAnimation(IconHoverColor, IconCheckedColor);
+      }
+      else
+      {
+        iconColor = GetAnimation(IconDefaultColor, IconCheckedColor);
+      }
 
-      iconBrushColone = GetAnimation(iconBrushColone, IconHoverColor, IconCheckedColor);
-
-
-      Brush foregroundBrushColone = Foreground.Clone();
-
-      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundDefaultColor, ForegroundCheckedColor);
-
-
+    
+      var foregroundBrushColone = GetAnimation(ForegroundDefaultColor, ForegroundCheckedColor);
       Brush borderBrushColone = null;
 
       if (EnableBorderAnimation && BorderBrush != null)
       {
-        borderBrushColone = BorderBrush.Clone();
-
-        borderBrushColone = GetAnimation(borderBrushColone, BorderHoverColor, BorderCheckedColor);
+        borderBrushColone = GetAnimation(BorderHoverColor, BorderCheckedColor);
       }
 
 
-      SetBrushes(iconBrushColone, foregroundBrushColone, borderBrushColone);
+      SetBrushes(iconColor, foregroundBrushColone, borderBrushColone);
     }
 
     #endregion
@@ -737,23 +772,15 @@ namespace VCore.WPF.Controls
     {
       base.OnUnchecked(e);
 
-      Brush iconBrushColone = IconBrush.Clone();
-
-      iconBrushColone = GetAnimation(iconBrushColone, IconCheckedColor, IconDefaultColor);
-
-
-      Brush foregroundBrushColone = Foreground.Clone();
-
-      foregroundBrushColone = GetAnimation(foregroundBrushColone, ForegroundCheckedColor, ForegroundDefaultColor);
+      var iconBrushColone = GetAnimation(IconCheckedColor, IconDefaultColor);
+      var foregroundBrushColone = GetAnimation(ForegroundCheckedColor, ForegroundDefaultColor);
 
 
       Brush borderBrushColone = null;
 
       if (EnableBorderAnimation && BorderBrush != null)
       {
-        borderBrushColone = BorderBrush.Clone();
-
-        borderBrushColone = GetAnimation(borderBrushColone, BorderCheckedColor, BorderDefaultColor);
+        borderBrushColone = GetAnimation(BorderCheckedColor, BorderDefaultColor);
       }
 
 
@@ -765,9 +792,9 @@ namespace VCore.WPF.Controls
 
     #region GetAnimation
 
-    private Brush GetAnimation(Brush rootElementBrush, Color from, Color to)
+    private Brush GetAnimation(Color from, Color to)
     {
-      rootElementBrush = new SolidColorBrush(to);
+      var newElementBrush = new SolidColorBrush(to);
 
       var hoverUp = new ColorAnimation();
 
@@ -776,10 +803,10 @@ namespace VCore.WPF.Controls
 
       hoverUp.Duration = new Duration(TimeSpan.FromSeconds(animationInSeconds));
 
-      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, null);
-      rootElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverUp);
+      newElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, null);
+      newElementBrush.BeginAnimation(SolidColorBrush.ColorProperty, hoverUp);
 
-      return rootElementBrush;
+      return newElementBrush;
 
     }
 

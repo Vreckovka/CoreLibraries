@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using VCore.Standard.Modularity.Interfaces;
 
 namespace VCore.Standard.Helpers
 {
@@ -71,6 +72,12 @@ namespace VCore.Standard.Helpers
 
     #region Sort
 
+    /// <summary>
+    ///  Example: Orders.Sort((x, y) => x.Price.CompareTo(y.Price));
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="collection"></param>
+    /// <param name="comparison"></param>
     public static void Sort<T>(this ObservableCollection<T> collection, Comparison<T> comparison)
     {
       var sortableList = new List<T>(collection);
@@ -79,6 +86,48 @@ namespace VCore.Standard.Helpers
       for (int i = 0; i < sortableList.Count; i++)
       {
         collection.Move(collection.IndexOf(sortableList[i]), i);
+      }
+    }
+
+    #endregion
+
+    #region LinqSort
+
+    /// <summary>
+    /// Sorting observable by Linq. !!! Clearing collection
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="observableCollection"></param>
+    /// <param name="keySelector"></param>
+    public static void LinqSort<TSource, TKey>(this ObservableCollection<TSource> observableCollection, Func<TSource, TKey> keySelector)
+    {
+      var a = observableCollection.OrderBy(keySelector).ToList();
+      observableCollection.Clear();
+      foreach (var b in a)
+      {
+        observableCollection.Add(b);
+      }
+    }
+
+    #endregion
+
+    #region LinqSortDescending
+
+    /// <summary>
+    /// Sorting observable by Linq. !!! Clearing collection
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TKey"></typeparam>
+    /// <param name="observableCollection"></param>
+    /// <param name="keySelector"></param>
+    public static void LinqSortDescending<TSource, TKey>(this ObservableCollection<TSource> observableCollection, Func<TSource, TKey> keySelector)
+    {
+      var a = observableCollection.OrderByDescending(keySelector).ToList();
+      observableCollection.Clear();
+      foreach (var b in a)
+      {
+        observableCollection.Add(b);
       }
     }
 
@@ -138,5 +187,44 @@ namespace VCore.Standard.Helpers
 
     #endregion
 
+    #region RefreshCollection
+
+    /// <summary>
+    /// Example: Orders.RefreshCollection(item.Orders,(x,y) => x.Model.order_id == y.Model.order_id);
+    /// </summary>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="collection"></param>
+    /// <param name="newItems"></param>
+    /// <param name="comparision"></param>
+    public static void RefreshCollection<TItem>(
+      this ObservableCollection<TItem> collection,
+      IEnumerable<TItem> newItems,
+      Func<TItem, TItem, bool> comparision) where TItem : IUpdateable<TItem>
+    {
+      var list = newItems.ToList();
+      var notInCollection = collection.Where(x => list.All(y => !comparision(x, y))).ToList();
+
+      foreach (var item in list)
+      {
+        var found = collection.SingleOrDefault(x => comparision(x, item));
+
+        if (found == null)
+        {
+          if (item != null)
+            collection.Add(item);
+        }
+        else
+        {
+          found.Update(item);
+        }
+      }
+
+      foreach (var removedItem in notInCollection)
+      {
+        collection.Remove(collection.SingleOrDefault(x => comparision(x, removedItem)));
+      }
+    } 
+
+    #endregion
   }
 }

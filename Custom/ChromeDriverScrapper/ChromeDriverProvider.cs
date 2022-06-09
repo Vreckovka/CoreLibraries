@@ -34,9 +34,9 @@ namespace ChromeDriverScrapper
 
     #region Initialize
 
-    public bool Initialize(string proxyServer = null)
+    public bool Initialize(string proxyServer = null, List<string> options = null)
     {
-      return InitializeWithExceptionReturn() == null;
+      return InitializeWithExceptionReturn(proxyServer,options) == null;
     }
 
 
@@ -44,14 +44,14 @@ namespace ChromeDriverScrapper
 
     #region InitializeWithExceptionReturn
 
-    public Exception InitializeWithExceptionReturn(string proxyServer = null)
+    public Exception InitializeWithExceptionReturn(string proxyServer = null, List<string> options = null)
     {
       if (!File.Exists(Path.Combine(chromeDriverDirectory,chromeDriverFileName)))
       {
         DownloadChromeDriverAsync(new WebClient().DownloadString("https://chromedriver.storage.googleapis.com/LATEST_RELEASE"), chromeDriverDirectory).GetAwaiter().GetResult();
       }
 
-      var result = InitializeChromeDriver(proxyServer);
+      var result = InitializeChromeDriver(proxyServer, options);
 
       if (result != null)
       {
@@ -64,7 +64,7 @@ namespace ChromeDriverScrapper
           DownloadChromeDriverAsync(versionData.Value.Item2, chromeDriverDirectory).GetAwaiter().GetResult();
         }
 
-        return InitializeChromeDriver(proxyServer);
+        return InitializeChromeDriver(proxyServer, options);
       }
 
       return result;
@@ -74,7 +74,7 @@ namespace ChromeDriverScrapper
 
     #region InitializeChromeDriver
 
-    public Exception InitializeChromeDriver(string proxyServer = null)
+    public Exception InitializeChromeDriver(string proxyServer = null, List<string> options = null)
     {
       ChromeDriverService chromeDriverService = null;
 
@@ -84,21 +84,29 @@ namespace ChromeDriverScrapper
         {
           var chromeOptions = new ChromeOptions();
 
-          chromeOptions.AddArguments(new List<string>() {
-            "--headless",
-            "--disable-gpu",
-            "--no-sandbox",
-            "--start-maximized",
-            "--disable-infobars",
-            "--disable-extensions",
-            "--log-level=3",
-            "--disable-cookie-encryption=false",
-            "--block-new-web-contents",
-            "--enable-precise-memory-info",
-            "--test-type",
-            "--test-type=browser",
-            "--ignore-certificate-errors",
-          });
+          if(options != null)
+          {
+            chromeOptions.AddArguments(options);
+          }
+          else
+          {
+            chromeOptions.AddArguments(new List<string>() {
+              "--headless",
+              "--disable-gpu",
+              "--no-sandbox",
+              "--start-maximized",
+              "--disable-infobars",
+              "--disable-extensions",
+              "--log-level=3",
+              "--disable-cookie-encryption=false",
+              "--block-new-web-contents",
+              "--enable-precise-memory-info",
+              "--test-type",
+              "--test-type=browser",
+              "--ignore-certificate-errors",
+            });
+          }
+        
 
           chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
 
