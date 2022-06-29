@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using Logger;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -36,7 +37,7 @@ namespace ChromeDriverScrapper
 
     public bool Initialize(string proxyServer = null, List<string> options = null)
     {
-      return InitializeWithExceptionReturn(proxyServer,options) == null;
+      return InitializeWithExceptionReturn(proxyServer, options) == null;
     }
 
 
@@ -46,7 +47,7 @@ namespace ChromeDriverScrapper
 
     public Exception InitializeWithExceptionReturn(string proxyServer = null, List<string> options = null)
     {
-      if (!File.Exists(Path.Combine(chromeDriverDirectory,chromeDriverFileName)))
+      if (!File.Exists(Path.Combine(chromeDriverDirectory, chromeDriverFileName)))
       {
         DownloadChromeDriverAsync(new WebClient().DownloadString("https://chromedriver.storage.googleapis.com/LATEST_RELEASE"), chromeDriverDirectory).GetAwaiter().GetResult();
       }
@@ -84,7 +85,7 @@ namespace ChromeDriverScrapper
         {
           var chromeOptions = new ChromeOptions();
 
-          if(options != null)
+          if (options != null)
           {
             chromeOptions.AddArguments(options);
           }
@@ -101,14 +102,12 @@ namespace ChromeDriverScrapper
               "--disable-cookie-encryption=false",
               "--block-new-web-contents",
               "--enable-precise-memory-info",
-              "--test-type",
-              "--test-type=browser",
               "--ignore-certificate-errors",
             });
           }
-        
 
-          chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
+
+          //chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
 
           if (proxyServer != null)
           {
@@ -137,7 +136,7 @@ namespace ChromeDriverScrapper
         {
           ChromeDriver.Dispose();
         }
-        
+
 
         logger.Log(ex);
 
@@ -204,30 +203,34 @@ namespace ChromeDriverScrapper
     #region SafeNavigate
 
     private WebDriverWait wait;
+    private object lockWait = new object();
     public string SafeNavigate(string url, double secondsToWait)
     {
-      if (!Initialize())
+      lock (lockWait)
       {
-        return null;
-      }
-
-      wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
-
-      return wait.Until((x) =>
-      {
-        try
-        {
-          var navigation = x.Navigate();
-
-          navigation.GoToUrl(url);
-
-          return x.PageSource;
-        }
-        catch (WebDriverException ex)
+        if (!Initialize())
         {
           return null;
         }
-      });
+
+        wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
+
+        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var validUrl))
+        {
+          var result = wait.Until((x) =>
+          {
+            var navigation = x.Navigate();
+
+            navigation.GoToUrl(validUrl);
+
+            return x.PageSource;
+          });
+
+          return result;
+        }
+
+        return null;
+      }
     }
 
     #endregion

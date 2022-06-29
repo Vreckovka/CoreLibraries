@@ -38,7 +38,7 @@ namespace VCore.WPF.ViewModels.Navigation
     #region IsActive
 
     private bool isActive;
-    public bool IsActive
+    public virtual bool IsActive
     {
       get { return isActive; }
       set
@@ -120,7 +120,7 @@ namespace VCore.WPF.ViewModels.Navigation
     #region IsActive
 
     private bool isActive;
-    public new bool IsActive
+    public override bool IsActive
     {
       get { return isActive; }
       set
