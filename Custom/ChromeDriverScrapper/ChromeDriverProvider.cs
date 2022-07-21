@@ -223,7 +223,15 @@ namespace ChromeDriverScrapper
 
             navigation.GoToUrl(validUrl);
 
-            return x.PageSource;
+            try
+            {
+              return x.PageSource;
+            }
+            catch (Exception ex)
+            {
+              return null;
+            }
+           
           });
 
           return result;

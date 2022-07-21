@@ -218,10 +218,17 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region LoadFolder
 
+    private SemaphoreSlim loadSemaphore = new SemaphoreSlim(1,1);
+
     public async Task LoadFolder(bool shouldSetLoading = true)
     {
       try
       {
+        await loadSemaphore.WaitAsync();
+
+        if (wasContentLoaded)
+          return;
+
         if (shouldSetLoading)
           isLoadedSubject.OnNext(true);
 
@@ -272,6 +279,8 @@ namespace VCore.WPF.ViewModels.WindowsFiles
       {
         if (shouldSetLoading && SubItems.ViewModels.Count < maxItemsCount)
           isLoadedSubject.OnNext(false);
+
+        loadSemaphore.Release();
       }
     }
 

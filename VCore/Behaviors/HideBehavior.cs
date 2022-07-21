@@ -78,7 +78,7 @@ namespace VCore.WPF.Behaviors
         {
           if (x is HideBehavior hideBehavior)
           {
-            if (hideBehavior.InitialWidthValue != null)
+            if (hideBehavior.InitialWidthValue != null && !hideBehavior.IsHidden)
             {
               var value = hideBehavior.InitialWidthValue.Value;
               if (hideBehavior.gridSplitter != null && hideBehavior.parentGrid != null)

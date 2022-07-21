@@ -41,21 +41,24 @@ namespace VCore.WPF.Behaviors.Sliders
         return;
       }
 
-      Application.Current?.Dispatcher?.Invoke(() =>
-      {
-        var delta = e.Delta;
+      var delta = e.Delta;
 
-        if (delta > 0)
+      if (delta > 0)
+      {
+        if (Slider.Value + Step <= Slider.Maximum)
+          Slider.Value += Step;
+        else if (Slider.Value <= Slider.Maximum)
         {
-          if (Slider.Value + Step <= Slider.Maximum)
-            Slider.Value += Step;
+          Slider.Value = Slider.Maximum;
         }
-        else
-        {
-          if (Slider.Value - Step >= 0)
-            Slider.Value -= Step;
-        }
-      });
+      }
+      else
+      {
+        if (Slider.Value - Step >= 0)
+          Slider.Value -= Step;
+      }
+
+      e.Handled = true;
     }
   }
 }

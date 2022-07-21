@@ -23,6 +23,11 @@
     <system:String x:Key="plus-glyph">+</system:String>
     <system:String x:Key="coins-glyph"></system:String>
     <system:String x:Key="coin-glyph"></system:String>
+    <system:String x:Key="trash-glyph"></system:String>
+    <system:String x:Key="trash-can-glyph"></system:String>
+    <system:String x:Key="trash-xmark-glyph"></system:String>
+    <system:String x:Key="folder-open-glyph">📂︁</system:String>
+    <system:String x:Key="layer-minus-glyph"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"
@@ -240,7 +245,7 @@
     <Style x:Key="folder-open"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
            TargetType="controls:PathButton">
-        <Setter Property="Content" Value="📂︁" />
+        <Setter Property="Glyph" Value="{StaticResource folder-open-glyph}" />
     </Style>
 
     <Style x:Key="bookmark-slash"

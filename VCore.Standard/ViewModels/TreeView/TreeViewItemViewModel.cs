@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using VCore.WPF.ItemsCollections;
+using VCore.WPF.ItemsCollections.VirtualList.VirtualLists;
 
 namespace VCore.Standard.ViewModels.TreeView
 {
