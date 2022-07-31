@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using Listener;
 using Logger;
 using Ninject;
@@ -21,6 +22,9 @@ using VCore.WPF.Managers;
 using VCore.WPF.Modularity.NinjectModules;
 using VCore.WPF.Other;
 using VCore.WPF.ViewModels;
+using Application = System.Windows.Application;
+using Control = System.Windows.Controls.Control;
+using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
 namespace VCore.WPF
 {
@@ -63,10 +67,12 @@ namespace VCore.WPF
       stopWatch = new Stopwatch();
       stopWatch.Start();
 
-      SplashScreenManager.ShowSplashScreen<TSplashScreen>(System.Reflection.Assembly.GetEntryAssembly());
+      ButtonBase.FocusableProperty.OverrideMetadata(typeof(ButtonBase), new FrameworkPropertyMetadata(false));
 
       Control.IsTabStopProperty.OverrideMetadata(typeof(Control), new FrameworkPropertyMetadata(false));
       ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
+
+      SplashScreenManager.ShowSplashScreen<TSplashScreen>(System.Reflection.Assembly.GetEntryAssembly());
 
       base.OnStartup(e);
     }

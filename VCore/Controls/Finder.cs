@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using VCore.WPF.Managers;
 using VCore.WPF.Misc;
+using VCore.WPF.ViewModels.Prompt;
 
 namespace VCore.WPF.Controls
 {
@@ -23,6 +24,25 @@ namespace VCore.WPF.Controls
             typeof(Finder),
             new PropertyMetadata(null));
 
+
+    #endregion
+
+    #region ClearSearchCommand
+
+    protected ActionCommand clearSearchCommand;
+
+    public ICommand ClearSearchCommand
+    {
+      get
+      {
+        return clearSearchCommand ??= new ActionCommand(OnClearSearchCommand);
+      }
+    }
+
+    protected virtual void OnClearSearchCommand()
+    {
+      Text = "";
+    }
 
     #endregion
 

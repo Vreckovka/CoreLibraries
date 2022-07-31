@@ -18,20 +18,22 @@ namespace VCore.WPF.ItemsCollections.VirtualList
     public class VirtualList<T> : IList<T>, IList where T : class
     {
       #region Internal attributes
+
+      /// <summary>
+      /// Internal array that holds the cached items.
+      /// </summary>
+      private readonly T[] _cachedItems;
+
+      #endregion
+
+
       /// <summary>
       /// Object that is used to generate the requested objects.
       /// </summary>
       /// <remarks>
       /// This object can also hold a IMultipleObjectGenerator reference.
       /// </remarks>
-      private readonly IObjectGenerator<T> _generator;
-
-      /// <summary>
-      /// Internal array that holds the cached items.
-      /// </summary>
-      private readonly T[] _cachedItems;
-      #endregion
-
+      public IObjectGenerator<T> Generator { get; set; }
 
       #region Constructor
       /// <summary>
@@ -43,8 +45,7 @@ namespace VCore.WPF.ItemsCollections.VirtualList
         // Determine the number of items
         int maxItems = generator.Count;
 
-        // Save generator and items
-        _generator = generator;
+        Generator = generator;
         _cachedItems = new T[maxItems];
       }
 
@@ -55,7 +56,7 @@ namespace VCore.WPF.ItemsCollections.VirtualList
 
         int maxItems = generator.Count;
 
-        _generator = generator;
+        Generator = generator;
         _cachedItems = new T[maxItems];
       }
 
@@ -233,7 +234,7 @@ namespace VCore.WPF.ItemsCollections.VirtualList
       public void CacheItem(int index)
       {
         // Obtain only a single object
-        _cachedItems[index] = _generator.CreateObject(index);
+        _cachedItems[index] = Generator.CreateObject(index);
       }
 
 

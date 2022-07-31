@@ -28,6 +28,8 @@
     <system:String x:Key="trash-xmark-glyph"></system:String>
     <system:String x:Key="folder-open-glyph">📂︁</system:String>
     <system:String x:Key="layer-minus-glyph"></system:String>
+    <system:String x:Key="thumbtack-glyph"></system:String>
+    <system:String x:Key="ballot-check-glyph"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"

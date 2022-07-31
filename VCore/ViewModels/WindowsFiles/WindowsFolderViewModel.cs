@@ -41,6 +41,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
             Length = x.Length
           });
         }
+        catch(DirectoryNotFoundException dx)
+        {
+          return null;
+        }
         catch (UnauthorizedAccessException ex)
         {
           return null;
@@ -65,6 +69,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
             Indentificator = x.FullName,
             Name = x.Name
           });
+        }
+        catch (DirectoryNotFoundException dx)
+        {
+          return null;
         }
         catch (UnauthorizedAccessException ex)
         {

@@ -56,7 +56,7 @@ namespace VCore.WPF.Behaviors.Text
 
     #endregion Container
 
-    #region Container
+    #region ContainerSize
 
     public static readonly DependencyProperty ContainerSizeProperty =
       DependencyProperty.Register(
@@ -195,7 +195,7 @@ namespace VCore.WPF.Behaviors.Text
       if (desiredSize.Width > containerSize)
       {
         var thickness = new Thickness((containerSize - desiredSize.Width - thicknessOffset) + originalMargin.Left, originalMargin.Top, originalMargin.Right, originalMargin.Bottom);
-        var thicknessAnimation = new ThicknessAnimation(thickness, GetPanningDuration(Container.ActualWidth, desiredSize.Width));
+        var thicknessAnimation = new ThicknessAnimation(thickness, GetPanningDuration(containerSize, desiredSize.Width));
         thicknessAnimation.AutoReverse = true;
         thicknessAnimation.RepeatBehavior = RepeatBehavior.Forever;
         thicknessAnimation.AccelerationRatio = 0.5;
