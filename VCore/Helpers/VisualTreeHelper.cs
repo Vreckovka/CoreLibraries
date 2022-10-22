@@ -42,6 +42,21 @@ namespace VCore.WPF.Helpers
       }
     }
 
+    public static IEnumerable<DependencyObject> GetAllChildren(this DependencyObject ob)
+    {
+      var list = new List<DependencyObject>();
+
+      foreach(var child in GetChildren(ob))
+      {
+        list.AddRange(GetAllChildren(child));
+
+        list.Add(child);
+      }
+
+     
+      return list;
+    }
+
     public static T GetFirstChildOfType<T>(this DependencyObject dependencyObject) where T : DependencyObject
     {
       if (dependencyObject == null)

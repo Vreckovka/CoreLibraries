@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,8 +34,6 @@ namespace VCore.WPF.Behaviors.Sliders
       AssociatedObject.Focusable = true;
       AssociatedObject.GotFocus += AssociatedObject_GotFocus;
       AssociatedObject.LostFocus += AssociatedObject_LostFocus;
-
-
 
       Application.Current.MainWindow.Deactivated += MainWindow_Deactivated;
 
@@ -111,6 +111,12 @@ namespace VCore.WPF.Behaviors.Sliders
 
         VFocusManager.SetFocus(AssociatedObject);
         AssociatedObject.Focus();
+        //AssociatedObject.CaptureMouse();
+
+        Task.Run(() =>
+        {
+          keyListener.HookMouse();
+        });
 
         keyListener.OnMouseEvent += KeyListener_OnMouseEvent;
       }
@@ -120,6 +126,13 @@ namespace VCore.WPF.Behaviors.Sliders
     {
       isHooked = false;
       isFocusFromBehavior = false;
+      //AssociatedObject.ReleaseMouseCapture();
+
+      Task.Run(() =>
+      {
+        keyListener.UnHookMouse();
+      });
+
       keyListener.OnMouseEvent -= KeyListener_OnMouseEvent;
 
       if (isHookedOnFullScreen)

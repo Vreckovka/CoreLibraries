@@ -90,10 +90,11 @@ namespace VCore.WPF
 
       Kernel.Load<CommonNinjectModule>();
       Kernel.Load<WPFNinjectModule>();
+      Kernel.Load<LoggerModule>();
+      
+      LoadModules();
 
       OnContainerCreated();
-
-      LoadModules();
 
       CultureInfo.CurrentCulture = new CultureInfo("en-US");
 
@@ -148,7 +149,7 @@ namespace VCore.WPF
 
     protected virtual void OnContainerCreated()
     {
-      Kernel.Load<LoggerModule>();
+
 
       SplashScreenManager.SetText("Loading settings");
     }

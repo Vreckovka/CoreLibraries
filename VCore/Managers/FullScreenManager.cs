@@ -15,6 +15,7 @@ namespace VCore.WPF.Managers
     private static ReplaySubject<Unit> resetMouseSubject = new ReplaySubject<Unit>(1);
     private static ReplaySubject<Unit> hideMouseSubject = new ReplaySubject<Unit>(1);
     private static ReplaySubject<bool> fullsScreenSubject = new ReplaySubject<bool>(1);
+    private static object batton = new object();
 
     static FullScreenManager()
     {
@@ -23,16 +24,20 @@ namespace VCore.WPF.Managers
 
       hideCursorDelegate = (s, e) =>
       {
-        if (IsFullscreen)
+        if (!IsMouseBlocked && isFullscreen)
         {
           hideMouseSubject.OnNext(Unit.Default);
           SafeOverrideCursor(Cursors.None);
           IsMouseHidden = true;
         }
+        else
+        {
+          ResetMouse();
+        }
       };
 
       cursorTimer.Elapsed += hideCursorDelegate;
-    
+
     }
 
     #region OnResetMouse
@@ -101,6 +106,8 @@ namespace VCore.WPF.Managers
 
     public static bool IsMouseHidden { get; set; }
 
+    public static bool IsMouseBlocked { get; set; }
+
     #region ResetMouse
 
     public static void ResetMouse()
@@ -115,10 +122,12 @@ namespace VCore.WPF.Managers
 
         cursorTimer.Start();
       }
-      else
+      else 
       {
         cursorTimer.Stop();
-        cursorTimer.Start();
+
+        if (IsFullscreen && !IsMouseBlocked)
+          cursorTimer.Start();
       }
 
     }

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 using Logger;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -24,11 +27,16 @@ namespace ChromeDriverScrapper
     private string chromeDriverDirectory;
     private string chromeDriverFileName;
     public ChromeDriver ChromeDriver { get; set; }
+    private ChromeDriverService chromeDriverService;
 
-    public ChromeDriverProvider(ILogger logger)
+    public ChromeDriverProvider(ILogger logger) : this()
     {
-      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
+      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
+    public ChromeDriverProvider()
+    {
       chromeDriverDirectory = Directory.GetCurrentDirectory();
       chromeDriverFileName = "chromedriver.exe";
     }
@@ -75,14 +83,19 @@ namespace ChromeDriverScrapper
 
     #region InitializeChromeDriver
 
+    private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
     public Exception InitializeChromeDriver(string proxyServer = null, List<string> options = null)
     {
-      ChromeDriverService chromeDriverService = null;
-
       try
       {
+        semaphoreSlim.WaitAsync().Wait();
+
         if (!wasInitilized)
         {
+          chromeDriverService?.Dispose();
+          chromeDriverService = null;
+
           var chromeOptions = new ChromeOptions();
 
           if (options != null)
@@ -105,9 +118,6 @@ namespace ChromeDriverScrapper
               "--ignore-certificate-errors",
             });
           }
-
-
-          //chromeOptions.AddArgument("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36");
 
           if (proxyServer != null)
           {
@@ -138,9 +148,13 @@ namespace ChromeDriverScrapper
         }
 
 
-        logger.Log(ex);
+        logger?.Log(ex);
 
         return ex;
+      }
+      finally
+      {
+        semaphoreSlim.Release();
       }
     }
 
@@ -150,28 +164,42 @@ namespace ChromeDriverScrapper
 
     private Task DownloadChromeDriverAsync(string version, string chromeDriverLocation)
     {
-      var downloadPage = $"https://chromedriver.storage.googleapis.com/{version}/chromedriver_win32.zip";
-      var fileName = "chromedriver_win32.zip";
+      ChromeDriver?.Dispose();
+      chromeDriverService?.Dispose();
 
-      TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-
-      using (var wc = new WebClient())
+      return Task.Run(async () =>
       {
-        wc.DownloadFileCompleted += (x, y) =>
+        var fileName = "chromedriver_win32.zip";
+
+        using (var wc = new WebClient())
         {
-          File.Delete("chromedriver.exe");
+          try
+          {
+            await semaphoreSlim.WaitAsync();
 
-          ZipFile.ExtractToDirectory(fileName, chromeDriverLocation);
+            var majorVersion = version.Split(".")[0];
+            var latestMajorVersion = wc.DownloadString($"https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{majorVersion}");
 
-          File.Delete(fileName);
+            var downloadPage = $"https://chromedriver.storage.googleapis.com/{latestMajorVersion}/{fileName}";
 
-          tcs.SetResult(false);
-        };
+            wc.DownloadFile(new Uri(downloadPage), fileName);
 
-        wc.DownloadFileAsync(new Uri(downloadPage), fileName);
-      }
+            File.Delete("chromedriver.exe");
 
-      return tcs.Task;
+            ZipFile.ExtractToDirectory(fileName, chromeDriverLocation);
+
+            File.Delete(fileName);
+          }
+          catch (Exception ex)
+          {
+            throw;
+          }
+          finally
+          {
+            semaphoreSlim.Release();
+          }
+        }
+      });
     }
 
     #endregion
@@ -204,11 +232,12 @@ namespace ChromeDriverScrapper
 
     private WebDriverWait wait;
     private object lockWait = new object();
+    private bool driverException;
     public string SafeNavigate(string url, double secondsToWait)
     {
       lock (lockWait)
       {
-        if (!Initialize())
+        if (!Initialize() || driverException)
         {
           return null;
         }
@@ -219,19 +248,22 @@ namespace ChromeDriverScrapper
         {
           var result = wait.Until((x) =>
           {
-            var navigation = x.Navigate();
-
-            navigation.GoToUrl(validUrl);
-
             try
             {
+              var navigation = x.Navigate();
+              navigation.GoToUrl(validUrl);
+
               return x.PageSource;
+            }
+            catch (WebDriverException wb)
+            {
+              driverException = true;
+              return null;
             }
             catch (Exception ex)
             {
               return null;
             }
-           
           });
 
           return result;
@@ -282,6 +314,7 @@ namespace ChromeDriverScrapper
     public void Dispose()
     {
       ChromeDriver?.Dispose();
+      chromeDriverService?.Dispose();
       wasInitilized = false;
       ChromeDriver = null;
     }
