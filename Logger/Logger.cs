@@ -20,8 +20,8 @@ namespace Logger
 
       AppDomain.CurrentDomain.UnhandledException += AppDomain_UnhandledException;
     }
-    
-    #endregion 
+
+    #endregion
 
     #region Properties
 
@@ -47,11 +47,11 @@ namespace Logger
 
     public async void Log(
       MessageType type,
-      string message, 
+      string message,
       bool logToFile = false,
       bool logErrorToFile = true,
-      [CallerFilePath]string callerFilePath = null, 
-      [CallerMemberName]string methodName = "")
+      [CallerFilePath] string callerFilePath = null,
+      [CallerMemberName] string methodName = "")
     {
       if (isDisposed)
         return;
@@ -96,12 +96,35 @@ namespace Logger
     #endregion
 
     private bool isDisposed;
+
     public void Dispose()
     {
       loggerContainer.Dispose();
       fileLoggerContainer.Dispose();
 
       isDisposed = true;
+     }
+  }
+
+  public class FakeLogger : ILogger
+  {
+    public void Dispose()
+    {
+    }
+
+    public void Log(
+      MessageType type,
+      string message,
+      bool logToFile = false,
+      bool logErrorToFile = true,
+      string callerFilePath = null,
+      string methodName = "")
+    {
+    }
+
+    public void Log(Exception ex, bool logToFile = true, bool logErrorToFile = true)
+    {
     }
   }
 }
+

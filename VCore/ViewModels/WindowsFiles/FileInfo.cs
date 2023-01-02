@@ -1,8 +1,10 @@
-﻿using VCore.Standard.Modularity.Interfaces;
+﻿using System;
+using VCore.Standard.Modularity.Interfaces;
 using VCore.Standard.ViewModels.WindowsFile;
 
 namespace VCore.WPF.ViewModels.WindowsFiles
 {
+  [Serializable]
   public class FileInfo : IUpdateable<FileInfo>, IFolderHierarchyItem
   {
     public string Extension { get; private set; }

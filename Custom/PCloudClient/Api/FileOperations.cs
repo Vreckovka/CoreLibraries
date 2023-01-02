@@ -342,10 +342,10 @@ namespace PCloudClient.Api
     }
 
     /// <summary>Delete a file</summary>
-    public static Task deleteFile(this Connection conn, FileInfo fi)
+    public static Task deleteFile(this Connection conn, long id)
     {
       var req = conn.newRequest("deletefile");
-      req.add("fileid", fi.id);
+      req.add("fileid", id);
       req.unixTimestamps();
 
       return conn.send(req);

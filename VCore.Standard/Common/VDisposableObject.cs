@@ -27,14 +27,14 @@ namespace VCore.Standard.Common
         if (autoDisposeObjects == null)
           autoDisposeObjects = new CompositeDisposable();
 
-        autoDisposeObjects.Add(disposableObject); 
+        autoDisposeObjects.Add(disposableObject);
       }
     }
 
     #endregion
 
     #region Dispose
-    
+
     public virtual void Dispose()
     {
       Dispose(true);
@@ -42,25 +42,22 @@ namespace VCore.Standard.Common
 
     public virtual void Dispose(bool disposing)
     {
-      lock (this)
+      if (!disposing || this.IsDisposed)
       {
-        if (!disposing || this.IsDisposed)
-        {
-          return;
-        }
-
-        this.IsDisposed = true;
-
-        if (autoDisposeObjects != null)
-        {
-          foreach (var disposable in autoDisposeObjects)
-          {
-            disposable?.Dispose();
-          }
-        }
-
-        GC.SuppressFinalize(this);
+        return;
       }
+
+      this.IsDisposed = true;
+
+      if (autoDisposeObjects != null)
+      {
+        foreach (var disposable in autoDisposeObjects)
+        {
+          disposable?.Dispose();
+        }
+      }
+
+      GC.SuppressFinalize(this);
     }
 
     #endregion

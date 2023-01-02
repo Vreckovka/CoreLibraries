@@ -471,5 +471,19 @@ namespace PCloudClient
     }
 
     #endregion
+
+    #region DeleteFile
+
+    public async Task DeleteFile(long id)
+    {
+      var task = await ExecuteAction(async (conn) =>
+      {
+        await conn.deleteFile(id);
+      });
+
+      await task;
+    }
+
+    #endregion
   }
 }

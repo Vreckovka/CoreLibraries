@@ -72,8 +72,6 @@ namespace VCore.WPF.Controls
         VFocusManager.AddToFocusItems(this);
 
         CaptureMouse();
-
-       
       }
       else
       {

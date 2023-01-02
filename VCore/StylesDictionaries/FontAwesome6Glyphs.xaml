@@ -32,6 +32,15 @@
     <system:String x:Key="ballot-check-glyph"></system:String>
     <system:String x:Key="binoculars"></system:String>
     <system:String x:Key="volume-xmark"></system:String>
+    <system:String x:Key="eraser"></system:String>
+    <system:String x:Key="rotate-right"></system:String>
+    <system:String x:Key="layer-plus-glyph">︁</system:String>
+    <system:String x:Key="rotate-exclamation"></system:String>
+    <system:String x:Key="file-xmark"></system:String>
+    <system:String x:Key="star-glyph"></system:String>
+    <system:String x:Key="location-dot"></system:String>
+    <system:String x:Key="check-glyph">✓︁</system:String>
+    <system:String x:Key="pencil-glyph">✏︁</system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"
@@ -233,11 +242,6 @@
         <Setter Property="Content" Value="📝︁" />
     </Style>
 
-    <Style x:Key="pencil-glyph"
-           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-           TargetType="controls:PathButton">
-        <Setter Property="Content" Value="✏︁" />
-    </Style>
 
     <Style x:Key="book-bookmark"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
@@ -340,7 +344,7 @@
     <Style x:Key="layer-plus"
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
            TargetType="controls:PathButton">
-        <Setter Property="Content" Value="︁" />
+        <Setter Property="Content" Value="{StaticResource layer-plus-glyph}" />
     </Style>
 
     <Style x:Key="right-to-bracket"
@@ -395,12 +399,6 @@
            BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
            TargetType="controls:PathButton">
         <Setter Property="Content" Value="︁" />
-    </Style>
-
-    <Style x:Key="check-glyph"
-           BasedOn="{StaticResource FontAwesomeGlyphPathButtonStyle}"
-           TargetType="controls:PathButton">
-        <Setter Property="Content" Value="✓︁" />
     </Style>
 
     <Style x:Key="message-plus"

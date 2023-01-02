@@ -12,6 +12,7 @@ namespace ChromeDriverScrapper
     object ExecuteScript(string script, double secondsToWait = 10);
     void ExecuteScriptVoid(string script, double secondsToWait);
     void Dispose();
-    public string SafeNavigate(string url, double secondsToWait = 10);
+    public string SafeNavigate(string url, out string redirectedUrl, double secondsToWait = 10, int extraMiliseconds = 0, bool useProxy = false);
+    public string Navigate(string url);
   }
 }

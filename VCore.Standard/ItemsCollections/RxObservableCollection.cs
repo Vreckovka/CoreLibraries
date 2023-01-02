@@ -10,10 +10,11 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using VCore.Standard.Helpers;
 
 namespace VCore.ItemsCollections
 {
-  public class RxObservableCollection<TItem> : ObservableCollection<TItem>, IDisposable where TItem : INotifyPropertyChanged
+  public class RxObservableCollection<TItem> : ObservableCollection<TItem>, IDisposable where TItem : class, INotifyPropertyChanged
   {
     #region Fields
 
@@ -38,8 +39,11 @@ namespace VCore.ItemsCollections
           x => item.PropertyChanged += x,
           x => item.PropertyChanged -= x).Subscribe(ItemPropertyChanged));
       }
-
       OrderedCollection = this.OrderBy(KeySelector);
+      View.AddRange(items);
+
+      if (SortType != null)
+        View.Sort(SortType);
 
       CollectionChanged += ObservableItems_CollectionChanged;
     }
@@ -90,7 +94,42 @@ namespace VCore.ItemsCollections
 
     #endregion
 
+    #region Cleared
+
+    private ReplaySubject<NotifyCollectionChangedEventArgs> clearedSubject = new ReplaySubject<NotifyCollectionChangedEventArgs>(1);
+
+    public IObservable<NotifyCollectionChangedEventArgs> Cleared
+    {
+      get
+      {
+        return clearedSubject.AsObservable();
+      }
+    }
+
+    #endregion
+
     public NotifyCollectionChangedAction? LastAction { get; private set; }
+
+    #region SortType
+
+    private Comparison<TItem> sortType;
+
+    public Comparison<TItem> SortType
+    {
+      get { return sortType; }
+      set
+      {
+        if (value != sortType)
+        {
+          sortType = value;
+
+          if (sortType != null)
+            View.Sort(sortType);
+        }
+      }
+    }
+
+    #endregion
 
     #region OrderedCollection
 
@@ -110,7 +149,13 @@ namespace VCore.ItemsCollections
     }
 
     #endregion
-   
+
+    #region View
+
+    public ObservableCollection<TItem> View { get; } = new ObservableCollection<TItem>();
+
+    #endregion
+
 
     #endregion Properties
 
@@ -155,7 +200,7 @@ namespace VCore.ItemsCollections
 
     #region ObservableItems_CollectionChanged
 
-    private void ObservableItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    private void ObservableItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       if (e.NewItems != null)
       {
@@ -166,6 +211,8 @@ namespace VCore.ItemsCollections
             x => newItem.PropertyChanged -= x).Subscribe(ItemPropertyChanged));
 
           itemAddedSubject.OnNext(new EventPattern<TItem>(this, newItem));
+
+          View.Add(newItem);
         }
       }
 
@@ -174,18 +221,39 @@ namespace VCore.ItemsCollections
         foreach (var oldItem in e.OldItems.OfType<TItem>())
         {
           itemRemovedSubject.OnNext(new EventPattern<TItem>(this, oldItem));
+          View.Remove(oldItem);
         }
       }
 
       OrderedCollection = this.OrderBy(KeySelector);
+
+      if (SortType != null)
+        View.Sort(SortType);
+
       LastAction = e.Action;
+
+      if (e.Action == NotifyCollectionChangedAction.Reset)
+      {
+        clearedSubject.OnNext(e);
+      }
     }
 
     #endregion
 
-    public void AddRange()
+    public void AddRange(IEnumerable<TItem> items)
     {
+      foreach (var item in items)
+      {
+        Add(item);
+      }
+    }
 
+    public void RemoveRange(IEnumerable<TItem> items)
+    {
+      foreach (var item in items)
+      {
+        Remove(item);
+      }
     }
 
     protected virtual string KeySelector(TItem other)

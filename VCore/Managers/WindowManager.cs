@@ -63,14 +63,15 @@ namespace VCore.WPF.Managers
 
     #endregion
 
-    #region ShowYesNoPrompt
+    #region OkCancel
 
-    public PromptResult ShowYesNoPrompt(string text, string header = "")
+    public PromptResult OkCancel(string text, string header = "", Visibility cancelVisibility = Visibility.Collapsed)
     {
       var vm = new BasePromptViewModel()
       {
         Title = header,
-        Text = text
+        Text = text,
+        CancelVisibility = cancelVisibility,
       };
 
       ShowPrompt<GenericPromptView>(vm);

@@ -28,13 +28,11 @@ namespace VCore.WPF.LRC
 
         var id = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"id{parameterSeparator}")));
         var artist = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"ar{parameterSeparator}")));
-        var album = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"ti{parameterSeparator}")));
-        var title = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"al{parameterSeparator}")));
+        var title = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"ti{parameterSeparator}")));
+        var album = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"al{parameterSeparator}")));
         var by = ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"by{parameterSeparator}")));
         var length = ParseTime(ParseLrcParameterLine(lines.FirstOrDefault(x => x.Contains($"length{parameterSeparator}"))));
-
-        var bla = 0;
-
+        
         var lyricsLines = lines.Where(x => x.Length > 2 && char.IsDigit(x[1])).Select(ParseLrcLyricLine).Where(x => x != null).SelectMany(x => x).OrderBy(x => x.Timestamp).ToList();
         var nullLines = lyricsLines.Where(x => string.IsNullOrEmpty(x.Text)).ToList();
 

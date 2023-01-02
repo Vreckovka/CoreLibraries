@@ -9,7 +9,7 @@ namespace VCore.WPF.Interfaces.Managers
 {
   public interface IWindowManager
   {
-    PromptResult ShowYesNoPrompt(string text, string header = "");
+    PromptResult OkCancel(string text, string header = "", Visibility cancelVisibility = Visibility.Collapsed);
     PromptResult ShowDeletePrompt(string itemName, string header = "Delete", string beforeText = "Do you really want to delete item ", string afterText = " ?");
     PromptResult ShowQuestionPrompt<TView, TViewModel>(TViewModel viewModel)
       where TView : IView, new()

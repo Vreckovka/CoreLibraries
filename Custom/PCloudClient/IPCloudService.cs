@@ -26,7 +26,7 @@ namespace PCloudClient
     Task<bool> WriteToFile(byte[] data, long id);
     Task<bool> CreateFileAndWrite(string name, byte[] data, long folderId);
     bool IsUserLoggedIn();
-
+    Task DeleteFile(long id);
 
     AsyncProcess<List<KeyValuePair<long, PublicLink>>> GetAudioLinks(IEnumerable<long> ids, CancellationToken cancellationToken);
     AsyncProcess<List<KeyValuePair<long, PublicLink>>> GetFileLinks(IEnumerable<long> ids, CancellationToken cancellationToken = default);

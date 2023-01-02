@@ -11,7 +11,7 @@ namespace WebsiteParser
   }
   public class BaseWebsiteScrapper
   {
-    protected HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
+    //protected HtmlWeb web = new HtmlAgilityPack.HtmlWeb();
 
     #region GetStringValueOfHtmlElement
 

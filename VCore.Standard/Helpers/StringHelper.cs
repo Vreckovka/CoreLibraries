@@ -52,6 +52,14 @@ namespace VCore
 
     #region Similarity
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="s"></param>
+    /// <param name="t"></param>
+    /// <param name="useAbsoluteString"></param>
+    /// <param name="ignorCase"></param>
+    /// <returns>Returns value between 0 and 1 where 0 is no match and 1 is perfect match</returns>
     public static float Similarity(this string s, string t, bool useAbsoluteString = false, bool ignorCase = true)
     {
       if (s == null || t == null)
@@ -185,6 +193,8 @@ namespace VCore
 
     #endregion
 
+    #region RemoveDiacritics
+
     public static string RemoveDiacritics(this string text)
     {
       if (string.IsNullOrEmpty(text))
@@ -206,5 +216,10 @@ namespace VCore
 
       return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
     }
+
+    #endregion
+
+  
+
   }
 }

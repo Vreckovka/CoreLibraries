@@ -104,7 +104,8 @@ namespace ChromeDriverScrapper
           }
           else
           {
-            chromeOptions.AddArguments(new List<string>() {
+            chromeOptions.AddArguments(new List<string>()
+            {
               "--headless",
               "--disable-gpu",
               "--no-sandbox",
@@ -232,67 +233,120 @@ namespace ChromeDriverScrapper
 
     private WebDriverWait wait;
     private object lockWait = new object();
-    private bool driverException;
-    public string SafeNavigate(string url, double secondsToWait)
+
+    public string SafeNavigate(string url, out string redirectedUrl, double secondsToWait = 10, int extraMiliseconds = 0, bool useProxy = false)
     {
       lock (lockWait)
       {
-        if (!Initialize() || driverException)
+        if (!Initialize())
         {
+          redirectedUrl = null;
           return null;
         }
 
-        wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
-
-        if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var validUrl))
+        if (useProxy)
         {
-          var result = wait.Until((x) =>
-          {
-            try
-            {
-              var navigation = x.Navigate();
-              navigation.GoToUrl(validUrl);
-
-              return x.PageSource;
-            }
-            catch (WebDriverException wb)
-            {
-              driverException = true;
-              return null;
-            }
-            catch (Exception ex)
-            {
-              return null;
-            }
-          });
-
-          return result;
+          return UseProxySite(url, out redirectedUrl);
         }
 
-        return null;
+        return SafeNavigate((x) => { }, url, out redirectedUrl);
       }
+    }
+
+    public string Navigate(string url)
+    {
+      lock (lockWait)
+      {
+        ChromeDriver.Url = url;
+
+        return ChromeDriver.PageSource;
+      }
+    }
+
+    private string SafeNavigate(Action<string> action, string url, out string redirectedUrl, double secondsToWait = 10, int extraMiliseconds = 0)
+    {
+      wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
+      var windows = ChromeDriver.WindowHandles.ToList();
+
+      if (windows.Count > 1)
+      {
+        ChromeDriver.SwitchTo().Window(windows[0]).Close();
+      }
+
+      if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var validUrl))
+      {
+        var result = wait.Until((x) =>
+        {
+          try
+          {
+            var navigation = x.Navigate();
+            navigation.GoToUrl(validUrl);
+
+            Thread.Sleep(extraMiliseconds);
+
+            action.Invoke(x.PageSource);
+
+            return x;
+          }
+          catch (WebDriverException wb)
+          {
+            if (wb.Message.Contains("disconnected: Unable to receive message from renderer")
+            || wb.Message.Contains("No connection could be made because the target machine actively refused it"))
+            {
+              wasInitilized = false;
+            }
+
+            return null;
+          }
+          catch (Exception ex)
+          {
+            return null;
+          }
+        });
+
+        redirectedUrl = result.Url;
+        return result.PageSource;
+      }
+
+      redirectedUrl = null;
+      return null;
     }
 
     #endregion
 
     #region ExecuteScript
 
-    public object ExecuteScript(string script, double secondsToWait)
+    public object ExecuteScript(string script, double secondsToWait = 10)
     {
       WebDriverWait wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
+      var resultGuid = Guid.Empty;
 
-      return wait.Until(x =>
+      var waitResult = wait.Until(x =>
       {
         try
         {
-          return ChromeDriver.ExecuteScript(script);
+          var result = ChromeDriver.ExecuteScript(script);
+
+          if (result == null)
+          {
+            resultGuid = Guid.NewGuid();
+            return resultGuid;
+          }
+
+          return result;
         }
         catch (Exception ex)
         {
-
-          throw;
+          return null;
         }
       });
+
+      if ((Guid)waitResult == resultGuid)
+      {
+        return null;
+      }
+
+      return waitResult;
     }
 
     #endregion
@@ -308,6 +362,25 @@ namespace ChromeDriverScrapper
     }
 
     #endregion
+
+    public string UseProxySite(string url, out string redirectedUrl)
+    {
+      var proxySite = "https://www.proxysite.com/";
+      string result = null;
+
+      SafeNavigate((x) =>
+      {
+        ExecuteScript($"document.getElementsByClassName('url-form')[0].getElementsByTagName('input')[0].value = '{url}'");
+        ExecuteScript("document.getElementsByClassName('url-form')[0]?.getElementsByTagName('button')[0].click()");
+
+        result = ChromeDriver.PageSource;
+
+      }, proxySite, out redirectedUrl);
+
+      return result;
+    }
+
+
 
     #region Dispose
 

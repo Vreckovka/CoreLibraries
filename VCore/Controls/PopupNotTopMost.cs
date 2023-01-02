@@ -70,7 +70,7 @@ namespace VCore.WPF.Controls
       {
         isForcedHide = x;
 
-        if (x)
+        if (x && Child != null)
         {
           var hwndSource = (PresentationSource.FromVisual(Child)) as HwndSource;
 
