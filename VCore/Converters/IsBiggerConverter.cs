@@ -79,4 +79,22 @@ namespace VCore.WPF.Converters
       return value;
     }
   }
+
+  public class IsLesserConverter : BaseConverter
+  {
+    public override object Convert(
+      object value,
+      Type targetType,
+      object parameter,
+      CultureInfo culture)
+    {
+      if (double.TryParse(value?.ToString(), out var doubleValue) &&
+          double.TryParse(parameter?.ToString(), out var doubleParameter))
+      {
+        return doubleValue < doubleParameter;
+      }
+
+      return value;
+    }
+  }
 }

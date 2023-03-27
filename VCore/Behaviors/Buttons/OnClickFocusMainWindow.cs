@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
 using VCore.WPF.Helpers;
 using VCore.WPF.Managers;
@@ -28,6 +27,11 @@ namespace VCore.WPF.Behaviors.Buttons
       {
         item.IsOpen = false;
       }
+    }
+
+    protected override void OnDetaching()
+    {
+      AssociatedObject.Click -= AssociatedObject_Click;
     }
   }
 }

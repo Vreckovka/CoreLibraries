@@ -26,7 +26,7 @@ namespace VCore.ItemsCollections
 
     public RxObservableCollection()
     {
-      CollectionChanged += ObservableItems_CollectionChanged;
+      EnableNotification();
     }
 
     public RxObservableCollection(IEnumerable<TItem> items)
@@ -96,7 +96,7 @@ namespace VCore.ItemsCollections
 
     #region Cleared
 
-    private ReplaySubject<NotifyCollectionChangedEventArgs> clearedSubject = new ReplaySubject<NotifyCollectionChangedEventArgs>(1);
+    private Subject<NotifyCollectionChangedEventArgs> clearedSubject = new Subject<NotifyCollectionChangedEventArgs>();
 
     public IObservable<NotifyCollectionChangedEventArgs> Cleared
     {
@@ -194,6 +194,9 @@ namespace VCore.ItemsCollections
     private void ItemPropertyChanged(EventPattern<PropertyChangedEventArgs> eventPattern)
     {
       itemUpdatedSubject?.OnNext(eventPattern);
+
+      if (SortType != null)
+        View.Sort(SortType);
     }
 
     #endregion
@@ -239,6 +242,16 @@ namespace VCore.ItemsCollections
     }
 
     #endregion
+
+    public void DisableNotification()
+    {
+      CollectionChanged -= ObservableItems_CollectionChanged;
+    }
+
+    public void EnableNotification()
+    {
+      CollectionChanged += ObservableItems_CollectionChanged;
+    }
 
     public void AddRange(IEnumerable<TItem> items)
     {

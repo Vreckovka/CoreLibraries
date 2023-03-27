@@ -593,8 +593,7 @@ namespace VCore.WPF.Controls
           {
             if (y.NewValue is Color newColor && buttonWithIcon.IconBrush is SolidColorBrush solidColorBrush)
             {
-              if (buttonWithIcon.IsChecked == false &&
-                  buttonWithIcon.IsEnabled)
+              //if (buttonWithIcon.IsChecked == false && buttonWithIcon.IsEnabled)
               {
                 buttonWithIcon.BorderBrush = new SolidColorBrush(newColor);
               }

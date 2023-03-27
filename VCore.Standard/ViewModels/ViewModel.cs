@@ -52,15 +52,25 @@ namespace VCore.Standard
 
     public ViewModel(TModel model)
     {
-      Model = model;
+      this.model = model;
     }
 
     #endregion Constructors
 
     #region Properties
 
-    public virtual TModel Model { get; set; }
+    private TModel model;
 
-    #endregion Properties
+    public virtual TModel Model
+    {
+      get { return model; }
+      set
+      {
+        model = value;
+        RaisePropertyChanged();
+      }
+    }
   }
+
+  #endregion Properties
 }

@@ -11,7 +11,7 @@ namespace PCloudClient.Utils
 	/// <remarks>Unlike synchronization contexts, this class doesn't interleave multiple tasks on the same thread. It runs them one by one. The use case is reading data from the same socket, with async methods.</remarks>
 	class TaskQueue
 	{
-		const int defaultQueueDepth = 8;
+		const int defaultQueueDepth = 12;
 
 		/// <summary>Max.count of pending tasks. When exceeded, post method will start to block.</summary>
 		readonly int maxQueueDepth;
@@ -77,7 +77,6 @@ namespace PCloudClient.Utils
 				if( !processorRunning )
 				{
 					// The runAsyncProcessor task ain't running. Start now.
-					Debug.Assert( throttle.CurrentCount == maxQueueDepth );
 					throttle.Wait();
 
 					enqueueRunner( runner );
@@ -92,7 +91,6 @@ namespace PCloudClient.Utils
 				tSemaphore = throttle.WaitAsync();
 				if( tSemaphore.IsCompleted )
 				{
-					Debug.Assert( queueRunning.Count < maxQueueDepth );
 					// The processor is already running but there's enough place for one more task.
 					enqueueRunner( runner );
 					throttled = false;

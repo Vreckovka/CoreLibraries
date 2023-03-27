@@ -9,7 +9,6 @@ using VCore.WPF.ViewModels.Navigation;
 
 namespace VCore.WPF.ViewModels
 {
-
   public abstract class RegionViewModel : ViewModel
   {
     public Guid Guid { get; protected set; }

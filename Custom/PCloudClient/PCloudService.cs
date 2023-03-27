@@ -17,7 +17,7 @@ using FileInfo = PCloudClient.Domain.FileInfo;
 
 namespace PCloudClient
 {
-  public class PCloudService : IPCloudService
+  public class PCloudService : IDisposable, IPCloudService
   {
     #region Fields
 
@@ -32,12 +32,16 @@ namespace PCloudClient
 
     #region Constructors
 
+    private PCloudContext pCloudContextAuth;
+    private PCloudContext pCloudContext;
+
     public PCloudService(string filePath, ILogger logger)
     {
       this.filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
       host = "eapi.pcloud.com";
       ssl = true;
+    
     }
 
     #endregion
@@ -71,15 +75,31 @@ namespace PCloudClient
 
     private async Task<TResult> ExecuteAction<TResult>(Func<Connection, TResult> action, bool permisionless = false)
     {
-      using (var context = new PCouldContext(ssl, host, logger))
+      try
       {
+        PCloudContext context = null;
+
         if (!permisionless)
         {
-          await context.LoginAsync(credentials);
+          if (pCloudContextAuth == null)
+          {
+            pCloudContextAuth = new PCloudContext(ssl, host, logger);
+
+            await pCloudContextAuth.LoginAsync(credentials);
+          }
+
+          context = pCloudContextAuth;
         }
         else
         {
-          await context.OpenConnection();
+          if (pCloudContext == null)
+          {
+            pCloudContext = new PCloudContext(ssl, host, logger);
+
+            await pCloudContext.OpenConnection();
+          }
+
+          context = pCloudContext;
         }
 
         var conn = context.Connection;
@@ -88,7 +108,6 @@ namespace PCloudClient
         {
           try
           {
-
             var result = action.Invoke(conn);
 
             if (result is Task task)
@@ -101,11 +120,21 @@ namespace PCloudClient
           catch (Exception ex)
           {
             logger.Log(ex);
+            pCloudContextAuth?.Dispose();
+            pCloudContextAuth = null;
+            throw;
           }
         }
-      }
 
-      return default(TResult);
+        return default(TResult);
+      }
+      catch (Exception ex)
+      {
+        logger.Log(ex);
+        pCloudContextAuth?.Dispose();
+        pCloudContextAuth = null;
+        throw;
+      }
     }
 
     #endregion
@@ -114,12 +143,22 @@ namespace PCloudClient
 
     public async Task<PublicLink> GetAudioLink(long id)
     {
-      var task = await ExecuteAction(async (conn) =>
+      try
       {
-        return await conn.GetAudioLink(id);
-      });
+        var task = await ExecuteAction(async (conn) =>
+         {
+           return await conn.GetAudioLink(id);
+         });
 
-      return task == null ? null : await task;
+        return task == null ? null : await task;
+      }
+      catch (Exception ex)
+      {
+        logger.Log(ex);
+        pCloudContextAuth?.Dispose();
+        pCloudContextAuth = null;
+        throw;
+      }
     }
 
     #endregion
@@ -222,11 +261,11 @@ namespace PCloudClient
 
     #region GetFilesAsync
 
-    public async Task<IEnumerable<FileInfo>> GetFilesAsync(long folderId)
+    public async Task<IEnumerable<FileInfo>> GetFilesAsync(long folderId, bool recursive = false)
     {
       var task = await ExecuteAction(async (conn) =>
       {
-        return await conn.getFiles(folderId);
+        return await conn.getFiles(folderId, recursive);
       });
 
       return task == null ? null : await task;
@@ -272,11 +311,11 @@ namespace PCloudClient
 
     #region GetFoldersAsync
 
-    public async Task<FolderInfo> GetFolderInfo(long id)
+    public async Task<FolderInfo> GetFolderInfo(long id, bool recursive = false, bool noFiles = false)
     {
       var task = await ExecuteAction(async (conn) =>
       {
-        return await conn.listFolder(id);
+        return await conn.listFolder(id, recursive, noFiles);
       });
 
       return task == null ? null : await task;
@@ -485,5 +524,12 @@ namespace PCloudClient
     }
 
     #endregion
+
+    public void Dispose()
+    {
+      logger?.Dispose();
+      pCloudContextAuth?.Dispose();
+      pCloudContext?.Dispose();
+    }
   }
 }

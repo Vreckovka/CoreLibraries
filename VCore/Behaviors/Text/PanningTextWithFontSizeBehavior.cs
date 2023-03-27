@@ -113,6 +113,8 @@ namespace VCore.WPF.Behaviors.Text
       AssociatedObject.Loaded += AssociatedObject_Loaded;
     }
 
+    #endregion OnAttached
+
     #region AssociatedObject_Loaded
 
     private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
@@ -135,8 +137,6 @@ namespace VCore.WPF.Behaviors.Text
     }
 
     #endregion AssociatedObject_Loaded
-
-    #endregion OnAttached
 
     #region MouseLeave
 
@@ -250,5 +250,13 @@ namespace VCore.WPF.Behaviors.Text
     }
 
     #endregion MeasureTextSize
+
+    protected override void OnDetaching()
+    {
+      base.OnDetaching();
+
+      AssociatedObject.Loaded -= AssociatedObject_Loaded;
+      AssociatedObject.BeginAnimation(TextBlock.FontSizeProperty, null);
+    }
   }
 }

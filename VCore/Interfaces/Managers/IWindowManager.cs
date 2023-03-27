@@ -15,7 +15,11 @@ namespace VCore.WPF.Interfaces.Managers
       where TView : IView, new()
       where TViewModel : BasePromptViewModel;
  
-
+    /// <summary>
+    /// You can use PromptViewModel
+    /// </summary>
+    /// <typeparam name="TView"></typeparam>
+    /// <param name="viewModel"></param>
     void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new();
     void ShowErrorPrompt(Exception ex);
     void ShowErrorPrompt(string message);

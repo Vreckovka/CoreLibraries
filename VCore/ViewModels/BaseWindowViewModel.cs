@@ -50,7 +50,20 @@ namespace VCore.WPF.ViewModels
 
     #endregion
 
-    public Window Window { get; set; }
+    private Window window;
+
+    public Window Window
+    {
+      get { return window; }
+      set
+      {
+        if (value != null)
+        {
+          window = value;
+          window.Loaded += Window_Loaded;
+        }
+      }
+    }
 
     #region WindowState
 
@@ -168,6 +181,16 @@ namespace VCore.WPF.ViewModels
 
     #endregion
 
+    public override void Initialize()
+    {
+      base.Initialize();
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+      OnWindow_Loaded();
+    }
+
     protected virtual void OnMinimize(Window window)
     {
       window.WindowState = WindowState.Minimized;
@@ -176,6 +199,10 @@ namespace VCore.WPF.ViewModels
     #endregion
 
     protected virtual void OnWindowStateChanged(WindowState windowState)
+    {
+    }
+
+    protected virtual void OnWindow_Loaded()
     {
     }
   }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 
 namespace VCore.Standard.Helpers
@@ -12,6 +13,12 @@ namespace VCore.Standard.Helpers
           .Delay(minDelay)
           .StartWith(x)
       ).Concat();
+    }
+
+    public static IObservable<IList<T>> BufferUntilInactive<T>(this IObservable<T> stream, TimeSpan delay)
+    {
+      var closes = stream.Throttle(delay);
+      return stream.Window(() => closes).SelectMany(window => window.ToList());
     }
   }
 }

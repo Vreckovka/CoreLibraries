@@ -211,7 +211,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region Methods
 
-    public abstract Task<IEnumerable<FileInfo>> GetFiles();
+    public abstract Task<IEnumerable<FileInfo>> GetFiles(bool recursive = false);
     public abstract Task<IEnumerable<FolderInfo>> GetFolders();
 
     private int maxItemsCount = 500;
@@ -232,10 +232,10 @@ namespace VCore.WPF.ViewModels.WindowsFiles
         if (shouldSetLoading)
           isLoadedSubject.OnNext(true);
 
-        var allFiles = (await GetFiles())?.ToList();
-        var directories = (await GetFolders())?.ToList();
-
-        Application.Current.Dispatcher.Invoke(() =>
+        var  allFiles = (await GetFiles())?.ToList();
+        var  directories = (await GetFolders())?.ToList();
+        
+        await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
         {
           if (allFiles != null)
           {
@@ -252,10 +252,9 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
               if (SubItems.ViewModels.Count > maxItemsCount)
               {
-                CanExpand = false;
+                SubItems.View = new RxObservableCollection<TreeViewItemViewModel>(SubItems.ViewModels.Take(maxItemsCount));
                 WasContentLoaded = true;
                 isLoadedSubject.OnNext(true);
-                LoadingMessage = $"Too many items in folder ({SubItems.ViewModels.Count})";
               }
 
               RefreshType();
@@ -370,14 +369,14 @@ namespace VCore.WPF.ViewModels.WindowsFiles
             {
               direViewModels = directories.Select(x => CreateNewFolderItem(x)).ToList();
 
-              await Application.Current.Dispatcher.InvokeAsync(() =>
+              await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
               {
                 SubItems.AddRange(direViewModels);
               });
             }
             else
             {
-              await Application.Current.Dispatcher.InvokeAsync(() => { CanExpand = false; });
+              await VSynchronizationContext.InvokeOnDispatcherAsync(() => { CanExpand = false; });
             }
           }
 
@@ -391,7 +390,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
               if (loadLevel < MaxAutomaticLoadLevel)
               {
-                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
                 {
                   LoadingMessage = $" folders {index}/{direViewModels.Count}";
                 });
@@ -408,7 +407,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
             }
           }
 
-          await Application.Current.Dispatcher.InvokeAsync(() =>
+          await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
           {
             OnLoadSubItems();
             RefreshType();
@@ -460,7 +459,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
         {
           cancellationToken.ThrowIfCancellationRequested();
 
-          await Application.Current.Dispatcher.InvokeAsync(() =>
+          await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
           {
             LoadingMessage = $" folders {index}/{items.Count}";
           });
@@ -470,7 +469,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
           index++;
         }
 
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+        await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
         {
           LoadingMessage = $" folders {index - 1}/{items.Count}";
         });
@@ -663,6 +662,4 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #endregion
   }
-
-
 }

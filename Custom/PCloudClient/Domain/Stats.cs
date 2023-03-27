@@ -30,5 +30,6 @@
     public string parentfolderid { get; set; }
     public string contenttype { get; set; }
     public string icon { get; set; }
+    public string path { get; set; }
   }
 }

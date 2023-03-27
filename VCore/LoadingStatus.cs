@@ -25,7 +25,7 @@ namespace VCore.WPF
 
     #region ShowProcessCount
 
-    private bool showProcessCount = true;
+    private bool showProcessCount = false;
 
     public bool ShowProcessCount
     {

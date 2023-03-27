@@ -26,7 +26,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
 
     #region GetFiles
 
-    public override Task<IEnumerable<FileInfo>> GetFiles()
+    public override Task<IEnumerable<FileInfo>> GetFiles(bool recursive = false)
     {
       return Task.Run(() =>
       {

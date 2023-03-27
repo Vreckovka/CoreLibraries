@@ -48,7 +48,7 @@ namespace VCore.WPF.Controls
 
     #region FocusChanged
 
-    private ActionCommand<string> focusChanged;
+    private ActionCommand<object> focusChanged;
 
     public ICommand FocusChanged
     {
@@ -56,28 +56,29 @@ namespace VCore.WPF.Controls
       {
         if (focusChanged == null)
         {
-          focusChanged = new ActionCommand<string>(OnFocusChanged);
+          focusChanged = new ActionCommand<object>(OnFocusChanged);
         }
 
         return focusChanged;
       }
     }
 
-    private void OnFocusChanged(string isFocused)
+    private void OnFocusChanged(object isFocused)
     {
-      var isFocusBool = bool.Parse(isFocused);
-
-      if (isFocusBool)
+      if (bool.TryParse(isFocused.ToString(), out var isFocusBool))
       {
-        VFocusManager.AddToFocusItems(this);
+        if (isFocusBool)
+        {
+          VFocusManager.AddToFocusItems(this);
 
-        CaptureMouse();
-      }
-      else
-      {
-        VFocusManager.RemoveFromFocusItems(this);
+          CaptureMouse();
+        }
+        else
+        {
+          VFocusManager.RemoveFromFocusItems(this);
 
-        ReleaseMouseCapture();
+          ReleaseMouseCapture();
+        }
       }
     }
 

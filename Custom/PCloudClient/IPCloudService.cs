@@ -11,14 +11,13 @@ namespace PCloudClient
 {
   public interface IPCloudService
   {
-    Task<FolderInfo> GetFolderInfo(long id);
-    Task<IEnumerable<FileInfo>> GetFilesAsync(long folderId);
+    Task<FolderInfo> GetFolderInfo(long id, bool recursive = false, bool noFiles = false);
+    Task<IEnumerable<FileInfo>> GetFilesAsync(long folderId, bool recursive = false);
     Task<IEnumerable<FolderInfo>> GetFoldersAsync(long folderId);
     void SaveLoginInfo(string email, string password);
     Task<bool> ExistsFolderAsync(long id);
     Task<MemoryStream> ReadFile(long id);
     Task<PublicLink> GetFileLink(long id);
-
     Task<PublicLink> GetAudioLink(long id);
     Task<PCloudResponse<Stats>> GetFileStats(long id);
     Task<FolderInfo> CreateFolder(string name, long? parentId);

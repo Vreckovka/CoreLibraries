@@ -70,6 +70,11 @@ namespace VCore.Standard.Helpers
 
     #endregion
 
+    public static TimeSpan Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, TimeSpan> func)
+    {
+      return new TimeSpan(source.Sum(item => func(item).Ticks));
+    }
+
     #region Sort
 
     /// <summary>
@@ -79,6 +84,17 @@ namespace VCore.Standard.Helpers
     /// <param name="collection"></param>
     /// <param name="comparison"></param>
     public static void Sort<T>(this ObservableCollection<T> collection, Comparison<T> comparison)
+    {
+      var sortableList = new List<T>(collection);
+      sortableList.Sort(comparison);
+
+      for (int i = 0; i < sortableList.Count; i++)
+      {
+        collection.Move(collection.IndexOf(sortableList[i]), i);
+      }
+    }
+
+    public static void Sort<T>(this ObservableCollection<T> collection, Comparer<T> comparison)
     {
       var sortableList = new List<T>(collection);
       sortableList.Sort(comparison);

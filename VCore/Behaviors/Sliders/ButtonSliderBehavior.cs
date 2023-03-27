@@ -60,5 +60,12 @@ namespace VCore.WPF.Behaviors.Sliders
 
       e.Handled = true;
     }
+
+    protected override void OnDetaching()
+    {
+      base.OnDetaching();
+
+      AssociatedObject.MouseWheel -= AssociatedObject_MouseWheel;
+    }
   }
 }

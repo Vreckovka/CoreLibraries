@@ -7,7 +7,7 @@ namespace VCore.WPF.ViewModels.WindowsFiles
   [Serializable]
   public class FileInfo : IUpdateable<FileInfo>, IFolderHierarchyItem
   {
-    public string Extension { get; private set; }
+    public string Extension { get; set; }
     public string Indentificator { get; set; }
     public string Name { get; set; }
     public string FullName { get; set; }

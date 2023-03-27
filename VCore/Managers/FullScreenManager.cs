@@ -138,7 +138,7 @@ namespace VCore.WPF.Managers
 
     private static void SafeOverrideCursor(Cursor cursor)
     {
-      Application.Current.Dispatcher.Invoke(new Action(() =>
+      VSynchronizationContext.PostOnUIThread(new Action(() =>
       {
         Mouse.OverrideCursor = cursor;
       }));

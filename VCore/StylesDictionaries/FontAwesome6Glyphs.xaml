@@ -7,6 +7,7 @@
         <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <system:String x:Key="rabbit-running"></system:String>
     <system:String x:Key="cloud-regular_glyph">☁︁</system:String>
     <system:String x:Key="angle-down_glyph"></system:String>
     <system:String x:Key="down-to-line_glyph"></system:String>
@@ -41,6 +42,20 @@
     <system:String x:Key="location-dot"></system:String>
     <system:String x:Key="check-glyph">✓︁</system:String>
     <system:String x:Key="pencil-glyph">✏︁</system:String>
+    <system:String x:Key="angles-right"></system:String>
+    <system:String x:Key="floppy-disk-pen_glyph"></system:String>
+    <system:String x:Key="arrow-down-wide-short"></system:String>
+    <system:String x:Key="arrow-up-wide-short"></system:String>
+    <system:String x:Key="empty-set"></system:String>
+    <system:String x:Key="text"></system:String>
+    <system:String x:Key="clock_glyph"></system:String>
+    <system:String x:Key="gear_glyph"></system:String>
+    <system:String x:Key="mask"></system:String>
+    <system:String x:Key="arrow-right"></system:String>
+    <system:String x:Key="arrow-left"></system:String>
+    <system:String x:Key="arrow-up"></system:String>
+    <system:String x:Key="arrow-down"></system:String>
+    <system:String x:Key="scroll"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"

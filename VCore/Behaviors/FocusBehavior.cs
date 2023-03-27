@@ -72,5 +72,13 @@ namespace VCore.WPF.Behaviors
 
       OnFocusCommand?.Execute(null);
     }
+
+    protected override void OnDetaching()
+    {
+      base.OnDetaching();
+
+      AssociatedObject.GotFocus -= AssociatedObject_GotFocus;
+      AssociatedObject.LostFocus -= AssociatedObject_LostFocus; ;
+    }
   }
 }

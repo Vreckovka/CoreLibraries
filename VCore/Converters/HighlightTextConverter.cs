@@ -25,6 +25,8 @@ namespace VCore.WPF.Converters
       {
         var textBlock = new TextBlock();
         textBlock.TextWrapping = TextWrapping.Wrap;
+        textBlock.TextTrimming = TextTrimming.CharacterEllipsis;
+
         string escapedXml = SecurityElement.Escape(input);
 
         while (escapedXml.IndexOf(StartHighlight) != -1)

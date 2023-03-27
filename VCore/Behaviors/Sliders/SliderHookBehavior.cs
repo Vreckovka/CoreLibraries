@@ -18,6 +18,7 @@ namespace VCore.WPF.Behaviors.Sliders
   {
     public double Step { get; set; } = 2;
     public bool HookWhenFullscreen { get; set; }
+    public bool WheelOnly { get; set; }
     private KeyListener keyListener;
     private bool isHooked;
     private bool isFocusFromBehavior;
@@ -29,11 +30,17 @@ namespace VCore.WPF.Behaviors.Sliders
     {
       base.OnAttached();
 
-      AssociatedObject.PreviewMouseLeftButtonUp += AssociatedObject_PreviewMouseLeftButtonUp;
       AssociatedObject.PreviewMouseWheel += Slider_PreviewMouseWheel;
-      AssociatedObject.Focusable = true;
-      AssociatedObject.GotFocus += AssociatedObject_GotFocus;
-      AssociatedObject.LostFocus += AssociatedObject_LostFocus;
+
+      if (!WheelOnly)
+      {
+        AssociatedObject.PreviewMouseLeftButtonUp += AssociatedObject_PreviewMouseLeftButtonUp;
+
+        AssociatedObject.Focusable = true;
+        AssociatedObject.GotFocus += AssociatedObject_GotFocus;
+        AssociatedObject.LostFocus += AssociatedObject_LostFocus;
+      }
+    
 
       Application.Current.MainWindow.Deactivated += MainWindow_Deactivated;
 
@@ -102,6 +109,8 @@ namespace VCore.WPF.Behaviors.Sliders
 
     #endregion
 
+    #region HookSlider
+
     private void HookSlider()
     {
       if (!isHooked)
@@ -122,6 +131,10 @@ namespace VCore.WPF.Behaviors.Sliders
       }
     }
 
+    #endregion
+
+    #region UnHookSlider
+
     private void UnHookSlider()
     {
       isHooked = false;
@@ -141,11 +154,13 @@ namespace VCore.WPF.Behaviors.Sliders
       }
     }
 
+    #endregion
+
     #region SetSliderValue
 
     private void SetSliderValue(int delta)
     {
-      Application.Current?.Dispatcher?.Invoke(() =>
+      VSynchronizationContext.PostOnUIThread(() =>
       {
         if (delta > 0)
         {
@@ -177,36 +192,23 @@ namespace VCore.WPF.Behaviors.Sliders
 
     #endregion
 
-    #region IsMouseOver
-
-    private bool IsMouseOver(FrameworkElement element)
-    {
-      bool IsMouseOverEx = false;
-
-      VisualTreeHelper.HitTest(element, d =>
-        {
-          if (d == element)
-          {
-            IsMouseOverEx = true;
-            return HitTestFilterBehavior.Stop;
-          }
-          else
-            return HitTestFilterBehavior.Continue;
-        },
-        ht => HitTestResultBehavior.Stop,
-        new PointHitTestParameters(Mouse.GetPosition(element)));
-
-      return IsMouseOverEx;
-    }
-
-    #endregion
+    #region OnDetaching
 
     protected override void OnDetaching()
     {
       base.OnDetaching();
 
-      AssociatedObject.PreviewMouseLeftButtonUp -= AssociatedObject_PreviewMouseLeftButtonUp;
       AssociatedObject.PreviewMouseWheel -= Slider_PreviewMouseWheel;
+      UnHookSlider();
+
+      if (!WheelOnly)
+      {
+        AssociatedObject.PreviewMouseLeftButtonUp += AssociatedObject_PreviewMouseLeftButtonUp;
+        AssociatedObject.GotFocus -= AssociatedObject_GotFocus;
+        AssociatedObject.LostFocus -= AssociatedObject_LostFocus;
+      }
     }
+
+    #endregion
   }
 }

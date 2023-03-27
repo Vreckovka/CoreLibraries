@@ -12,24 +12,7 @@ namespace VCore.WPF.Behaviors.Drag
     {
       base.OnAttached();
 
-      AssociatedObject.DragEnter += AssociatedObject_DragEnter;
-      AssociatedObject.DragOver += AssociatedObject_DragOver;
-      AssociatedObject.DragLeave += AssociatedObject_DragLeave;
       AssociatedObject.PreviewMouseMove += AssociatedObject_PreviewMouseMove;
-     
-    }
-
-    private void AssociatedObject_DragLeave(object sender, DragEventArgs e)
-    {
-    }
-
-    private void AssociatedObject_DragOver(object sender, DragEventArgs e)
-    {
-    }
-
-    private void AssociatedObject_DragEnter(object sender, DragEventArgs e)
-    {
-     
     }
 
     #region AssociatedObject_PreviewMouseMove
@@ -43,5 +26,12 @@ namespace VCore.WPF.Behaviors.Drag
     }
 
     #endregion
+
+    protected override void OnDetaching()
+    {
+      base.OnDetaching();
+
+      AssociatedObject.PreviewMouseMove -= AssociatedObject_PreviewMouseMove;
+    }
   }
 }

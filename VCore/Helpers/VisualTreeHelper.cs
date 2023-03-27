@@ -15,7 +15,8 @@ namespace VCore.WPF.Helpers
 
     public static IEnumerable<T> FindChildrenOfType<T>(this DependencyObject ob) where T : DependencyObject
     {
-      foreach (var child in GetChildren(ob))
+      var children = GetChildren(ob);
+      foreach (var child in children)
       {
         T castedChild = child as T;
         if (castedChild != null)

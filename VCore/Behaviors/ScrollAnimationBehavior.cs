@@ -269,7 +269,7 @@ namespace VCore.WPF.Behaviors
     {
       if (sender is ScrollViewer scrollViewer)
 
-        Application.Current?.Dispatcher?.Invoke(() =>
+        VSynchronizationContext.PostOnUIThread(() =>
         {
           if (isDraggingThumb.TryGetValue(scrollViewer, out var isDragging))
           {
@@ -403,8 +403,6 @@ namespace VCore.WPF.Behaviors
     }
 
     #endregion
+
   }
-
-
-
 }

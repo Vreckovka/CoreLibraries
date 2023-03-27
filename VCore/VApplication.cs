@@ -2,10 +2,12 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Listener;
 using Logger;
 using Ninject;
@@ -73,6 +75,9 @@ namespace VCore.WPF
       ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(Int32.MaxValue));
 
       SplashScreenManager.ShowSplashScreen<TSplashScreen>(System.Reflection.Assembly.GetEntryAssembly());
+
+      VSynchronizationContext.UISynchronizationContext = SynchronizationContext.Current;
+      VSynchronizationContext.UIDispatcher = Application.Current.Dispatcher;
 
       base.OnStartup(e);
     }
@@ -322,7 +327,7 @@ namespace VCore.WPF
 
         if (Current?.Dispatcher != null && !(exception is ResourceReferenceKeyNotFoundException))
         {
-          await Current.Dispatcher.InvokeAsync(() =>
+          await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
           {
             if (!FullScreenManager.IsFullscreen)
               windowManager.ShowErrorPrompt(exception);
@@ -403,5 +408,27 @@ namespace VCore.WPF
     #endregion
 
     #endregion
+  }
+
+  public static class VSynchronizationContext
+  {
+    public static SynchronizationContext UISynchronizationContext { get; internal set; }
+
+    public static Dispatcher UIDispatcher { get; internal set; }
+
+    public static void PostOnUIThread(Action action)
+    {
+      UISynchronizationContext.Post(x => action(), null);
+    }
+
+    public static async Task InvokeOnDispatcherAsync(Action action)
+    {
+      await UIDispatcher.InvokeAsync(action);
+    }
+
+    public static void InvokeOnDispatcher(Action action)
+    {
+      UIDispatcher.Invoke(action);
+    }
   }
 }

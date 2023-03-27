@@ -117,6 +117,7 @@ namespace ChromeDriverScrapper
               "--block-new-web-contents",
               "--enable-precise-memory-info",
               "--ignore-certificate-errors",
+              "--window-size=1920,1080"
             });
           }
 
@@ -130,7 +131,6 @@ namespace ChromeDriverScrapper
           chromeDriverService.HideCommandPromptWindow = true;
 
           ChromeDriver = new ChromeDriver(chromeDriverService, chromeOptions);
-
           wasInitilized = true;
         }
 
@@ -257,7 +257,8 @@ namespace ChromeDriverScrapper
     {
       lock (lockWait)
       {
-        ChromeDriver.Url = url;
+        var navigation = ChromeDriver.Navigate();
+        navigation.GoToUrl(url);
 
         return ChromeDriver.PageSource;
       }

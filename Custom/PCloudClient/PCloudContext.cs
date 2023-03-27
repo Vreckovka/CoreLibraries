@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Logger;
 using PCloudClient.Api;
 
 namespace PCloudClient
 {
-  public class PCouldContext : IDisposable
+  public class PCloudContext : IDisposable
   {
     private readonly ILogger logger;
 
-    public PCouldContext(bool isSsl, string host, ILogger logger)
+    public PCloudContext(bool isSsl, string host, ILogger logger)
     {
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
       IsSsl = isSsl;
@@ -23,11 +24,14 @@ namespace PCloudClient
 
     #region LoginAsync
 
+
+    private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
     public async Task<bool> LoginAsync(LoginInfo credentials)
     {
-      if (credentials != null && Connection == null)
+      await semaphoreSlim.WaitAsync();
+      try
       {
-        try
+        if (credentials != null && Connection == null)
         {
           await OpenConnection();
 
@@ -35,13 +39,17 @@ namespace PCloudClient
 
           IsLoggedIn = true;
         }
-        catch (Exception ex)
-        {
-          logger.Log(ex);
+      }
+      catch (Exception ex)
+      {
+        logger.Log(ex);
 
-          Connection = null;
-          IsLoggedIn = false;
-        }
+        Connection = null;
+        IsLoggedIn = false;
+      }
+      finally
+      {
+        semaphoreSlim.Release();
       }
 
       return IsLoggedIn;

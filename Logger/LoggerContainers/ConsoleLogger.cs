@@ -8,7 +8,7 @@ namespace Logger
   {
     public ConsoleLogger()
     {
-      
+
     }
 
     #region Methods
@@ -17,6 +17,10 @@ namespace Logger
     private bool isDisposed;
     public Task Log(MessageType messageType, string message)
     {
+#if !DEBUG
+  return Task.CompletedTask;
+#endif
+
       lock (batton)
       {
         return Task.Run(() =>
@@ -70,7 +74,7 @@ namespace Logger
       }
     }
 
-    #endregion 
+    #endregion
 
     public void Dispose()
     {

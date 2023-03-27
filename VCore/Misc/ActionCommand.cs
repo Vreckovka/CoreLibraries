@@ -49,6 +49,11 @@ namespace VCore.WPF.Misc
 
     public void Execute(object parameter)
     {
+      if (parameter is string stringParameter && bool.TryParse(stringParameter, out var boolValue))
+      {
+        parameter = boolValue;
+      }
+
       if (parameter is TArgument argument)
       {
         _action(argument);

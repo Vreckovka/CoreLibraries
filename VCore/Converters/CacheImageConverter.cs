@@ -25,7 +25,7 @@ namespace VCore.WPF.Converters
     public int? DecodeWidth { get; set; }
     public int? DecodeHeight { get; set; }
 
-    public static Dictionary<string, List<CacheImageConverter>> AllConverters = new Dictionary<string, List<CacheImageConverter>>();
+    //public static Dictionary<string, List<CacheImageConverter>> AllConverters = new Dictionary<string, List<CacheImageConverter>>();
     string lastLoadedImagePath;
     BitmapImage lastLoadedImage;
 
@@ -109,31 +109,31 @@ namespace VCore.WPF.Converters
         lastLoadedImagePath = path;
         lastLoadedImage = bitmapImage;
 
-        if (!AllConverters.ContainsKey(path))
-        {
-          AllConverters.Add(path, new List<CacheImageConverter>()
-        {
-          this
-        });
-        }
-        else
-        {
-          var allConvertes = AllConverters[path];
+        //if (!AllConverters.ContainsKey(path))
+        //{
+        //  AllConverters.Add(path, new List<CacheImageConverter>()
+        //{
+        //  this
+        //});
+        //}
+        //else
+        //{
+        //  var allConvertes = AllConverters[path];
 
-          if (allConvertes == null)
-          {
-            allConvertes = new List<CacheImageConverter>()
-          {
-            this
-          };
-          }
-          else if (!allConvertes.Contains(this))
-          {
-            allConvertes.Add(this);
-          }
+        //  if (allConvertes == null)
+        //  {
+        //    allConvertes = new List<CacheImageConverter>()
+        //  {
+        //    this
+        //  };
+        //  }
+        //  else if (!allConvertes.Contains(this))
+        //  {
+        //    allConvertes.Add(this);
+        //  }
 
-          AllConverters[path] = allConvertes;
-        }
+        //  AllConverters[path] = allConvertes;
+        //}
 
 
         return bitmapImage;
@@ -163,19 +163,19 @@ namespace VCore.WPF.Converters
 
     public static void RefreshDictionary(string imagePath)
     {
-      if (AllConverters.TryGetValue(imagePath, out var converters))
-      {
-        if (converters != null)
-        {
-          foreach (var converter in converters)
-          {
-            converter.lastLoadedImage = null;
-            converter.lastLoadedImagePath = null;
-          }
+      //if (AllConverters.TryGetValue(imagePath, out var converters))
+      //{
+      //  if (converters != null)
+      //  {
+      //    foreach (var converter in converters)
+      //    {
+      //      converter.lastLoadedImage = null;
+      //      converter.lastLoadedImagePath = null;
+      //    }
 
-          AllConverters[imagePath] = null;
-        }
-      }
+      //    AllConverters[imagePath] = null;
+      //  }
+      //}
     }
 
     #endregion

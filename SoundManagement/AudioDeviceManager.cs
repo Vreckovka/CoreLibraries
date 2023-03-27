@@ -12,6 +12,7 @@ using CSCore.CoreAudioAPI;
 using CSCore.Win32;
 using VCore;
 using VCore.Standard;
+using VCore.WPF;
 
 
 namespace SoundManagement
@@ -107,7 +108,7 @@ namespace SoundManagement
       {
         if (value != actualVolume)
         {
-         
+
           SetVolume(false, value);
         }
       }
@@ -190,7 +191,7 @@ namespace SoundManagement
 
     public void RefreshAudioDevices()
     {
-      Application.Current.Dispatcher.Invoke(() =>
+      VSynchronizationContext.InvokeOnDispatcher(() =>
       {
         var devices = GetDevices().ToList();
 
@@ -210,13 +211,8 @@ namespace SoundManagement
           }
         }
 
-        foreach (var device in SoundDevices)
-        {
-          var deviceDevice = devices.SingleOrDefault(x => x.ID == device.ID);
+        UpdateIndexes(devices);
 
-          if (deviceDevice != null)
-            device.Index = deviceDevice.Index;
-        }
 
         var defaultEndPoint = mMDeviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
@@ -227,6 +223,22 @@ namespace SoundManagement
     }
 
     #endregion
+
+    public void UpdateIndexes(List<SoundDevice> devices = null)
+    {
+      if (devices == null)
+      {
+        devices = GetDevices().ToList();
+      }
+
+      foreach (var device in SoundDevices)
+      {
+        var deviceDevice = devices.SingleOrDefault(x => x.ID == device.ID);
+
+        if (deviceDevice != null)
+          device.Index = deviceDevice.Index;
+      }
+    }
 
     #region SetSelectedSoundDevice
 
@@ -327,7 +339,7 @@ namespace SoundManagement
 
     private void VolumeCallBack_NotifyRecived(object sender, AudioEndpointVolumeCallbackEventArgs e)
     {
-      Application.Current.Dispatcher.Invoke(() =>
+      VSynchronizationContext.InvokeOnDispatcher(() =>
       {
         SetVolume(true, e.MasterVolume * 100);
         SetIsMuted(true, e.IsMuted);
@@ -340,7 +352,7 @@ namespace SoundManagement
 
     public void OnDeviceStateChanged(string deviceId, DeviceState newState)
     {
-      Application.Current.Dispatcher.Invoke(() =>
+      VSynchronizationContext.InvokeOnDispatcher(() =>
       {
         if (newState == DeviceState.UnPlugged)
         {
