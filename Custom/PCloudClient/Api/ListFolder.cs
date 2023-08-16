@@ -48,7 +48,7 @@ namespace PCloudClient.Api
 
       if (recursive)
       {
-        result.AddRange(GetRecursiveFiles(folder));
+        result = GetRecursiveFiles(folder).ToList();
       }
 
       return result.ToArray();

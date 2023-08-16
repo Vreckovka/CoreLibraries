@@ -42,7 +42,7 @@ namespace VCore.WPF
   {
     protected Stopwatch stopWatch;
     protected IKernel Kernel;
-    protected bool isConsoleUp = false;
+    private bool isConsoleUp = false;
     protected ILogger logger;
     protected IWindowManager windowManager;
 
@@ -62,10 +62,6 @@ namespace VCore.WPF
 
     protected override void OnStartup(StartupEventArgs e)
     {
-#if DEBUG
-      IsConsoleVisible = true;
-#endif
-
       stopWatch = new Stopwatch();
       stopWatch.Start();
 
@@ -78,6 +74,10 @@ namespace VCore.WPF
 
       VSynchronizationContext.UISynchronizationContext = SynchronizationContext.Current;
       VSynchronizationContext.UIDispatcher = Application.Current.Dispatcher;
+
+#if DEBUG
+      //IsConsoleVisible = true;
+#endif
 
       base.OnStartup(e);
     }

@@ -20,7 +20,7 @@ namespace VCore.WPF.Modularity.RegionProviders
     private List<IRegionManager> regionManagers = new List<IRegionManager>();
     protected readonly IViewModelsFactory viewModelsFactory;
     private readonly INavigationProvider navigationProvider;
-    private readonly IViewFactory viewFactory;
+    private readonly IBaseFactory baseFactory;
     private List<IRegistredView> Views = new List<IRegistredView>();
     private Dictionary<IRegistredView, IDisposable> ActivateSubscriptions = new Dictionary<IRegistredView, IDisposable>();
 
@@ -30,11 +30,11 @@ namespace VCore.WPF.Modularity.RegionProviders
 
     public RegionProvider(
       IRegionManager regionManager,
-      IViewFactory viewFactory,
+      IBaseFactory baseFactory,
       IViewModelsFactory viewModelsFactory,
       INavigationProvider navigationProvider)
     {
-      this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
+      this.baseFactory = baseFactory ?? throw new ArgumentNullException(nameof(baseFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
       this.navigationProvider = navigationProvider ?? throw new ArgumentNullException(nameof(navigationProvider));
 
@@ -151,7 +151,7 @@ namespace VCore.WPF.Modularity.RegionProviders
     {
       var region = regionManager.Regions[regionName];
 
-      return new RegistredView<TView, TViewModel>(region, viewFactory, viewModelsFactory, viewModel, initializeImmediately);
+      return new RegistredView<TView, TViewModel>(region, baseFactory, viewModelsFactory, viewModel, initializeImmediately);
     }
 
     #endregion CreateView

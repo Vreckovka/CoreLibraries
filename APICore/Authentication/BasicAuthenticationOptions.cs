@@ -4,6 +4,6 @@ namespace APICore.Authentication
 {
   public class BasicAuthenticationOptions : AuthenticationSchemeOptions
   {
-
+   
   }
 }

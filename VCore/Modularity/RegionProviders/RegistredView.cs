@@ -15,7 +15,7 @@ namespace VCore.WPF.Modularity.RegionProviders
 
     #region Fields
 
-    private readonly IViewFactory viewFactory;
+    private readonly IBaseFactory baseFactory;
     private readonly IViewModelsFactory viewModelsFactory;
 
     #endregion Fields
@@ -24,22 +24,22 @@ namespace VCore.WPF.Modularity.RegionProviders
 
     public RegistredView(
       IRegion region,
-      IViewFactory viewFactory,
+      IBaseFactory baseFactory,
       IViewModelsFactory viewModelsFactory,
       TViewModel viewModel = null
-    ) : this(region, viewFactory, viewModelsFactory, viewModel, false)
+    ) : this(region, baseFactory, viewModelsFactory, viewModel, false)
     {
     }
 
     public RegistredView(
       IRegion region,
-      IViewFactory viewFactory,
+      IBaseFactory baseFactory,
       IViewModelsFactory viewModelsFactory,
       TViewModel viewModel = null,
       bool initializeImmediately = false
     )
     {
-      this.viewFactory = viewFactory ?? throw new ArgumentNullException(nameof(viewFactory));
+      this.baseFactory = baseFactory ?? throw new ArgumentNullException(nameof(baseFactory));
       this.viewModelsFactory = viewModelsFactory ?? throw new ArgumentNullException(nameof(viewModelsFactory));
 
       Guid = Guid.NewGuid();
@@ -213,7 +213,7 @@ namespace VCore.WPF.Modularity.RegionProviders
     {
       return Application.Current?.Dispatcher?.Invoke(() =>
       {
-        return viewFactory.Create<TView>();
+        return baseFactory.Create<TView>();
       });
     }
 

@@ -17,13 +17,9 @@ namespace Logger
     private bool isDisposed;
     public Task Log(MessageType messageType, string message)
     {
-#if !DEBUG
-  return Task.CompletedTask;
-#endif
-
-      lock (batton)
+      return Task.Run(() =>
       {
-        return Task.Run(() =>
+        lock (batton)
         {
           if (isDisposed)
           {
@@ -32,8 +28,6 @@ namespace Logger
 
           try
           {
-            Console.Write("");
-
             switch (messageType)
             {
               case MessageType.Error:
@@ -51,27 +45,31 @@ namespace Logger
               case MessageType.Inform:
                 Console.ForegroundColor = ConsoleColor.Gray;
                 break;
+
+              case MessageType.Inform2:
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                break;
             }
 
             //… makes beep sound
             var fixedMessage = message.Replace("…", "");
 
-            Console.Write("");
-            Console.Write("");
-            Console.Write("");
+            //Console.Write("");
+            //Console.Write("");
+            //Console.Write("");
 
             Console.WriteLine(fixedMessage);
 
-            Console.Write("");
-            Console.Write("");
-            Console.Write("");
+            //Console.Write("");
+            //Console.Write("");
+            //Console.Write("");
           }
           finally
           {
             Console.ResetColor();
           }
-        });
-      }
+        }
+      });
     }
 
     #endregion

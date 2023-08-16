@@ -73,7 +73,8 @@ namespace PCloudClient
 
     #region ExecuteAction
 
-    private async Task<TResult> ExecuteAction<TResult>(Func<Connection, TResult> action, bool permisionless = false)
+    private async Task<TResult> ExecuteAction<TResult>
+      (Func<Connection, TResult> action, bool permisionless = false)
     {
       try
       {
@@ -122,18 +123,18 @@ namespace PCloudClient
             logger.Log(ex);
             pCloudContextAuth?.Dispose();
             pCloudContextAuth = null;
-            throw;
+            return default;
           }
         }
 
-        return default(TResult);
+        return default;
       }
       catch (Exception ex)
       {
         logger.Log(ex);
         pCloudContextAuth?.Dispose();
         pCloudContextAuth = null;
-        throw;
+        return default;
       }
     }
 

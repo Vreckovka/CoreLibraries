@@ -84,18 +84,24 @@ namespace VCore.WPF.Managers
 
     #region ShowDeletePrompt
 
-    public PromptResult ShowDeletePrompt(string itemName)
-    {
-      return ShowDeletePrompt(itemName, "Do you really want to delete item ", " ?", "Delete");
-    }
-
     public PromptResult ShowDeletePrompt(
       string itemName,
-      string header,
-      string beforeText,
-      string afterText)
+      string header = "Delete",
+      string beforeText = "Do you really want to delete item ", 
+      string afterText = " ?")
     {
-      var vm = new DeleteItemPromptViewModel()
+      return ShowQuestionPrompt<DeletePromptView>(itemName, header, beforeText, afterText);
+    }
+
+    #endregion
+
+    public PromptResult ShowQuestionPrompt<TView>(
+      string itemName = "",
+      string header = "",
+      string beforeText = "",
+      string afterText = "?") where TView : IView, new()
+    {
+      var vm = new BasePromptViewModel()
       {
         Text = beforeText,
         Title = header,
@@ -103,12 +109,29 @@ namespace VCore.WPF.Managers
         AfterText = afterText
       };
 
-      ShowPrompt<DeletePromptView>(vm);
+      ShowPrompt<TView>(vm);
 
       return vm.PromptResult;
     }
 
-    #endregion
+    public PromptResult ShowQuestionPrompt(
+      string beforeText ,
+      string header = "",
+      string itemName = "",
+      string afterText = "?")
+    {
+      var vm = new BasePromptViewModel()
+      {
+        Text = beforeText,
+        Title = header,
+        ItemName = itemName,
+        AfterText = afterText
+      };
+
+      ShowPrompt<GenericPromptView>(vm);
+
+      return vm.PromptResult;
+    }
 
     #region ShowErrorPrompt
 

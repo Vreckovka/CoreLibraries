@@ -2,7 +2,7 @@
 
 namespace VCore.Standard.Factories.Views
 {
-  public interface IViewFactory
+  public interface IBaseFactory
   {
     TView Create<TView>();
   }

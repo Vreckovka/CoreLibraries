@@ -14,7 +14,13 @@ namespace VCore.WPF.Interfaces.Managers
     PromptResult ShowQuestionPrompt<TView, TViewModel>(TViewModel viewModel)
       where TView : IView, new()
       where TViewModel : BasePromptViewModel;
- 
+
+    public PromptResult ShowQuestionPrompt(
+      string beforeText = "",
+      string header = "",
+      string itemName = "",
+      string afterText = "");
+
     /// <summary>
     /// You can use PromptViewModel
     /// </summary>

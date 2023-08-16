@@ -110,7 +110,7 @@ namespace VCore.WPF.ViewModels
 
     #region CloseCommand
 
-    private ActionCommand<Window> closeCommand;
+    protected ActionCommand<Window> closeCommand;
 
     public ICommand CloseCommand
     {

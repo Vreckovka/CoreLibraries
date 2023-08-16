@@ -5,6 +5,7 @@
     Inform,
     Success,
     Error,
-    Warning
+    Warning,
+    Inform2
   }
 }

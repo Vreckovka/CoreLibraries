@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Windows;
 using System.Windows.Data;
@@ -25,7 +26,6 @@ namespace VCore.WPF.Converters
     public int? DecodeWidth { get; set; }
     public int? DecodeHeight { get; set; }
 
-    //public static Dictionary<string, List<CacheImageConverter>> AllConverters = new Dictionary<string, List<CacheImageConverter>>();
     string lastLoadedImagePath;
     BitmapImage lastLoadedImage;
 
@@ -85,6 +85,7 @@ namespace VCore.WPF.Converters
           bitmapImage.StreamSource = GetEmptyImage();
         }
 
+       
         if (File.Exists(path) && path != null)
         {
           bitmapImage.StreamSource = new FileStream(path, FileMode.Open, FileAccess.Read);

@@ -84,7 +84,6 @@ namespace Logger
 
     public void Log(Exception ex, bool logToFile = true, bool logErrorToFile = true)
     {
-
 #if DEBUG
       logToFile = false;
       logErrorToFile = false;
@@ -103,7 +102,7 @@ namespace Logger
       fileLoggerContainer.Dispose();
 
       isDisposed = true;
-     }
+    }
   }
 
   public class FakeLogger : ILogger

@@ -12,7 +12,7 @@ using VCore.Standard.ViewModels.TreeView;
 
 namespace VCore.WPF.ItemsCollections
 {
-  public class ItemsViewModel<T> : ViewModel where T : class, INotifyPropertyChanged
+  public class ItemsViewModel<T> : ViewModel where T : class, INotifyPropertyChanged, ISelectable
   {
 
     private ReplaySubject<T> actualItemSubject = new ReplaySubject<T>(1);

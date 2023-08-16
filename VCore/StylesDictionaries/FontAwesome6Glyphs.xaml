@@ -56,6 +56,7 @@
     <system:String x:Key="arrow-up"></system:String>
     <system:String x:Key="arrow-down"></system:String>
     <system:String x:Key="scroll"></system:String>
+    <system:String x:Key="power-off"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"

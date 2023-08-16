@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using Logger;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -178,22 +179,29 @@ namespace ChromeDriverScrapper
           {
             await semaphoreSlim.WaitAsync();
 
-            var majorVersion = version.Split(".")[0];
-            var latestMajorVersion = wc.DownloadString($"https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{majorVersion}");
-
-            var downloadPage = $"https://chromedriver.storage.googleapis.com/{latestMajorVersion}/{fileName}";
+            var downloadPage = GetChromeDriverDownloadString(version, wc);
 
             wc.DownloadFile(new Uri(downloadPage), fileName);
 
             File.Delete("chromedriver.exe");
 
-            ZipFile.ExtractToDirectory(fileName, chromeDriverLocation);
+            ZipFile.ExtractToDirectory(fileName, chromeDriverLocation, true);
+
+            //Extracted zip contains inner folder
+            if(!File.Exists(Path.Combine(chromeDriverDirectory, chromeDriverFileName)))
+            {
+              var filePath = Path.Combine(chromeDriverDirectory,"chromedriver-win32",chromeDriverFileName);
+
+              File.Move(filePath, Path.Combine(chromeDriverDirectory, chromeDriverFileName));
+            }
 
             File.Delete(fileName);
           }
           catch (Exception ex)
           {
-            throw;
+            var exc = new Exception("Chrome driver was not initialized properly!", ex);
+
+            throw exc;
           }
           finally
           {
@@ -201,6 +209,31 @@ namespace ChromeDriverScrapper
           }
         }
       });
+    }
+
+
+    private string GetChromeDriverDownloadString(string desiredVersion, WebClient webClient)
+    {
+      string result = null;
+
+      var json = webClient.DownloadString($"https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json");
+      var latestStableVersion = System.Text.Json.JsonSerializer.Deserialize<ChromeForTestingJsonResponse>(json);
+
+      var split = desiredVersion.Split(".");
+      var onlyFix= $"{split[0]}.{split[1]}.{split[2]}";
+
+      result = latestStableVersion.versions.FirstOrDefault(x => x.version.Contains(onlyFix))?.downloads.chromedriver.SingleOrDefault(x => x.platform == "win32")?.url;
+
+      if (string.IsNullOrEmpty(result))
+      {
+        var majorVersion = desiredVersion.Split(".")[0];
+        var latestMajorVersion = webClient.DownloadString($"https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{majorVersion}");
+
+
+        result = $"https://chromedriver.storage.googleapis.com/{latestMajorVersion}/chromedriver_win32.zip";
+      }
+
+      return result;
     }
 
     #endregion
@@ -394,5 +427,42 @@ namespace ChromeDriverScrapper
     }
 
     #endregion
+
+
+  }
+
+  public class ChromeForTestingJsonResponse
+  {
+    public DateTime timestamp { get; set; }
+    public List<Version> versions { get; set; }
+
+    public class Chrome
+    {
+      public string platform { get; set; }
+      public string url { get; set; }
+    }
+
+    public class Chromedriver
+    {
+      public string platform { get; set; }
+      public string url { get; set; }
+    }
+
+    public class Downloads
+    {
+      public List<Chrome> chrome { get; set; }
+      public List<Chromedriver> chromedriver { get; set; }
+    }
+
+
+  
+    
+
+    public class Version
+    {
+      public string version { get; set; }
+      public string revision { get; set; }
+      public Downloads downloads { get; set; }
+    }
   }
 }

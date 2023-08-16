@@ -6,7 +6,7 @@ namespace DomainCore.BaseDomainClasses
   public abstract class DomainEntity
   {
     [Key, Column(Order = 0)]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
   }
 }

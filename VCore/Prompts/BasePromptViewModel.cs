@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using VCore.Standard.Modularity.Interfaces;
 using VCore.WPF.ViewModels.Prompt;
 
@@ -30,8 +31,13 @@ namespace VCore.WPF.Prompts
     public BasePromptViewModel()
     {
       CanExecuteOkCommand = () => { return true; };
+      CancelVisibility = Visibility.Visible;
     }
 
     public string Text { get; set; }
+
+    public string ItemName { get; set; }
+
+    public string AfterText { get; set; }
   }
 }

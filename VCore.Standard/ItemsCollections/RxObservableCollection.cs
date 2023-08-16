@@ -161,6 +161,12 @@ namespace VCore.ItemsCollections
 
     #region Methods
 
+    public void SortView()
+    {
+      if (SortType != null)
+        View.Sort(SortType);
+    }
+
     #region Dispose
 
     public void Dispose()
@@ -195,8 +201,7 @@ namespace VCore.ItemsCollections
     {
       itemUpdatedSubject?.OnNext(eventPattern);
 
-      if (SortType != null)
-        View.Sort(SortType);
+
     }
 
     #endregion
@@ -253,12 +258,30 @@ namespace VCore.ItemsCollections
       CollectionChanged += ObservableItems_CollectionChanged;
     }
 
+    /// <summary>
+    /// Notifications are paused
+    /// </summary>
+    /// <param name="items"></param>
     public void AddRange(IEnumerable<TItem> items)
     {
+      DisableNotification();
+
       foreach (var item in items)
       {
         Add(item);
+
+        itemsDisposables.Add(Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+          x => item.PropertyChanged += x,
+          x => item.PropertyChanged -= x).Subscribe(ItemPropertyChanged));
+
+        itemAddedSubject.OnNext(new EventPattern<TItem>(this, item));
+
+        View.Add(item);
       }
+
+      OrderedCollection = this.OrderBy(KeySelector);
+
+      DisableNotification();
     }
 
     public void RemoveRange(IEnumerable<TItem> items)

@@ -13,7 +13,7 @@ namespace VCore.Standard.Modularity.NinjectModules
     public override void RegisterFactories()
     {
       Kernel.Bind<IViewModelsFactory>().To<BaseViewModelsFactory>();
-      Kernel.Bind<IViewFactory>().To<BaseViewFactory>(); 
+      Kernel.Bind<IBaseFactory>().To<BaseBaseFactory>(); 
     }
 
 
