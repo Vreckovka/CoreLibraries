@@ -14,9 +14,7 @@ namespace VCore.Standard
         return input;
       }
 
-      Regex rgx = new Regex("[^a-zA-Z0-9]");
-
-      return rgx.Replace(input.ToLower(), "");
+      return StringHelper.GetClearString(input.ToLower());
     }
 
     #endregion

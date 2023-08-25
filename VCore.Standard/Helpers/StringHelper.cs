@@ -219,7 +219,33 @@ namespace VCore
 
     #endregion
 
-  
 
+    /// <summary>
+    /// [^a-zA-Z0-9 -] returns only letters and numbers
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static string GetClearString(string text)
+    {
+      char[] arr = text.ToCharArray();
+
+      arr = Array.FindAll<char>(arr, c => char.IsLetterOrDigit(c));
+
+      return new string(arr);
+    }
+
+    #region GetNormalizedName
+
+    public static string GetNormalizedName(string input)
+    {
+      if (string.IsNullOrEmpty(input))
+      {
+        return input;
+      }
+
+      return GetClearString(input.RemoveDiacritics().ToLower());
+    }
+
+    #endregion
   }
 }

@@ -57,6 +57,7 @@
     <system:String x:Key="arrow-down"></system:String>
     <system:String x:Key="scroll"></system:String>
     <system:String x:Key="power-off"></system:String>
+    <system:String x:Key="truck-plow"></system:String>
 
     <Style x:Key="FontAwesomeGlyphStyle"
            BasedOn="{StaticResource {x:Type controls:PathButton}}"
