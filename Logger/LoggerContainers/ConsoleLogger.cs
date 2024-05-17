@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Logger
 {
-  public class ConsoleLogger : ILoggerContainer
+  public class ConsoleLogger : BaseLogger, ILoggerContainer
   {
     public ConsoleLogger()
     {
@@ -15,8 +15,10 @@ namespace Logger
 
     private static object batton = new object();
     private bool isDisposed;
-    public Task Log(MessageType messageType, string message)
+    public override Task Log(MessageType messageType, string message)
     {
+      base.Log(messageType, message);
+
       return Task.Run(() =>
       {
         lock (batton)
@@ -33,21 +35,23 @@ namespace Logger
               case MessageType.Error:
                 Console.ForegroundColor = ConsoleColor.Red;
                 break;
-
               case MessageType.Warning:
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 break;
-
               case MessageType.Success:
                 Console.ForegroundColor = ConsoleColor.Green;
                 break;
-
+              case MessageType.Success2:
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                break;
               case MessageType.Inform:
                 Console.ForegroundColor = ConsoleColor.Gray;
                 break;
-
               case MessageType.Inform2:
                 Console.ForegroundColor = ConsoleColor.Cyan;
+                break;
+              default:
+                Console.ForegroundColor = ConsoleColor.Gray;
                 break;
             }
 

@@ -247,5 +247,13 @@ namespace VCore
     }
 
     #endregion
+
+    public static string ToTitleCase(this string title)
+    {
+      if (!string.IsNullOrEmpty(title))
+        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(title.ToLower());
+
+      return title;
+    }
   }
 }

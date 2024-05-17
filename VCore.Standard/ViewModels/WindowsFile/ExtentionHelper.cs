@@ -19,6 +19,8 @@
         case ".mp3":
         case ".ogg":
         case ".m4a":
+        case ".wma":
+        case ".m4b":
           {
             return FileType.Sound;
           }

@@ -4,6 +4,7 @@
   {
     Inform,
     Success,
+    Success2,
     Error,
     Warning,
     Inform2

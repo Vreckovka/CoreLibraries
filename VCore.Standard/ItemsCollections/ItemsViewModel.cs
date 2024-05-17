@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using VCore.ItemsCollections;
@@ -16,11 +17,16 @@ namespace VCore.WPF.ItemsCollections
   {
 
     private ReplaySubject<T> actualItemSubject = new ReplaySubject<T>(1);
-
+    private SerialDisposable serialDisposable = new SerialDisposable();
 
     public ItemsViewModel()
     {
-      View.ItemUpdated.Subscribe(OnViewItemChanged);
+      serialDisposable.Disposable = View.ItemUpdated.Subscribe(OnViewItemChanged);
+    }
+
+    public ItemsViewModel(IEnumerable<T> items)
+    {
+      AddRange(items);
     }
 
     #region Properties
@@ -73,14 +79,7 @@ namespace VCore.WPF.ItemsCollections
         if (value != selectedItem)
         {
           selectedItem = value;
-
-          if (selectedItem is ISelectable selectable)
-          {
-            selectable.IsSelected = true;
-          }
-
           actualItemSubject.OnNext(selectedItem);
-
           RaisePropertyChanged();
         }
       }
@@ -168,8 +167,7 @@ namespace VCore.WPF.ItemsCollections
     }
 
     #endregion
-
-  
+    
     #region CanAddToView
 
     private bool CanAddToView(T item)
@@ -190,14 +188,31 @@ namespace VCore.WPF.ItemsCollections
     {
       if (eventPattern.Sender is ISelectable selectable && eventPattern.EventArgs.PropertyName == nameof(ISelectable.IsSelected))
       {
+        serialDisposable.Disposable.Dispose();
+
+        var oldItem = SelectedItem;
+        var newItem = (T)eventPattern.Sender;
+
         if (selectable.IsSelected)
         {
-          SelectedItem = (T)eventPattern.Sender;
+          SelectedItem = newItem;
+
+          if (newItem is ISelectable newSelectable)
+          {
+            newSelectable.IsSelected = true;
+          }
         }
         else
         {
           SelectedItem = null;
         }
+
+        if (oldItem is ISelectable oldSelectable && oldItem != null)
+        {
+          oldSelectable.IsSelected = false;
+        }
+
+        serialDisposable.Disposable = View.ItemUpdated.Skip(1).Subscribe(OnViewItemChanged);
       }
     }
 

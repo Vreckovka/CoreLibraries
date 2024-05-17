@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using VCore.Standard.Factories.ViewModels;
+using VCore.Standard.Providers;
 using VCore.WPF.ViewModels.Navigation;
 using Application = System.Windows.Application;
 
@@ -18,10 +19,16 @@ namespace VCore.WPF.ViewModels
         Application.Current.MainWindow.Closed += MainWindow_Closed;
 
       Window = Application.Current.MainWindow;
+
+      var assembly = System.Reflection.Assembly.GetEntryAssembly();
+
+      BuildVersion = BasicInformationProvider.GetFormattedBuildVersion(assembly);
     }
 
     public IViewModelsFactory ViewModelsFactory { get; set; }
     public NavigationViewModel NavigationViewModel { get; set; } = new NavigationViewModel();
+
+    public string BuildVersion { get; }
 
 
     private Visibility originalVisibility = Visibility.Visible;

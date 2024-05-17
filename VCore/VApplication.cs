@@ -110,7 +110,9 @@ namespace VCore.WPF
       ShowConsole();
 
 
-      var version = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+      var assembly = System.Reflection.Assembly.GetEntryAssembly();
+
+      BuildVersion = BasicInformationProvider.GetFormattedBuildVersion(assembly);
 
       //Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
@@ -133,9 +135,6 @@ namespace VCore.WPF
       {
         isConsoleUp = WinConsole.CreateConsole();
 
-        Console.ForegroundColor = ConsoleColor.Green;
-
-        Console.WriteLine("CONSOLE IS READY");
       }
     }
 
@@ -273,10 +272,10 @@ namespace VCore.WPF
       base.OnInitialized();
 
       SplashScreenManager.AddProgress(25);
-
       stopWatch.Stop();
-
-      Console.WriteLine(stopWatch.Elapsed);
+      
+      Console.ForegroundColor = ConsoleColor.DarkGray;
+      Console.WriteLine($"Console is ready");
     }
 
     #endregion
@@ -325,14 +324,14 @@ namespace VCore.WPF
       {
         logger.Log(exception);
 
-        if (Current?.Dispatcher != null && !(exception is ResourceReferenceKeyNotFoundException))
-        {
-          await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
-          {
-            if (!FullScreenManager.IsFullscreen)
-              windowManager.ShowErrorPrompt(exception);
-          });
-        }
+        //if (Current?.Dispatcher != null && !(exception is ResourceReferenceKeyNotFoundException))
+        //{
+        //  await VSynchronizationContext.InvokeOnDispatcherAsync(() =>
+        //  {
+        //    if (!FullScreenManager.IsFullscreen)
+        //      windowManager.ShowErrorPrompt(exception);
+        //  });
+        //}
 
         OnUnhandledExceptionCaught(exception);
       }
@@ -412,9 +411,9 @@ namespace VCore.WPF
 
   public static class VSynchronizationContext
   {
-    public static SynchronizationContext UISynchronizationContext { get; internal set; }
+    public static SynchronizationContext UISynchronizationContext { get; set; }
 
-    public static Dispatcher UIDispatcher { get; internal set; }
+    public static Dispatcher UIDispatcher { get; set; }
 
     public static void PostOnUIThread(Action action)
     {

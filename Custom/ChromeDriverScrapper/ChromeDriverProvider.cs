@@ -32,7 +32,6 @@ namespace ChromeDriverScrapper
 
     public ChromeDriverProvider(ILogger logger) : this()
     {
-
       this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -44,9 +43,9 @@ namespace ChromeDriverScrapper
 
     #region Initialize
 
-    public bool Initialize(string proxyServer = null, List<string> options = null)
+    public bool Initialize(string proxyServer = null, List<string> options = null, string downloadDirectory = null)
     {
-      return InitializeWithExceptionReturn(proxyServer, options) == null;
+      return InitializeWithExceptionReturn(proxyServer, options, downloadDirectory) == null;
     }
 
 
@@ -54,14 +53,14 @@ namespace ChromeDriverScrapper
 
     #region InitializeWithExceptionReturn
 
-    public Exception InitializeWithExceptionReturn(string proxyServer = null, List<string> options = null)
+    public Exception InitializeWithExceptionReturn(string proxyServer = null, List<string> options = null, string downloadDirectory = null)
     {
       if (!File.Exists(Path.Combine(chromeDriverDirectory, chromeDriverFileName)))
       {
         DownloadChromeDriverAsync(new WebClient().DownloadString("https://chromedriver.storage.googleapis.com/LATEST_RELEASE"), chromeDriverDirectory).GetAwaiter().GetResult();
       }
 
-      var result = InitializeChromeDriver(proxyServer, options);
+      var result = InitializeChromeDriver(proxyServer, options, downloadDirectory);
 
       if (result != null)
       {
@@ -86,7 +85,7 @@ namespace ChromeDriverScrapper
 
     private SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
-    public Exception InitializeChromeDriver(string proxyServer = null, List<string> options = null)
+    public Exception InitializeChromeDriver(string proxyServer = null, List<string> options = null, string downloadDirectory = null)
     {
       try
       {
@@ -120,7 +119,20 @@ namespace ChromeDriverScrapper
               "--ignore-certificate-errors",
               "--window-size=1920,1080"
             });
+
+
+            chromeOptions.AddUserProfilePreference("intl.accept_languages", "nl");
+            chromeOptions.AddUserProfilePreference("disable-popup-blocking", "true");
           }
+
+          if (downloadDirectory == null)
+          {
+            downloadDirectory = Directory.GetCurrentDirectory();
+          }
+
+          chromeOptions.AddUserProfilePreference("download.default_directory", downloadDirectory);
+
+
 
           if (proxyServer != null)
           {
@@ -188,9 +200,9 @@ namespace ChromeDriverScrapper
             ZipFile.ExtractToDirectory(fileName, chromeDriverLocation, true);
 
             //Extracted zip contains inner folder
-            if(!File.Exists(Path.Combine(chromeDriverDirectory, chromeDriverFileName)))
+            if (!File.Exists(Path.Combine(chromeDriverDirectory, chromeDriverFileName)))
             {
-              var filePath = Path.Combine(chromeDriverDirectory,"chromedriver-win32",chromeDriverFileName);
+              var filePath = Path.Combine(chromeDriverDirectory, "chromedriver-win32", chromeDriverFileName);
 
               File.Move(filePath, Path.Combine(chromeDriverDirectory, chromeDriverFileName));
             }
@@ -220,9 +232,9 @@ namespace ChromeDriverScrapper
       var latestStableVersion = System.Text.Json.JsonSerializer.Deserialize<ChromeForTestingJsonResponse>(json);
 
       var split = desiredVersion.Split(".");
-      var onlyFix= $"{split[0]}.{split[1]}.{split[2]}";
+      var onlyFix = $"{split[0]}.{split[1]}.{split[2]}";
 
-      result = latestStableVersion.versions.FirstOrDefault(x => x.version.Contains(onlyFix))?.downloads.chromedriver.SingleOrDefault(x => x.platform == "win32")?.url;
+      result = latestStableVersion.versions.FirstOrDefault(x => x.version.Contains(onlyFix))?.downloads?.chromedriver?.SingleOrDefault(x => x.platform == "win32")?.url;
 
       if (string.IsNullOrEmpty(result))
       {
@@ -282,7 +294,7 @@ namespace ChromeDriverScrapper
           return UseProxySite(url, out redirectedUrl);
         }
 
-        return SafeNavigate((x) => { }, url, out redirectedUrl);
+        return SafeNavigate((x) => { }, url, out redirectedUrl, secondsToWait, extraMiliseconds);
       }
     }
 
@@ -290,6 +302,11 @@ namespace ChromeDriverScrapper
     {
       lock (lockWait)
       {
+        if (!Initialize())
+        {
+          return null;
+        }
+
         var navigation = ChromeDriver.Navigate();
         navigation.GoToUrl(url);
 
@@ -375,10 +392,6 @@ namespace ChromeDriverScrapper
         }
       });
 
-      if ((Guid)waitResult == resultGuid)
-      {
-        return null;
-      }
 
       return waitResult;
     }
@@ -455,8 +468,8 @@ namespace ChromeDriverScrapper
     }
 
 
-  
-    
+
+
 
     public class Version
     {

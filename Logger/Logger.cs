@@ -29,7 +29,17 @@ namespace Logger
 
     public bool LogSuccess = true;
 
-    #endregion Properties
+    #region LoggerContainer
+
+    public ILoggerContainer LoggerContainer
+    {
+      get { return this.loggerContainer; }
+     
+    }
+
+    #endregion
+
+    #endregion
 
     #region AppDomain_UnhandledException
 
@@ -50,6 +60,7 @@ namespace Logger
       string message,
       bool logToFile = false,
       bool logErrorToFile = true,
+      bool simpleMessage = false,
       [CallerFilePath] string callerFilePath = null,
       [CallerMemberName] string methodName = "")
     {
@@ -60,7 +71,12 @@ namespace Logger
       {
         var className = Path.GetFileNameWithoutExtension(callerFilePath);
 
-        var log = $"[{type}|{DateTime.Now.ToString("hh:mm:ss")}]\t{className}.{methodName}()\t{message}";
+        string log = $"[{type}|{DateTime.Now.ToString("hh:mm:ss")}]\t{className}.{methodName}()\t{message}";
+        
+        if (simpleMessage)
+        {
+          log = message;
+        }
 
         if (type == MessageType.Success && !LogSuccess)
           return;
@@ -111,15 +127,19 @@ namespace Logger
     {
     }
 
+    public ILoggerContainer LoggerContainer { get; }
+
     public void Log(
       MessageType type,
       string message,
       bool logToFile = false,
       bool logErrorToFile = true,
+      bool simpleMessage = false,
       string callerFilePath = null,
       string methodName = "")
     {
     }
+
 
     public void Log(Exception ex, bool logToFile = true, bool logErrorToFile = true)
     {

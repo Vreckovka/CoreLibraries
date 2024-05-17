@@ -204,6 +204,7 @@ namespace VCore.WPF.ViewModels
 
     protected virtual void OnWindow_Loaded()
     {
+      Window.ResizeMode = ResizeMode.CanResizeWithGrip;
     }
   }
 }

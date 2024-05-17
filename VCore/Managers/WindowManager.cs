@@ -25,7 +25,7 @@ namespace VCore.WPF.Managers
 
     #region ShowPrompt
 
-    public void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new()
+    public void ShowPrompt<TView>(ViewModel viewModel, double width = 0, double height = 0) where TView : IView, new()
     {
       lock (windowLock)
       {
@@ -33,6 +33,13 @@ namespace VCore.WPF.Managers
 
         window.Loaded += Window_Loaded;
         window.Closed += Window_Closed;
+
+        if(width > 0 || height > 0)
+        {
+          window.Width = width;
+          window.Height = height;
+          window.SizeToContent = SizeToContent.Manual;
+        }
 
         if (overlayWindow == null)
         {
@@ -178,6 +185,7 @@ namespace VCore.WPF.Managers
           Application.Current?.MainWindow?.Focus();
           overlayWindow?.Close();
           overlayWindow = null;
+          FullScreenManager.IsMouseBlocked = false;
         }
       }
     }
@@ -193,6 +201,7 @@ namespace VCore.WPF.Managers
         if (sender is Window window)
         {
           windows.Add(window);
+          FullScreenManager.IsMouseBlocked = true;
         }
       }
     }

@@ -54,7 +54,7 @@ namespace VCore.WPF.LRC
           Id = id,
           Album = album,
           Artist = artist,
-          By = by,
+          By = by?.Trim().Replace("by", ""),
           Length = length,
           Title = title,
         };

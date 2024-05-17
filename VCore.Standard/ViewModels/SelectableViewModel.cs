@@ -1,10 +1,14 @@
-﻿namespace VCore.Standard
+﻿using VCore.Standard.ViewModels.TreeView;
+
+namespace VCore.Standard
 {
-  public abstract class SelectableViewModel<TModel> : ViewModel<TModel>
+  public abstract class SelectableViewModel<TModel> : ViewModel<TModel>, ISelectable
   {
     protected SelectableViewModel(TModel model) : base(model)
     {
     }
+
+    #region IsSelected
 
     private bool isSelected;
 
@@ -24,6 +28,30 @@
         }
       }
     }
+
+    #endregion
+
+    #region IsEnabled
+
+    private bool isEnabled = true;
+
+    public bool IsEnabled
+    {
+      get
+      {
+        return isEnabled;
+      }
+      set
+      {
+        if (value != isEnabled)
+        {
+          isEnabled = value;
+          RaisePropertyChanged();
+        }
+      }
+    }
+
+    #endregion
 
     protected virtual void OnSelectionChanged(bool newValue)
     {

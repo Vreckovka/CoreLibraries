@@ -5,11 +5,13 @@ namespace Logger
 {
     public interface ILogger : IDisposable
     {
+      public ILoggerContainer LoggerContainer { get;  }
       void Log(
         MessageType type,
         string message,
         bool logToFile = false,
         bool logErrorToFile = true,
+        bool simpleMessage = false,
         [CallerFilePath] string callerFilePath = null,
         [CallerMemberName] string methodName = "");
 

@@ -26,7 +26,7 @@ namespace VCore.WPF.Interfaces.Managers
     /// </summary>
     /// <typeparam name="TView"></typeparam>
     /// <param name="viewModel"></param>
-    void ShowPrompt<TView>(ViewModel viewModel) where TView : IView, new();
+    void ShowPrompt<TView>(ViewModel viewModel, double width = 0, double height = 0) where TView : IView, new();
     void ShowErrorPrompt(Exception ex);
     void ShowErrorPrompt(string message);
     Window GetWindowView<TView>(object dataContext, bool setOwner = true) where TView : IView, new();

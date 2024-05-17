@@ -5,20 +5,6 @@ namespace VCore.Standard
 {
   public static class PathStringProvider
   {
-    #region GetNormalizedName
-
-    public static string GetNormalizedName(string input)
-    {
-      if (string.IsNullOrEmpty(input))
-      {
-        return input;
-      }
-
-      return StringHelper.GetClearString(input.ToLower());
-    }
-
-    #endregion
-
     #region GetPathValidName
 
     public static string GetPathValidName(string name)

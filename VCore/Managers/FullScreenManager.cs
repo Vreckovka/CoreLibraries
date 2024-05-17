@@ -5,6 +5,7 @@ using System.Reactive.Subjects;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
+using VCore.WPF.Interfaces.Managers;
 
 namespace VCore.WPF.Managers
 {
@@ -138,7 +139,7 @@ namespace VCore.WPF.Managers
 
     private static void SafeOverrideCursor(Cursor cursor)
     {
-      VSynchronizationContext.PostOnUIThread(new Action(() =>
+      VSynchronizationContext.InvokeOnDispatcher(new Action(() =>
       {
         Mouse.OverrideCursor = cursor;
       }));

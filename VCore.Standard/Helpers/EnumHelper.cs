@@ -35,5 +35,15 @@ namespace VCore.Standard.Helpers
 
       return asd;
     }
+
+    public static IEnumerable<Enum> GetAllValues(Type t)
+    {
+      if (!t.IsEnum)
+        throw new ArgumentException($"{nameof(t)} must be an enum type");
+
+      var asd = Enum.GetValues(t).Cast<Enum>().ToList();
+
+      return asd;
+    }
   }
 }
