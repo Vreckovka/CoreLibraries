@@ -1,66 +1,70 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:VCore.WPF.Controls"
-                    xmlns:numericUpAndDown="clr-namespace:VCore.WPF.Controls.NumericUpAndDown">
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:VCore.WPF.Controls"
+  xmlns:numericUpAndDown="clr-namespace:VCore.WPF.Controls.NumericUpAndDown">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Paths.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="pack://application:,,,/VCore.WPF;component/StylesDictionaries/Paths.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="numericUpAndDown:NumericUpAndDown">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="numericUpAndDown:NumericUpAndDown">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="auto" />
-                        </Grid.ColumnDefinitions>
+  <Style TargetType="numericUpAndDown:NumericUpAndDown">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="numericUpAndDown:NumericUpAndDown">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition />
+              <RowDefinition />
+            </Grid.RowDefinitions>
 
 
-                        <TextBox Grid.Row="0"
-                                 Grid.RowSpan="2"
-                                 Grid.Column="0"
-                                 MinWidth="{TemplateBinding MinWidth}"
-                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                 Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Value}" />
+            <TextBox
+              Grid.Row="0"
+              Grid.RowSpan="2"
+              Grid.Column="0"
+              MinWidth="{TemplateBinding MinWidth}"
+              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+              Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Value}" />
 
-                        <controls:PathButton Grid.Row="0"
-                                             Grid.Column="1"
-                                             Height="20"
-                                             Margin="5,5,0,-5"
-                                             Padding="0"
-                                             HorizontalContentAlignment="Center"
-                                             Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=UpCommand}"
-                                             IconHeight="15"
-                                             IconHoverColor="#ccc"
-                                             IconMargin="0"
-                                             IconWidth="15"
-                                             IsReadOnly="True"
-                                             PathStyle="{StaticResource plus_path}" />
+            <controls:PathButton
+              Grid.Row="0"
+              Grid.Column="1"
+              Height="20"
+              Margin="5,5,0,-5"
+              Padding="0"
+              HorizontalContentAlignment="Center"
+              Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=UpCommand}"
+              IconHeight="15"
+              IconHoverColor="#ccc"
+              IconMargin="0"
+              IconWidth="15"
+              IsReadOnly="True"
+              PathStyle="{StaticResource plus_path}" />
 
-                        <controls:PathButton Grid.Row="1"
-                                             Grid.Column="1"
-                                             Height="20"
-                                             Margin="5,0,0,-9"
-                                             Padding="0"
-                                             HorizontalContentAlignment="Center"
-                                             Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DownCommand}"
-                                             IconHeight="2"
-                                             IconHoverColor="#ccc"
-                                             IconMargin="0"
-                                             IconWidth="15"
-                                             IsReadOnly="True"
-                                             PathStyle="{StaticResource minus}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+            <controls:PathButton
+              Grid.Row="1"
+              Grid.Column="1"
+              Height="20"
+              Margin="5,0,0,-9"
+              Padding="0"
+              HorizontalContentAlignment="Center"
+              Command="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DownCommand}"
+              IconHeight="2"
+              IconHoverColor="#ccc"
+              IconMargin="0"
+              IconWidth="15"
+              IsReadOnly="True"
+              PathStyle="{StaticResource minus}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
 </ResourceDictionary>

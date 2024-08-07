@@ -7,6 +7,13 @@ using System.Threading;
 
 namespace TradingBroker.MachineLearning
 {
+
+  public class Gene<T>
+  {
+    public string Key { get; set; }
+    public T Value { get; set; }
+  }
+
   public class GeneticAlgorithmManager<TData>
   {
     protected CancellationTokenSource cancellationTokenSource;
@@ -223,12 +230,6 @@ namespace TradingBroker.MachineLearning
         }
 
         var best = totalGenerations.OrderByDescending(x => x.Fitness).First();
-
-
-        if (best.Fitness == 0)
-        {
-
-        }
 
         newPopulationsCreatedSubject.OnNext(best);
 

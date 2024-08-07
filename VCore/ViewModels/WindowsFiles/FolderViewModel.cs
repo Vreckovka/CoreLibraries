@@ -10,8 +10,7 @@ using VCore.Standard.ViewModels.TreeView;
 using VCore.Standard.ViewModels.WindowsFile;
 using VCore.WPF.ItemsCollections;
 using System;
-using System.Threading;
-using System.Windows;
+using System.Threading;using System.Windows;
 
 
 namespace VCore.WPF.ViewModels.WindowsFiles

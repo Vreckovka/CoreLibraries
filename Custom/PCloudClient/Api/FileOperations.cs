@@ -418,7 +418,7 @@ namespace PCloudClient.Api
       req.add("fileid", id);
       req.unixTimestamps();
 
-      var response = await conn.send(req);
+      var response = await conn.send(req).ConfigureAwait(false);
 
       var hosts = (object[])response.dict["hosts"];
       var host = hosts[0].ToString();

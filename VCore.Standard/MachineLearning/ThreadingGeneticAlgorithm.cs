@@ -18,7 +18,7 @@ namespace TradingBroker.MachineLearning
       Func<T[], float> scoreFunction,
       string[] keys,
       CancellationToken? cancellationToken = null,
-      float mutationRate = (float)0.01) : base(populationSize, geneSize, getRandomNext, getRandomDouble, getRandomGene, scoreFunction,keys, mutationRate)
+      float mutationRate = (float)0.01) : base(populationSize, geneSize, getRandomGene, scoreFunction,keys, getRandomNext,getRandomDouble, mutationRate)
     {
       this.cancellationToken = cancellationToken;
     }

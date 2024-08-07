@@ -182,9 +182,9 @@ namespace PCloudClient
 
     public async Task<PublicLink> GetFileLink(long id)
     {
-      var task = await ExecuteAction(async (conn) =>
+      var task = await ExecuteAction((conn) =>
       {
-        return await conn.GetFileLink(id);
+        return conn.GetFileLink(id);
       });
 
       return task == null ? null : await task;

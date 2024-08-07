@@ -27,5 +27,10 @@ namespace VCore.Standard.Helpers
       dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
       return dtDateTime.ToUniversalTime();
     }
+
+    public static long DateTimeToUnixSeconds(this DateTime dateTime)
+    {
+      return ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
+    }
   }
 }

@@ -324,6 +324,7 @@ namespace ChromeDriverScrapper
         ChromeDriver.SwitchTo().Window(windows[0]).Close();
       }
 
+
       if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var validUrl))
       {
         var result = wait.Until((x) =>

@@ -180,7 +180,7 @@ namespace PCloudClient
       if (wasThrottled && !flushedStream)
         await stream.FlushAsync();
 
-      return await tt;
+      return await tt.ConfigureAwait(false);
     }
 
     /// <summary>Simple request without payload in either direction</summary>
@@ -192,7 +192,7 @@ namespace PCloudClient
       {
         await requestBuilder.close().CopyToAsync(stream);
 
-        tResult = await sendImpl(fnReceiveSimple);
+        tResult = await sendImpl(fnReceiveSimple).ConfigureAwait(false);
       }
       catch (Exception ex)
       {
@@ -203,7 +203,7 @@ namespace PCloudClient
       {
         releaseWriteLock();
       }
-      return await tResult;
+      return await tResult.ConfigureAwait(false);
     }
 
     /// <summary>Upload request which copies the supplied stream, either completely, or specified count of bytes</summary>

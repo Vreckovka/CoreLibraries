@@ -25,23 +25,23 @@ namespace VCore.WPF.Managers
 
     #region ShowPrompt
 
-    public void ShowPrompt<TView>(ViewModel viewModel, double width = 0, double height = 0) where TView : IView, new()
+    public void ShowPrompt<TView>(ViewModel viewModel, double width = 0, double height = 0, bool showOverlay = true) where TView : IView, new()
     {
       lock (windowLock)
       {
-        var window = GetWindowView<TView>(viewModel);
+        var window = GetWindowView<TView>(viewModel, showOverlay);
 
-        window.Loaded += Window_Loaded;
+        window.Loaded += (x,y) => Window_Loaded(x,y, showOverlay);
         window.Closed += Window_Closed;
 
-        if(width > 0 || height > 0)
+        if (width > 0 || height > 0)
         {
           window.Width = width;
           window.Height = height;
           window.SizeToContent = SizeToContent.Manual;
         }
 
-        if (overlayWindow == null)
+        if (overlayWindow == null && showOverlay)
         {
           ShowOverlayWindow();
 
@@ -50,8 +50,12 @@ namespace VCore.WPF.Managers
 
         window.ShowInTaskbar = true;
         window.Title = "Custom prompt";
+        viewModel?.Initialize();
 
-        window.ShowDialog();
+        if (showOverlay)
+          window.ShowDialog();
+        else
+          window.Show();
       }
     }
 
@@ -94,7 +98,7 @@ namespace VCore.WPF.Managers
     public PromptResult ShowDeletePrompt(
       string itemName,
       string header = "Delete",
-      string beforeText = "Do you really want to delete item ", 
+      string beforeText = "Do you really want to delete item ",
       string afterText = " ?")
     {
       return ShowQuestionPrompt<DeletePromptView>(itemName, header, beforeText, afterText);
@@ -122,7 +126,7 @@ namespace VCore.WPF.Managers
     }
 
     public PromptResult ShowQuestionPrompt(
-      string beforeText ,
+      string beforeText,
       string header = "",
       string itemName = "",
       string afterText = "?")
@@ -174,7 +178,7 @@ namespace VCore.WPF.Managers
       {
         if (sender is Window window)
         {
-          window.Loaded -= Window_Loaded;
+          //window.Loaded -= Window_Loaded;
           window.Closed -= Window_Closed;
 
           windows.Remove(window);
@@ -194,11 +198,11 @@ namespace VCore.WPF.Managers
 
     #region Window_Loaded
 
-    private void Window_Loaded(object sender, RoutedEventArgs e)
+    private void Window_Loaded(object sender, RoutedEventArgs e, bool showOverlay)
     {
       lock (windowLock)
       {
-        if (sender is Window window)
+        if (sender is Window window && showOverlay)
         {
           windows.Add(window);
           FullScreenManager.IsMouseBlocked = true;

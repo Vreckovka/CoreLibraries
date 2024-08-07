@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 namespace TradingBroker.MachineLearning
 {
+
   public class DNA<T>
   {
-    private readonly string[] keys;
-    private readonly Func<string, T> getRandomGene;
-    private readonly Func<T[], float> scoreFunction;
-    private readonly Func<double> getRandomDouble;
+    protected readonly string[] keys;
+    protected readonly Func<string, T> getRandomGene;
+    protected readonly Func<T[], float> scoreFunction;
+    protected readonly Func<double> getRandomDouble;
 
     public DNA(
       int size,
@@ -18,8 +19,8 @@ namespace TradingBroker.MachineLearning
       string[] keys,
       bool shouldInitGenes = true)
     {
-      this.getRandomGene = getRandomGene ?? throw new ArgumentNullException(nameof(getRandomGene));
-      this.scoreFunction = scoreFunction ?? throw new ArgumentNullException(nameof(scoreFunction));
+      this.getRandomGene = getRandomGene;
+      this.scoreFunction = scoreFunction;
       this.getRandomDouble = getRandomDouble;
       this.keys = keys;
 
@@ -42,8 +43,9 @@ namespace TradingBroker.MachineLearning
     }
 
     public T[] Genes { get; private set; }
-    public float Fitness { get; private set; } = float.MinValue;
+    public float Fitness { get; set; } = float.MinValue;
     public double Score { get; set; }
+    public float AdjustedFitness { get; set; }
 
     #region CalculateFitness
 
@@ -51,7 +53,7 @@ namespace TradingBroker.MachineLearning
     {
       int exponentialRate = 3;
 
-      var score = scoreFunction(genes);
+      var score = GetScore(genes);
       double expScore = 0;
 
       if (score == float.MinValue)
@@ -67,52 +69,23 @@ namespace TradingBroker.MachineLearning
       
       Fitness = (float)expScore;
 
-      if (Fitness == 0)
-      {
-
-      }
-
-
       Score = score;
 
       return Fitness;
     }
 
     #endregion
-
-    #region Crossover
-
-    public DNA<T> Crossover(DNA<T> otherParent)
+    
+    protected virtual float GetScore(T[] genes)
     {
-      DNA<T> child = new DNA<T>(Genes.Length, getRandomGene, scoreFunction, getRandomDouble, keys, false);
-
-
-      for (int i = 0; i < Genes.Length; i++)
-      {
-        var rnd = getRandomDouble();
-
-        if (rnd < 0.50)
-        {
-          child.Genes[i] = Genes[i];
-        }
-        else if (rnd > 0.50)
-        {
-          child.Genes[i] = otherParent.Genes[i];
-        }
-        else
-        {
-          i--;
-        }
-      }
-
-      return child;
+      return scoreFunction(genes);
     }
 
-    #endregion
+   
 
     #region Mutate
 
-    public void Mutate(float mutationRate)
+    public virtual void Mutate(float mutationRate)
     {
       for (int i = 0; i < Genes.Length; i++)
       {
@@ -131,5 +104,10 @@ namespace TradingBroker.MachineLearning
     }
 
     #endregion
+
+    private void GetRandomGene()
+    {
+
+    }
   }
 }

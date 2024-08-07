@@ -8,25 +8,49 @@ using TradingBroker.MachineLearning;
 
 namespace TradingBroker.MachineLearning
 {
-  public class GeneticAlgorithm<T>
+
+  public class GeneticAlgorithm<T> : BaseGeneticAlgorithm<T, DNA<T>>
+  {
+    public GeneticAlgorithm(int populationSize,
+     int geneSize,
+     Func<string, T> getRandomGene,
+     Func<T[], float> scoreFunction,
+     string[] keys,
+     Func<int, int, int> getRandomNext = null,
+     Func<double> getRandomDouble = null,
+     float mutationRate = 0.01f) :
+      base(populationSize, geneSize, getRandomGene, scoreFunction, keys, getRandomNext, getRandomDouble, mutationRate)
+    {
+
+    }
+
+    protected override DNA<T> GetNewDNA(bool init)
+    {
+      return new DNA<T>(geneSize, getRandomGene, scoreFunction, getRandomDouble, keys, init);
+    }
+  }
+
+  public abstract class BaseGeneticAlgorithm<T, TDNA>
+    where TDNA : DNA<T>
   {
     #region Fields
 
-    private readonly Func<int, int, int> getRandomNext;
-    private readonly Func<double> getRandomDouble;
+    protected Random random = new Random();
+    protected readonly Func<int, int, int> getRandomNext;
+    protected readonly Func<double> getRandomDouble;
     protected Func<string, T> getRandomGene;
     protected Func<T[], float> scoreFunction;
-    private readonly string[] keys;
+    protected readonly string[] keys;
 
-    private readonly int populationSize;
-    private readonly int geneSize;
-  
+    protected readonly int populationSize;
+    protected readonly int geneSize;
 
-    private float fitnessSum;
 
-    private float bestFitness;
-    private T[] bestGenes;
-    private double bestScore;
+    protected float fitnessSum;
+
+    protected float bestFitness;
+    protected T[] bestGenes;
+    protected double bestScore;
 
     private Subject<KeyValuePair<T[], double>> generationGenerated = new Subject<KeyValuePair<T[], double>>();
 
@@ -36,13 +60,13 @@ namespace TradingBroker.MachineLearning
 
     #region Contructors
 
-    public GeneticAlgorithm(int populationSize,
+    public BaseGeneticAlgorithm(int populationSize,
       int geneSize,
-      Func<int, int, int> getRandomNext,
-      Func<double> getRandomDouble,
-      Func<string,T> getRandomGene,
+      Func<string, T> getRandomGene,
       Func<T[], float> scoreFunction,
       string[] keys,
+      Func<int, int, int> getRandomNext = null,
+      Func<double> getRandomDouble = null,
       float mutationRate = 0.01f)
     {
       Generation = 1;
@@ -51,14 +75,14 @@ namespace TradingBroker.MachineLearning
 
       this.populationSize = populationSize;
       this.geneSize = geneSize;
-      this.getRandomNext = getRandomNext;
-      this.getRandomDouble = getRandomDouble;
-      this.getRandomGene = getRandomGene ?? throw new ArgumentNullException(nameof(getRandomGene));
-      this.scoreFunction = scoreFunction ?? throw new ArgumentNullException(nameof(scoreFunction));
+      this.getRandomNext = getRandomNext ?? GetRandomNext;
+      this.getRandomDouble = getRandomDouble ?? GetRandomDouble;
+      this.getRandomGene = getRandomGene;
+      this.scoreFunction = scoreFunction;
       this.keys = keys;
 
-      Population = new List<DNA<T>>(populationSize);
-      newPopulation = new List<DNA<T>>(populationSize);
+      Population = new List<TDNA>(populationSize);
+      newPopulation = new List<TDNA>(populationSize);
 
       bestGenes = new T[geneSize];
     }
@@ -67,7 +91,7 @@ namespace TradingBroker.MachineLearning
 
     #region Properties
 
-    public List<DNA<T>> Population { get; set; }
+    public List<TDNA> Population { get; set; }
     public int Generation { get; private set; }
     public float MutationRate { get; set; } = (float)0.01;
     public int? MaxGenerationCount { get; set; }
@@ -88,19 +112,26 @@ namespace TradingBroker.MachineLearning
 
     #region Methods
 
-    #region CreateNewGeneration
+    protected abstract TDNA GetNewDNA(bool init);
 
-    private List<DNA<T>> newPopulation;
-
-    protected void CreateNewGeneration()
+    public virtual void SeedGeneration()
     {
       if (Population.Count == 0)
       {
         for (int i = 0; i < populationSize; i++)
         {
-          Population.Add(new DNA<T>(geneSize, getRandomGene, scoreFunction, getRandomDouble,keys, true));
+          Population.Add(GetNewDNA(true));
         }
       }
+    }
+
+    #region CreateNewGeneration
+
+    private List<TDNA> newPopulation;
+
+    public virtual void CreateNewGeneration()
+    {
+      SeedGeneration();
 
       newPopulation.Clear();
 
@@ -117,10 +148,10 @@ namespace TradingBroker.MachineLearning
         }
         else
         {
-          DNA<T> parentA = ChooseParent();
-          DNA<T> parentB = ChooseParent();
+          TDNA parentA = ChooseParent();
+          TDNA parentB = ChooseParent();
 
-          DNA<T> child = parentA.Crossover(parentB);
+          TDNA child = Crossover(parentA,parentB);
 
           child.Mutate(MutationRate);
 
@@ -128,7 +159,7 @@ namespace TradingBroker.MachineLearning
         }
       }
 
-      List<DNA<T>> tmp = Population;
+      List<TDNA> tmp = Population;
       Population = newPopulation;
       newPopulation = tmp;
 
@@ -137,9 +168,40 @@ namespace TradingBroker.MachineLearning
 
     #endregion
 
+    #region Crossover
+
+    public TDNA Crossover(TDNA parent, TDNA otherParent)
+    {
+      var parentGenes = parent.Genes;
+
+      TDNA child = GetNewDNA(false);
+
+      for (int i = 0; i < parentGenes.Length; i++)
+      {
+        var rnd = getRandomDouble();
+
+        if (rnd < 0.50)
+        {
+          child.Genes[i] = parentGenes[i];
+        }
+        else if (rnd > 0.50)
+        {
+          child.Genes[i] = otherParent.Genes[i];
+        }
+        else
+        {
+          i--;
+        }
+      }
+
+      return child;
+    }
+
+    #endregion
+
     #region CalculateFitness
 
-    private void CalculateFitness()
+    protected virtual void CalculateFitness()
     {
       fitnessSum = 0;
       var best = Population[0];
@@ -166,7 +228,7 @@ namespace TradingBroker.MachineLearning
 
     #region ChooseParent
 
-    protected DNA<T> ChooseParent()
+    protected TDNA ChooseParent()
     {
       double randomNumber = getRandomDouble() * fitnessSum;
 
@@ -215,7 +277,7 @@ namespace TradingBroker.MachineLearning
 
     #region CompareDNA
 
-    public int CompareDNA(DNA<T> a, DNA<T> b)
+    public int CompareDNA(TDNA a, TDNA b)
     {
       if (a.Fitness > b.Fitness)
       {
@@ -233,8 +295,59 @@ namespace TradingBroker.MachineLearning
 
     #endregion
 
-   
-    
+    #region GetRandomDouble
+
+    protected double GetRandomDouble()
+    {
+      return random.NextDouble();
+    }
+
     #endregion
+
+    #region GetRandomNext
+
+    protected int GetRandomNext(int a, int b)
+    {
+      lock (this)
+      {
+        return random.Next(a, b);
+      }
+    }
+
+    #endregion
+
+    #endregion
+  }
+
+  public class Species<T>
+  {
+    public List<DNA<T>> Individuals { get; private set; }
+    public float BestFitness { get; private set; }
+    public DNA<T> Representative { get; private set; }
+
+    public Species(DNA<T> initialIndividual)
+    {
+      Individuals = new List<DNA<T>> { initialIndividual };
+      BestFitness = initialIndividual.Fitness;
+      Representative = initialIndividual;
+    }
+
+    public void AddIndividual(DNA<T> individual)
+    {
+      Individuals.Add(individual);
+      if (individual.Fitness > BestFitness)
+      {
+        BestFitness = individual.Fitness;
+        Representative = individual;
+      }
+    }
+
+    public void CalculateAdjustedFitness()
+    {
+      foreach (var individual in Individuals)
+      {
+        individual.AdjustedFitness = individual.Fitness / Individuals.Count;
+      }
+    }
   }
 }

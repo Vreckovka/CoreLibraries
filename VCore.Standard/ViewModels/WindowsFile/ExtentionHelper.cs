@@ -11,6 +11,7 @@
         case ".avi":
         case ".ts":
         case ".wmv":
+        case ".mpeg":
           {
             return FileType.Video;
           }
