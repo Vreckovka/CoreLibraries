@@ -106,7 +106,7 @@ namespace ChromeDriverScrapper
           {
             chromeOptions.AddArguments(new List<string>()
             {
-              "--headless",
+              "--headless=old",
               "--disable-gpu",
               "--no-sandbox",
               "--start-maximized",
@@ -317,14 +317,7 @@ namespace ChromeDriverScrapper
     private string SafeNavigate(Action<string> action, string url, out string redirectedUrl, double secondsToWait = 10, int extraMiliseconds = 0)
     {
       wait = new WebDriverWait(ChromeDriver, TimeSpan.FromSeconds(secondsToWait));
-      var windows = ChromeDriver.WindowHandles.ToList();
-
-      if (windows.Count > 1)
-      {
-        ChromeDriver.SwitchTo().Window(windows[0]).Close();
-      }
-
-
+     
       if (Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out var validUrl))
       {
         var result = wait.Until((x) =>

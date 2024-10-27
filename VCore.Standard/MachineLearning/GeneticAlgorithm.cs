@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
@@ -139,7 +140,6 @@ namespace TradingBroker.MachineLearning
 
       Population.Sort(CompareDNA);
 
-
       for (int i = 0; i < Population.Count; i++)
       {
         if (i < ElitismCount)
@@ -205,22 +205,40 @@ namespace TradingBroker.MachineLearning
     {
       fitnessSum = 0;
       var best = Population[0];
+      float minFitness = float.MaxValue;
 
-      for (int i = 0; i < Population.Count; i++)
+      // Find minimum fitness
+      foreach (var dna in Population)
       {
-        var dna = Population[i];
+        dna.CalculateFitness();
 
-        fitnessSum += dna.CalculateFitness(dna.Genes);
-
-        if (Population[i].Fitness > best.Fitness)
+        if (dna.Fitness < minFitness)
         {
-          best = Population[i];
+          minFitness = dna.Fitness;
+        }
+      }
+
+      // Adjust fitness values if there are negative fitnesses
+      if (minFitness < 0)
+      {
+        foreach (var dna in Population)
+        {
+          dna.Fitness -= minFitness;
+        }
+      }
+
+      foreach (var dna in Population)
+      {
+        fitnessSum += dna.Fitness;
+
+        if (dna.Fitness > best.Fitness)
+        {
+          best = dna;
         }
       }
 
       bestFitness = best.Fitness;
       bestScore = best.Score;
-
       best.Genes.CopyTo(bestGenes, 0);
     }
 
@@ -228,7 +246,7 @@ namespace TradingBroker.MachineLearning
 
     #region ChooseParent
 
-    protected TDNA ChooseParent()
+    protected virtual TDNA ChooseParent()
     {
       double randomNumber = getRandomDouble() * fitnessSum;
 
@@ -315,39 +333,8 @@ namespace TradingBroker.MachineLearning
     }
 
     #endregion
+   
 
     #endregion
-  }
-
-  public class Species<T>
-  {
-    public List<DNA<T>> Individuals { get; private set; }
-    public float BestFitness { get; private set; }
-    public DNA<T> Representative { get; private set; }
-
-    public Species(DNA<T> initialIndividual)
-    {
-      Individuals = new List<DNA<T>> { initialIndividual };
-      BestFitness = initialIndividual.Fitness;
-      Representative = initialIndividual;
-    }
-
-    public void AddIndividual(DNA<T> individual)
-    {
-      Individuals.Add(individual);
-      if (individual.Fitness > BestFitness)
-      {
-        BestFitness = individual.Fitness;
-        Representative = individual;
-      }
-    }
-
-    public void CalculateAdjustedFitness()
-    {
-      foreach (var individual in Individuals)
-      {
-        individual.AdjustedFitness = individual.Fitness / Individuals.Count;
-      }
-    }
   }
 }

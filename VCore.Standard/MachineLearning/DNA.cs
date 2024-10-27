@@ -49,11 +49,11 @@ namespace TradingBroker.MachineLearning
 
     #region CalculateFitness
 
-    public float CalculateFitness(T[] genes)
+    public float CalculateFitness()
     {
       int exponentialRate = 3;
 
-      var score = GetScore(genes);
+      var score = GetScore(Genes);
       double expScore = 0;
 
       if (score == float.MinValue)

@@ -11,9 +11,15 @@ namespace VCore.WPF.Converters
       object parameter,
       CultureInfo culture)
     {
-      var value = double.Parse(values[0].ToString()) / double.Parse(values[1].ToString());
+      if(double.TryParse(values[0].ToString(), out var value1) && 
+        double.TryParse(values[1].ToString(), out var value2))
+        {
+        var value = value1 / value2;
 
-      return value * 100;
+        return value * 100;
+      }
+
+      return null;
     }
   }
 }

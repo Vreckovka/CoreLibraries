@@ -422,12 +422,24 @@ namespace VCore.WPF
 
     public static async Task InvokeOnDispatcherAsync(Action action)
     {
-      await UIDispatcher.InvokeAsync(action);
+      try
+      {
+        await UIDispatcher?.InvokeAsync(action);
+      }
+      catch (TaskCanceledException)
+      {
+      }
     }
 
     public static void InvokeOnDispatcher(Action action)
     {
-      UIDispatcher.Invoke(action);
+      try
+      {
+        UIDispatcher?.Invoke(action);
+      }
+      catch (TaskCanceledException)
+      {
+      }
     }
   }
 }
