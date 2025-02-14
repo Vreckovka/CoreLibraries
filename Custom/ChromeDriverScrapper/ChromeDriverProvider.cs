@@ -106,9 +106,12 @@ namespace ChromeDriverScrapper
           {
             chromeOptions.AddArguments(new List<string>()
             {
-              "--headless=old",
-              "--disable-gpu",
+              "--disable-gpu",      
+              //Prevents DevToolsActivePort file doesn't exist Error
               "--no-sandbox",
+              "--disable-dev-shm-usage",
+
+              "--headless",
               "--start-maximized",
               "--disable-infobars",
               "--disable-extensions",
@@ -117,7 +120,8 @@ namespace ChromeDriverScrapper
               "--block-new-web-contents",
               "--enable-precise-memory-info",
               "--ignore-certificate-errors",
-              "--window-size=1920,1080"
+              "--window-size=1920,1080",
+
             });
 
 
