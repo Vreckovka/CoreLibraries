@@ -12,6 +12,7 @@
         case ".ts":
         case ".wmv":
         case ".mpeg":
+        case ".m4v":
           {
             return FileType.Video;
           }
