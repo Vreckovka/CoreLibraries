@@ -137,7 +137,7 @@ namespace VCore.WPF.ViewModels
       {
         return maximizeCommand ??= new ActionCommand<Window>(o =>
         {
-          o.ResizeMode = ResizeMode.NoResize;
+          //o.ResizeMode = ResizeMode.NoResize;
           o.WindowState = WindowState.Maximized;
 
         }).DisposeWith(this);

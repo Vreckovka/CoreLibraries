@@ -27,6 +27,8 @@ using VCore.WPF.ViewModels;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
+using VCore.WPF.Misc;
+using VCore.WPF.Interfaces;
 
 namespace VCore.WPF
 {
@@ -54,7 +56,11 @@ namespace VCore.WPF
 
     #endregion
 
+    public virtual bool SaveWindowPosition { get; }
+
     private int numberOfSteps = 18;
+    private SaveWindowsPositionFunction saveWindowsPositionFunction;
+
 
     #region Methods
 
@@ -78,6 +84,7 @@ namespace VCore.WPF
 #if DEBUG
       //IsConsoleVisible = true;
 #endif
+
 
       base.OnStartup(e);
     }
@@ -361,6 +368,13 @@ namespace VCore.WPF
       var dataContext = Kernel.Get<TMainWindowViewModel>();
 
       shell.DataContext = dataContext;
+
+
+      if (SaveWindowPosition)
+      {
+        saveWindowsPositionFunction = new SaveWindowsPositionFunction(shell);
+      }
+
 
       return shell;
     }
