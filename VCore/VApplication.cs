@@ -313,7 +313,7 @@ namespace VCore.WPF
 
     #region LogUnhandledException
 
-    private async void LogUnhandledException(Exception exception, string source)
+    private void LogUnhandledException(Exception exception, string source)
     {
       string message = $"Unhandled exception ({source})";
 
