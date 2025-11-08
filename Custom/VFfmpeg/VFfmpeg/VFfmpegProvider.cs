@@ -13,6 +13,11 @@ namespace VFfmpeg
     TProcessOutputHandler CreateFfmpeg<TProcessOutputHandler>(string argumetns) where TProcessOutputHandler : ProcessOutputHandler;
     Task<ProcessResult> RunFfmpeg<TProcessOutputHandler>(string argumetns,bool forceClosePrevious = false) where TProcessOutputHandler : ProcessOutputHandler;
     Task<ProcessResult> RunFfprobe<TProcessOutputHandler>(string argumetns) where TProcessOutputHandler : ProcessOutputHandler;
+
+    string FFMPEG_PATH
+    {
+      get;
+    }
   }
 
   public class VFfmpegProvider : IVFfmpegProvider
@@ -31,6 +36,8 @@ namespace VFfmpeg
       ffmpegPath = Path.Combine(ffmpegFolderPath, "ffmpeg.exe");
       ffprobePath = Path.Combine(ffmpegFolderPath, "ffprobe.exe");
     }
+
+    public string FFMPEG_PATH => ffmpegPath;
 
     #region CreateFfmpeg
 

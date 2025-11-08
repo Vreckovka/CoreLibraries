@@ -29,7 +29,7 @@ namespace VFfmpeg
 
   public class ProcessOutputHandler : IDisposable
   {
-    private readonly Process process;
+    public readonly Process process;
     private List<string> outputs = new List<string>();
 
     public ProcessOutputHandler(Process process)
