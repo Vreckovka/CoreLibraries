@@ -1,13 +1,14 @@
-﻿<UserControl x:Class="VCore.WPF.Prompts.LoginPrompt"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:VCore.WPF.Controls"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:VCore.WPF.Prompts"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             Width="350"
-             Height="205"
-             mc:Ignorable="d">
+﻿<UserControl
+  x:Class="VCore.WPF.Prompts.LoginPrompt"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:VCore.WPF.Controls"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:VCore.WPF.Prompts"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Width="350"
+  Height="205"
+  mc:Ignorable="d">
   <Border Padding="5">
     <Grid>
       <Grid.Resources>
@@ -36,20 +37,23 @@
         <RowDefinition Height="auto" />
       </Grid.RowDefinitions>
 
-      <TextBlock HorizontalAlignment="Center"
-                 FontSize="15"
-                 Text="Name" />
+      <TextBlock
+        HorizontalAlignment="Center"
+        FontSize="15"
+        Text="Name" />
 
-      <TextBox Grid.Row="1"
-               FontSize="15"
-               IsTabStop="True"
-               Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+      <TextBox
+        Grid.Row="1"
+        FontSize="15"
+        IsTabStop="True"
+        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-      <TextBlock Grid.Row="2"
-                 Margin="0,15,0,5"
-                 HorizontalAlignment="Center"
-                 FontSize="15"
-                 Text="Password" />
+      <TextBlock
+        Grid.Row="2"
+        Margin="0,15,0,5"
+        HorizontalAlignment="Center"
+        FontSize="15"
+        Text="Password" />
 
       <controls:VPasswordBox Grid.Row="3" Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
