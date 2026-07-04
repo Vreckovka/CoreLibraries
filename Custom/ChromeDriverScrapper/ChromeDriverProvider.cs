@@ -32,7 +32,7 @@ namespace ChromeDriverScrapper
 
     public ChromeDriverProvider(ILogger logger) : this()
     {
-      this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+      //this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public ChromeDriverProvider()
