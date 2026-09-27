@@ -344,12 +344,13 @@ namespace PCloudClient
     {
       var task = await ExecuteAction(async (conn) =>
       {
-        var file = await conn.createFile(parenId, name, FileMode.Create, FileAccess.Write);
+        using var empty = new MemoryStream();
+        var file = await conn.uploadFile(parenId, name, empty);
         long? result = null;
 
-        if (file.fileId > 0)
+        if (file.id > 0)
         {
-          result = file.fileId;
+          result = file.id;
         }
 
         return result;
@@ -366,12 +367,9 @@ namespace PCloudClient
     {
       var task = await ExecuteAction(async (conn) =>
       {
-        MemoryStream ms = new MemoryStream(data, false);
-
-        var fd = await conn.createFile(id, FileMode.Open, FileAccess.Write);
-
-        await conn.writeFile(fd, ms, ms.Length);
-        await conn.closeFile(fd);
+        using var ms = new MemoryStream(data, false);
+        var file = await conn.GetFileInfo(id);
+        await conn.uploadFile(file.parentFolderId, file.name, ms);
 
         return true;
       });
@@ -388,12 +386,8 @@ namespace PCloudClient
     {
       var task = await ExecuteAction(async (conn) =>
       {
-        MemoryStream ms = new MemoryStream(data, false);
-
-        var fd = await conn.createFile(folderId, name, FileMode.Create, FileAccess.Write);
-
-        await conn.writeFile(fd, ms, ms.Length);
-        await conn.closeFile(fd);
+        using var ms = new MemoryStream(data, false);
+        await conn.uploadFile(folderId, name, ms);
 
         return true;
       });

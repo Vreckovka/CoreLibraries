@@ -46,6 +46,8 @@ namespace PCloudClient
     /// <summary>Close connection and underlying network stream</summary>
     public void Dispose()
     {
+      authToken = null;
+      isSessionAuthenticated = false;
       stream?.Dispose();
     }
 
@@ -269,11 +271,14 @@ namespace PCloudClient
       return await tResult;
     }
 
-    /// <summary>If this connection is authenticated, returns the token. You can use the token to open another connection which is already authenticated, without calling login.</summary>
+    /// <summary>Reusable token, if the server issued one. A connection-only login leaves this null; other connections must log in separately.</summary>
     public string authToken { get; internal set; } = null;
 
+    /// <summary>True after verifying a login bound to this connection without a token.</summary>
+    internal bool isSessionAuthenticated { get; set; }
+
     /// <summary>True if this connection is authenticated</summary>
-    public bool isAuthenticated => !string.IsNullOrEmpty(authToken);
+    public bool isAuthenticated => isSessionAuthenticated || !string.IsNullOrEmpty(authToken);
 
     /// <summary>Create a request builder; if authenticated, set `auth` property.</summary>
     internal RequestBuilder newRequest(string method, long? payloadLength = null)

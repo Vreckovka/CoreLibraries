@@ -325,11 +325,19 @@ namespace PCloudClient.Api
     }
 
     /// <summary>Upload a file.</summary>
-    public static async Task<FileInfo> uploadFile(this Connection conn, FolderInfo folder, string name, Stream sourceStream, bool noPartial = true, bool renameIfExists = false)
+    public static Task<FileInfo> uploadFile(this Connection conn, FolderInfo folder, string name, Stream sourceStream, bool noPartial = true, bool renameIfExists = false)
     {
+      if (folder == null) throw new ArgumentNullException(nameof(folder));
+      return conn.uploadFile(folder.id, name, sourceStream, noPartial, renameIfExists);
+    }
+
+    /// <summary>Upload or replace a complete file in the specified folder.</summary>
+    public static async Task<FileInfo> uploadFile(this Connection conn, long folderId, string name, Stream sourceStream, bool noPartial = true, bool renameIfExists = false)
+    {
+      if (sourceStream == null) throw new ArgumentNullException(nameof(sourceStream));
       sourceStream.rewind();
       var req = conn.newRequest("uploadfile", sourceStream.Length);
-      req.add("folderid", folder.id);
+      req.add("folderid", folderId);
       req.add("filename", name);
       if (noPartial)
         req.add("nopartial", true);
@@ -338,7 +346,12 @@ namespace PCloudClient.Api
       req.unixTimestamps();
 
       var response = await conn.upload(req, sourceStream);
-      return new FileInfo(response.metadata());
+      // uploadfile returns an array even when uploading a single file.
+      if (!response.dict.TryGetValue("metadata", out object metadata) ||
+          !(metadata is object[] files) || files.Length != 1 ||
+          !(files[0] is IReadOnlyDictionary<string, object> file))
+        throw new ApplicationException("pCloud uploadfile did not return metadata for the uploaded file.");
+      return new FileInfo(file);
     }
 
     /// <summary>Delete a file</summary>

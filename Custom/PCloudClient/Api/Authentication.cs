@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using PCloudClient.Protocol;
 
@@ -42,24 +43,54 @@ namespace PCloudClient.Api
 			string digest = await conn.getDigest();
 			string passwordDigest = Utils.Utils.sha1( password + Utils.Utils.sha1( email.ToLowerInvariant() ) + digest );
 			var req = new RequestBuilder( "userinfo" );
-			req.add( "getauth", true );
+			req.add( "getauth", 1L );
+			req.add( "logout", true );
 			req.add( "username", email );
 			req.add( "digest", digest );
 			req.add( "passworddigest", passwordDigest );
 			// Set device global parameter
 			req.add( "device", deviceInfoString );
 			var response = await conn.send( req );
-			conn.authToken = (string)response.dict[ "auth" ];
+			if( response.dict.TryGetValue( "auth", out object auth ) &&
+				auth is string token && !string.IsNullOrWhiteSpace( token ) )
+			{
+				conn.authToken = token;
+				return;
+			}
+
+			// Binary API login can authenticate this connection without issuing a token.
+			// Verify that a credential-free request still identifies the same account.
+			if( !response.dict.TryGetValue( "userid", out object userId ) || userId == null )
+				throw new AuthenticationException( "pCloud returned neither an authentication token nor an account identity." );
+
+			var verification = await conn.send( new RequestBuilder( "userinfo" ) );
+			if( !verification.dict.TryGetValue( "userid", out object verifiedUserId ) ||
+				!object.Equals( userId, verifiedUserId ) )
+				throw new AuthenticationException( "pCloud did not confirm the authenticated account on this connection." );
+
+			conn.isSessionAuthenticated = true;
 		}
 
 		/// <summary>Logout</summary>
 		public static async Task logout( this Connection conn )
 		{
+			if( string.IsNullOrEmpty( conn.authToken ) && conn.isSessionAuthenticated )
+			{
+				// The logout global parameter clears the connection's login even when
+				// there is no reusable token for the logout method to invalidate.
+				var reset = new RequestBuilder( "getdigest" );
+				reset.add( "logout", true );
+				await conn.send( reset );
+				conn.isSessionAuthenticated = false;
+				return;
+			}
+
 			var req = conn.newRequest( "logout" );
 			var response = await conn.send( req );
 			if( !(bool)response[ "auth_deleted" ] )
 				throw new ApplicationException( "Unable to logout" );
 			conn.authToken = null;
+			conn.isSessionAuthenticated = false;
 		}
 
 		/// <summary>Change current user's password; requires SSL encrypted server connection.</summary>

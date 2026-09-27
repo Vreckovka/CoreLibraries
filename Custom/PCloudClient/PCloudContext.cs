@@ -44,6 +44,7 @@ namespace PCloudClient
       {
         logger.Log(ex);
 
+        Connection?.Dispose();
         Connection = null;
         IsLoggedIn = false;
       }
