@@ -1,10 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Windows.Data;
 
 namespace VCore.WPF.Converters
 {
+  public class BooleanAndConverter : BaseMultiValueConverter
+  {
+    public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+      return values.All(x => x is bool value && value);
+    }
+
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+      throw new NotSupportedException();
+    }
+  }
+
   public class DurationConverter : BaseConverter
   {
     public string StringNumberFormat { get; set; } = @"{0:00}";
